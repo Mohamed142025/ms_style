@@ -3,10 +3,8 @@
   border-color: var(--ms-border);
 }
 
-.form-section, .form-dashboard-section {
-  border-radius: var(--ms-radius-lg);
-  box-shadow: var(--ms-shadow-sm);
-}
+// Frappe lays sections edge to edge inside one form page, separated by a rule. A
+// radius and shadow on each section turned them into floating full-width strips.
 
 .form-tabs-list .nav-link, .form-tabs-list .nav-item a {
   color: var(--ms-text-muted);
@@ -15,8 +13,9 @@
 
 .form-tabs-list .nav-link:hover, .form-tabs-list .nav-link.active,
 .form-tabs-list .nav-item a:hover, .form-tabs-list .nav-item a.active {
-  color: var(--ms-primary);
-  border-bottom-color: var(--ms-primary-light);
+  // Emerald text on its own tint is only ~4.2:1, so the underline carries the accent.
+  color: var(--ms-text-strong);
+  border-bottom-color: var(--ms-accent);
   background: var(--ms-primary-soft);
 }
 

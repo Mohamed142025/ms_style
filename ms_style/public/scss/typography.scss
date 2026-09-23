@@ -1,9 +1,9 @@
 h1, h2, h3, h4, h5, h6, .page-title, .form-title {
-  color: var(--ms-primary-dark);
+  color: var(--ms-heading);
   font-weight: 700;
 }
 
 .page-title, .form-title { letter-spacing: -0.01em; }
 
-a { color: var(--ms-primary); }
-a:hover { color: var(--ms-primary-dark); }
+a { color: var(--ms-link); }
+a:hover { color: var(--ms-text-strong); }

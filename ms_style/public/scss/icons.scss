@@ -2,8 +2,15 @@
   transition: color var(--ms-duration-normal) var(--ms-ease), opacity var(--ms-duration-normal) var(--ms-ease);
 }
 
-.btn:hover .icon, button:hover .icon, .navbar a:hover .icon, .sidebar-item-icon:hover .icon {
-  color: var(--ms-primary-light);
+.btn:hover .icon, button:hover .icon, .navbar a:hover .icon {
+  color: var(--ms-accent);
+}
+
+// The desk navbar and sidebar are Roots green in every theme, so Mint is the highlight there.
+.desktop-navbar :is(a, button, .btn):hover .icon,
+.body-sidebar :is(a, button, .btn):hover .icon,
+.sidebar-item-icon:hover .icon {
+  color: var(--ms-mint);
 }
 
 .btn .icon, button .icon { vertical-align: middle; }

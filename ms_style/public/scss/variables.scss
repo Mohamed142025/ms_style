@@ -1,25 +1,74 @@
+// Digital Roots brand palette (identity guide). Roots green and Sand are the
+// foundation; Emerald is the highlight on light backgrounds and Mint the highlight
+// on dark backgrounds only. Every other ms_style color is one of these, a tint of
+// one, a role token below, or a semantic status color.
+//
+// Tints of any color use only these alpha steps: .04 .08 .12 .18 .28
+// (scrims and text opacity on the always-dark bars are the only exceptions).
+
+// Role tokens derived from the theme's base tokens. Included again in the dark block
+// so they recompute there too, including under a `.dark` element that isn't <html>.
+@mixin ms-derived-tokens {
+  --ms-border: rgba(var(--ms-tint-rgb), .12);
+  --ms-border-strong: rgba(var(--ms-tint-rgb), .18);
+  --ms-primary-soft: rgba(var(--ms-accent-rgb), var(--ms-soft-alpha));
+  --ms-focus: rgba(var(--ms-accent-rgb), var(--ms-focus-alpha));
+  --ms-success-bg: rgba(var(--ms-success-rgb), var(--ms-status-alpha));
+  --ms-warning-bg: rgba(var(--ms-warning-rgb), var(--ms-status-alpha));
+  --ms-danger-bg: rgba(var(--ms-danger-rgb), var(--ms-status-alpha));
+  --ms-info-bg: rgba(var(--ms-info-rgb), var(--ms-status-alpha));
+}
+
 :root {
-  --ms-primary-dark: #0E3B2E;
-  --ms-primary: #197B57;
-  --ms-primary-light: #34D399;
-  --ms-primary-soft: rgba(52, 211, 153, 0.12);
-  --ms-surface: #F4F1EA;
-  --ms-surface-raised: #FFFFFF;
-  --ms-surface-hover: #F8FAF8;
-  --ms-dark: #16211C;
-  --ms-text: #20352C;
-  --ms-text-muted: #6B7B73;
-  --ms-border: rgba(14, 59, 46, 0.10);
-  --ms-border-strong: rgba(14, 59, 46, 0.18);
-  --ms-focus: rgba(52, 211, 153, 0.24);
-  --ms-success: #197B57;
+  --ms-roots: #0E3B2E;
+  --ms-emerald: #197B57;
+  --ms-mint: #34D399;
+  --ms-sand: #F4F1EA;
+  --ms-ink: #16211C;
+  --ms-roots-rgb: 14, 59, 46;
+  --ms-emerald-rgb: 25, 123, 87;
+  --ms-mint-rgb: 52, 211, 153;
+  --ms-sand-rgb: 244, 241, 234;
+  --ms-ink-rgb: 22, 33, 28;
+
+  // Earlier names, kept as aliases so existing rules keep working.
+  --ms-primary-dark: var(--ms-roots);
+  --ms-primary: var(--ms-emerald);
+  --ms-primary-light: var(--ms-mint);
+
+  // Semantic status colors: separate from the brand palette on purpose.
+  --ms-success: var(--ms-emerald);
   --ms-warning: #B7791F;
   --ms-danger: #C2413B;
   --ms-info: #287A9B;
-  --ms-overlay: rgba(14, 59, 46, 0.42);
-  --ms-shadow-sm: 0 2px 8px rgba(14, 59, 46, 0.05);
-  --ms-shadow-md: 0 8px 25px rgba(14, 59, 46, 0.08);
-  --ms-shadow-lg: 0 20px 60px rgba(14, 59, 46, 0.14);
+  --ms-success-rgb: var(--ms-emerald-rgb);
+  --ms-warning-rgb: 183, 121, 31;
+  --ms-danger-rgb: 194, 65, 59;
+  --ms-info-rgb: 40, 122, 155;
+
+  // Type scale: Frappe's own sizes (desk and website), with explicit fallbacks.
+  --ms-font-xs: var(--text-xs, 12px);
+  --ms-font-sm: var(--text-sm, 13px);
+  --ms-font-md: var(--text-md, 14px);
+  --ms-font-base: var(--text-base, 14px);
+  --ms-font-lg: var(--text-lg, 16px);
+  --ms-font-xl: var(--text-xl, 18px);
+  --ms-font-2xl: var(--text-2xl, 20px);
+  --ms-font-3xl: var(--text-3xl, 24px);
+  --ms-font-4xl: var(--text-4xl, 26px);
+  --ms-font-5xl: var(--text-5xl, 28px);
+  --ms-font-6xl: var(--text-6xl, 32px);
+
+  // Spacing in 4px steps.
+  --ms-space-1: 4px;
+  --ms-space-2: 8px;
+  --ms-space-3: 12px;
+  --ms-space-4: 16px;
+  --ms-space-5: 20px;
+  --ms-space-6: 24px;
+  --ms-space-7: 28px;
+  --ms-space-8: 32px;
+
   --ms-radius-sm: 6px;
   --ms-radius-md: 10px;
   --ms-radius-lg: 14px;
@@ -28,18 +77,63 @@
   --ms-duration-normal: 180ms;
   --ms-duration-slow: 280ms;
   --ms-ease: cubic-bezier(.2, .8, .2, 1);
+  --ms-overlay: rgba(var(--ms-roots-rgb), .42);
+
+  // Surfaces that stay dark in every theme (navbar, sidebar, login bar).
+  --ms-on-dark: #FFFFFF;
+  --ms-on-dark-text: rgba(var(--ms-sand-rgb), .88);
+  --ms-on-dark-muted: rgba(var(--ms-sand-rgb), .72);
+
+  // Light theme.
+  --ms-surface: var(--ms-sand);
+  --ms-surface-raised: #FFFFFF;
+  --ms-text: var(--ms-ink);
+  --ms-text-muted: #656C69;
+  --ms-text-strong: var(--ms-roots);
+  --ms-heading: var(--ms-emerald);
+  --ms-link: var(--ms-emerald);
+  --ms-accent: var(--ms-emerald);
+  --ms-surface-rgb: var(--ms-sand-rgb);
+  --ms-tint-rgb: var(--ms-roots-rgb);
+  --ms-accent-rgb: var(--ms-emerald-rgb);
+  --ms-shadow-rgb: var(--ms-roots-rgb);
+  --ms-soft-alpha: .08;
+  --ms-focus-alpha: .18;
+  --ms-status-alpha: .12;
+  --ms-success-text: #166A4B;
+  --ms-warning-text: #875917;
+  --ms-danger-text: #A73833;
+  --ms-info-text: #226783;
+  --ms-shadow-sm: 0 2px 8px rgba(var(--ms-shadow-rgb), .04);
+  --ms-shadow-md: 0 8px 25px rgba(var(--ms-shadow-rgb), .08);
+  --ms-shadow-lg: 0 20px 60px rgba(var(--ms-shadow-rgb), .12);
+  @include ms-derived-tokens;
 }
 
 [data-theme="dark"], .dark {
-  --ms-surface: #14211B;
+  --ms-surface: var(--ms-ink);
   --ms-surface-raised: #1C2B24;
-  --ms-surface-hover: #243930;
-  --ms-dark: #F4F1EA;
-  --ms-text: #E8F0EB;
-  --ms-text-muted: #AABBB1;
-  --ms-border: rgba(232, 240, 235, 0.12);
-  --ms-border-strong: rgba(232, 240, 235, 0.22);
-  --ms-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.18);
-  --ms-shadow-md: 0 8px 25px rgba(0, 0, 0, 0.24);
-  --ms-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.36);
+  --ms-text: var(--ms-sand);
+  --ms-text-muted: #A9AAA4;
+  --ms-text-strong: var(--ms-sand);
+  --ms-heading: var(--ms-sand);
+  --ms-link: var(--ms-mint);
+  --ms-accent: var(--ms-mint);
+  --ms-surface-rgb: var(--ms-ink-rgb);
+  --ms-tint-rgb: var(--ms-sand-rgb);
+  --ms-accent-rgb: var(--ms-mint-rgb);
+  --ms-shadow-rgb: 0, 0, 0;
+  --ms-soft-alpha: .12;
+  --ms-focus-alpha: .28;
+  --ms-status-alpha: .18;
+  --ms-success-text: var(--ms-mint);
+  --ms-warning-text: #DC952D;
+  --ms-danger-text: #D88480;
+  --ms-info-text: #4AAAD0;
+  --ms-shadow-sm: 0 2px 8px rgba(0, 0, 0, .18);
+  --ms-shadow-md: 0 8px 25px rgba(0, 0, 0, .28);
+  --ms-shadow-lg: 0 20px 60px rgba(0, 0, 0, .28);
+  @include ms-derived-tokens;
+  // Inputs and strong dividers need more weight on dark surfaces.
+  --ms-border-strong: rgba(var(--ms-tint-rgb), .28);
 }

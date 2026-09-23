@@ -1,39 +1,47 @@
+// Frappe's semantic variants (danger, success, link, ...) keep their own colors; only
+// neutral buttons take the ms surface. :where() adds no specificity, so these rules
+// win or lose against Frappe exactly as the plain selectors always did.
+$ms-neutral-btn: ":where(:not(.btn-danger, .btn-success, .btn-warning, .btn-info, .btn-link, .btn-dark, .btn-light, [class*='btn-outline-']))";
+
 .btn, button.btn, .standard-actions .btn {
   min-height: 34px;
   border-radius: var(--ms-radius-md);
   font-weight: 600;
-  border-color: var(--ms-border-strong);
-  background: var(--ms-surface-raised);
-  color: var(--ms-text);
   box-shadow: none;
 }
 
-.btn:hover, button.btn:hover, .standard-actions .btn:hover {
-  border-color: rgba(25, 123, 87, .32);
+.btn#{$ms-neutral-btn}, button.btn#{$ms-neutral-btn}, .standard-actions .btn#{$ms-neutral-btn} {
+  border-color: var(--ms-border-strong);
+  background: var(--ms-surface-raised);
+  color: var(--ms-text);
+}
+
+.btn#{$ms-neutral-btn}:hover, button.btn#{$ms-neutral-btn}:hover, .standard-actions .btn#{$ms-neutral-btn}:hover {
+  border-color: rgba(var(--ms-accent-rgb), .28);
   background: var(--ms-primary-soft);
-  color: var(--ms-primary-dark);
+  color: var(--ms-text-strong);
 }
 
 .btn.btn-primary, .btn.btn-primary-dark, .btn.primary-action {
   background: var(--ms-primary);
   border-color: var(--ms-primary);
-  color: #fff;
-  box-shadow: 0 4px 10px rgba(14, 59, 46, .12);
+  color: var(--ms-on-dark);
+  box-shadow: 0 4px 10px rgba(var(--ms-shadow-rgb), .12);
 }
 
 .btn.btn-primary:hover, .btn.btn-primary:focus-visible,
 .btn.btn-primary-dark:hover, .btn.primary-action:hover {
   background: var(--ms-primary-dark);
   border-color: var(--ms-primary-dark);
-  color: #fff;
-  box-shadow: 0 8px 18px rgba(14, 59, 46, .18), 0 0 0 3px rgba(52, 211, 153, .14);
+  color: var(--ms-on-dark);
+  box-shadow: 0 8px 18px rgba(var(--ms-shadow-rgb), .18), 0 0 0 3px var(--ms-focus);
   transform: translateY(-1px);
 }
 
 .btn.btn-primary:active, .btn.btn-primary-dark:active, .btn.primary-action:active {
-  background: #092D23;
-  border-color: #092D23;
-  box-shadow: 0 3px 8px rgba(14, 59, 46, .14);
+  background: var(--ms-ink);
+  border-color: var(--ms-ink);
+  box-shadow: 0 3px 8px rgba(var(--ms-shadow-rgb), .12);
   transform: translateY(1px);
 }
 
@@ -46,8 +54,10 @@
 .btn:active, button:active { transform: translateY(1px); }
 .btn:disabled, button:disabled, .btn.disabled { opacity: .52; cursor: not-allowed; }
 
+// Link fields: Frappe's `.awesomplete .input-with-feedback` is more specific than the
+// plain selectors, which left them grey next to white Data and Select fields.
 .form-control, .frappe-control input, .frappe-control select, .frappe-control textarea,
-.input-with-feedback, .like-disabled-input {
+.input-with-feedback, .like-disabled-input, .frappe-control .awesomplete .input-with-feedback {
   min-height: 34px;
   border: 1px solid var(--ms-border-strong);
   border-radius: var(--ms-radius-md);
@@ -57,10 +67,10 @@
 }
 
 .form-control:hover, .frappe-control input:hover, .frappe-control select:hover,
-.frappe-control textarea:hover { border-color: var(--ms-primary); }
+.frappe-control textarea:hover, .frappe-control .awesomplete .input-with-feedback:hover { border-color: var(--ms-accent); }
 .form-control:focus, .frappe-control input:focus, .frappe-control select:focus,
-.frappe-control textarea:focus {
-  border-color: var(--ms-primary);
+.frappe-control textarea:focus, .frappe-control .awesomplete .input-with-feedback:focus {
+  border-color: var(--ms-accent);
   box-shadow: 0 0 0 3px var(--ms-focus);
 }
 
@@ -82,12 +92,12 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:hover {
-  border-color: var(--ms-primary);
-  box-shadow: 0 0 0 3px rgba(52, 211, 153, .10);
+  border-color: var(--ms-accent);
+  box-shadow: 0 0 0 3px rgba(var(--ms-accent-rgb), .08);
 }
 
 input[type="checkbox"]:focus-visible {
-  border-color: var(--ms-primary);
+  border-color: var(--ms-accent);
   box-shadow: 0 0 0 3px var(--ms-focus);
 }
 
@@ -112,7 +122,7 @@ input[type="checkbox"]:active { transform: scale(.94); }
 
 .frappe-control[data-fieldtype="Section Break"] .section-head,
 .form-section .section-head {
-  color: var(--ms-primary-dark);
+  color: var(--ms-heading);
   font-weight: 700;
   border-bottom-color: var(--ms-border);
 }

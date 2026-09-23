@@ -105,13 +105,13 @@ button, a, [role="button"], .btn, .form-control, .standard-sidebar-item,
 }
 
 *:focus-visible {
-  outline: 2px solid var(--ms-primary-light);
+  outline: 2px solid var(--ms-accent);
   outline-offset: 2px;
 }
 
 ::selection {
-  background: var(--ms-primary-light);
-  color: var(--ms-primary-dark);
+  background: rgba(var(--ms-accent-rgb), .28);
+  color: var(--ms-text-strong);
 }
 
 .page-head, .page-head-content, .form-page, .list-row-container,

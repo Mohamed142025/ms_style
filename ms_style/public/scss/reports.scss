@@ -16,3 +16,16 @@
 }
 
 .chart-container { overflow: hidden; }
+
+// Frappe draws the column filter row as grey pills that read like loading skeletons;
+// give them the same surface and border as every other input.
+.datatable .dt-row-filter .dt-filter.dt-input {
+  border: 1px solid var(--ms-border);
+  background-color: var(--ms-surface-raised);
+  color: var(--ms-text);
+}
+
+.datatable .dt-row-filter .dt-filter.dt-input:focus {
+  border-color: var(--ms-accent);
+  box-shadow: 0 0 0 3px var(--ms-focus);
+}

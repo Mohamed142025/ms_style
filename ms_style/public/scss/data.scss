@@ -8,8 +8,23 @@
 }
 
 .list-row-head, .list-row-head .list-row-col { color: var(--ms-text-muted); font-weight: 700; }
-.list-row-col a, .frappe-list .list-row a { color: var(--ms-primary); }
-.list-row-col a:hover, .frappe-list .list-row a:hover { color: var(--ms-primary-dark); }
+// Only the record title reads as a link. The other columns are filter shortcuts, so
+// they stay plain text until hovered and the row keeps a hierarchy.
+.list-row-col a, .frappe-list .list-row a { color: var(--ms-text); }
+.list-row-col a:hover, .frappe-list .list-row a:hover { color: var(--ms-link); }
+.frappe-list .list-row .list-subject a { color: var(--ms-link); }
+.frappe-list .list-row .list-subject a:hover { color: var(--ms-text-strong); }
+
+// Frappe's sticky right-hand block (count, comments, likes) keeps Frappe's own
+// --bg-color, which showed as a grey box in light mode and a black one in dark mode.
+.frappe-list .list-row .level-right,
+.frappe-list .list-row-head .level-right {
+  background-color: var(--ms-surface-raised);
+}
+
+.frappe-list .list-row:hover .level-right {
+  background: linear-gradient(var(--ms-primary-soft), var(--ms-primary-soft)), var(--ms-surface-raised);
+}
 
 .frappe-control .grid-row, .form-grid .grid-row, .grid-heading-row {
   border-color: var(--ms-border);

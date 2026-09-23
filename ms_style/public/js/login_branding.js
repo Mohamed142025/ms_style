@@ -1,68 +1,55 @@
 (() => {
-  const syncLoginDirection = () => {
-    const direction = document.documentElement.dir === "rtl" ? "rtl" : "ltr";
-    document.querySelectorAll(".for-login, .for-login .login-content, .for-login .form-login").forEach((element) => {
-      element.style.direction = direction;
-    });
+  // Loaded through web_include_js, which Frappe injects at the end of <body>, so the
+  // login markup already exists when this runs. Every other web page bails out here,
+  // and nothing below needs to watch the DOM for the login form to appear.
+  const init = () => {
+    if (!document.querySelector(".for-login")) return;
+    setupBranding();
+    buildLoginLanguageToggle();
   };
 
-  const applyBranding = () => {
-    const loginPage = document.querySelector(".for-login");
-    if (!loginPage || !document.body) return;
-    syncLoginDirection();
+  function setupBranding() {
+    const fallbackLogo = "/assets/ms_style/images/logo-horizontal-dark-bg.png";
+    const fallbackBackground = "/assets/ms_style/images/main-login.webp";
+    const allowedPath = (value) => typeof value === "string" && (value.startsWith("/files/") || value.startsWith("/assets/"));
+    const cssUrl = (value) => `url("${value}")`;
+    const setBrandingVariable = (name, value) => {
+      document.documentElement.style.setProperty(name, value);
+      document.body.style.setProperty(name, value);
+    };
 
-  const fallbackLogo = "/assets/ms_style/images/logo-horizontal-dark-bg.png";
-  const fallbackBackground = "/assets/ms_style/images/Main%20login.png";
-  const allowedPath = (value) => typeof value === "string" && (value.startsWith("/files/") || value.startsWith("/assets/"));
-  const cssUrl = (value) => `url("${value}")`;
-  const setBrandingVariable = (name, value) => {
-    document.documentElement.style.setProperty(name, value);
-    document.body.style.setProperty(name, value);
-  };
+    const syncLoginDirection = () => {
+      const direction = document.documentElement.dir === "rtl" ? "rtl" : "ltr";
+      document.querySelectorAll(".for-login, .for-login .login-content, .for-login .form-login").forEach((element) => {
+        element.style.direction = direction;
+      });
+    };
 
-  fetch("/api/method/ms_style.ms_style.api.get_login_branding", { credentials: "same-origin" })
-    .then((response) => (response.ok ? response.json() : null))
-    .then((payload) => {
-      const branding = payload?.message || {};
-      const logo = allowedPath(branding.logo) ? branding.logo : fallbackLogo;
-      const background = allowedPath(branding.background) ? branding.background : fallbackBackground;
-      setBrandingVariable("--ms-login-logo-url", cssUrl(logo));
-      setBrandingVariable("--ms-login-background-url", cssUrl(background));
-      document.body.classList.toggle("ms-login-background-full", Boolean(branding.full_screen));
-    })
-    .catch(() => {
-      setBrandingVariable("--ms-login-logo-url", cssUrl(fallbackLogo));
-      setBrandingVariable("--ms-login-background-url", cssUrl(fallbackBackground));
-      document.body.classList.remove("ms-login-background-full");
-    });
-  };
+    // One request per page load; re-applying later reuses the same response.
+    const branding = fetch("/api/method/ms_style.ms_style.api.get_login_branding", { credentials: "same-origin" })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload) => payload?.message || {})
+      .catch(() => null);
 
-  const schedule = () => {
+    const applyBranding = () => {
+      syncLoginDirection();
+      branding.then((settings) => {
+        const logo = allowedPath(settings?.logo) ? settings.logo : fallbackLogo;
+        const background = allowedPath(settings?.background) ? settings.background : fallbackBackground;
+        setBrandingVariable("--ms-login-logo-url", cssUrl(logo));
+        setBrandingVariable("--ms-login-background-url", cssUrl(background));
+        document.body.classList.toggle("ms-login-background-full", Boolean(settings?.full_screen));
+      });
+    };
+
     applyBranding();
-    window.setTimeout(applyBranding, 300);
-  };
-
-  const observer = new MutationObserver(() => {
-    if (document.querySelector(".for-login")) {
-      observer.disconnect();
-      schedule();
-    }
-  });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", schedule, { once: true });
-  } else {
-    schedule();
+    window.addEventListener("load", applyBranding, { once: true });
+    new MutationObserver(syncLoginDirection).observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["dir", "lang"],
+    });
   }
-  window.addEventListener("load", schedule, { once: true });
-  new MutationObserver(syncLoginDirection).observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["dir", "lang"],
-  });
-})();
 
-(() => {
   // The native #language-switcher (see frappe/templates/includes/navbar/navbar.html
   // and website.js) lists every enabled system language and reloads with a
   // `preferred_language` cookie on change. This product only ships English/Arabic
@@ -98,22 +85,18 @@
     const button = document.createElement("button");
     button.type = "button";
     button.className = "ms-login-lang-toggle";
-    button.textContent = LANG_LABELS[lang];
-    button.title = `Switch to ${LANG_LABELS[target]}`;
+    // Label the button with the language it switches to, the usual convention.
+    button.textContent = LANG_LABELS[target];
+    button.lang = target;
+    button.title = target === "ar" ? "التبديل إلى العربية" : "Switch to English";
     button.addEventListener("click", () => switchLanguage(target, button));
 
     switcher.insertAdjacentElement("afterend", button);
   }
 
-  const observer = new MutationObserver(() => {
-    if (document.querySelector("#language-switcher")) buildLoginLanguageToggle();
-  });
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", buildLoginLanguageToggle, { once: true });
+    document.addEventListener("DOMContentLoaded", init, { once: true });
   } else {
-    buildLoginLanguageToggle();
+    init();
   }
-  window.addEventListener("load", buildLoginLanguageToggle, { once: true });
 })();

@@ -3,6 +3,7 @@ import frappe
 
 LOGIN_BACKGROUND_FIELD = "custom_login_background"
 LOGIN_FULLSCREEN_FIELD = "custom_login_background_full_screen"
+SUPPORT_SECTION_FIELD = "custom_ms_support_section"
 DEPRECATED_FIELDS = ("custom_login_background_color", "custom_login_background_transparent")
 
 # Desktop tiles ms_style brands with a custom icon (see public/js/ms_style.bundle.js),
@@ -70,6 +71,38 @@ def after_migrate():
             "fieldtype": "Check",
             "insert_after": LOGIN_BACKGROUND_FIELD,
             "description": "Make the Login background fill the available screen height.",
+        },
+        # Contact shown in the "Need help?" box of My Work Center (api.get_work_center_support).
+        # The section sits right before Website Settings' own "Theme" section break, so it
+        # doesn't pull any existing field under its heading.
+        {
+            "fieldname": SUPPORT_SECTION_FIELD,
+            "label": "My Work Center Support",
+            "fieldtype": "Section Break",
+            "insert_after": LOGIN_FULLSCREEN_FIELD,
+        },
+        {
+            "fieldname": "custom_ms_support_message",
+            "label": "Support Message",
+            "fieldtype": "Data",
+            "insert_after": SUPPORT_SECTION_FIELD,
+            "description": 'Shown under "Need help?" in My Work Center on the desk home.',
+        },
+        {
+            "fieldname": "custom_ms_support_phone",
+            "label": "Support Phone",
+            "fieldtype": "Data",
+            "options": "Phone",
+            "insert_after": "custom_ms_support_message",
+            "description": "Number for the Call button. Leave both numbers empty to hide the whole box.",
+        },
+        {
+            "fieldname": "custom_ms_support_whatsapp",
+            "label": "Support WhatsApp",
+            "fieldtype": "Data",
+            "options": "Phone",
+            "insert_after": "custom_ms_support_phone",
+            "description": "International number for the WhatsApp button, digits only (country code first, no + or spaces).",
         },
     ]
     for field_data in fields:

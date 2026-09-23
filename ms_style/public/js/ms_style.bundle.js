@@ -1,27 +1,25 @@
-import "./login_branding.js";
-
 (() => {
   const root = document.documentElement;
   const iconBasePath = "/assets/ms_style/Icone/";
   const iconPaths = {
-    Framework: "framework.jpeg",
-    Home: "Home.jpeg",
-    HR: "HR.jpeg",
-    "Frappe HR": "HR.jpeg",
-    Organization: "organization.jpeg",
-    Accounting: "Accounting.jpeg",
-    "ERPNext Settings": "ERPNext_Settings.jpeg",
-    Manufacturing: "Manufacturing.jpeg",
-    Projects: "projects.jpeg",
-    Quality: "quality.jpeg",
-    Selling: "Selling.jpeg",
-    Stock: "Stock.jpeg",
-    Assets: "asset.jpeg",
-    Subcontracting: "subcontrac.jpeg",
-    Buying: "Buying.jpeg",
-    CRM: "CRM.jpeg",
-    Support: "support.jpeg",
-    ERPNext: "erpnext.jpeg",
+    Framework: "framework.webp",
+    Home: "Home.webp",
+    HR: "HR.webp",
+    "Frappe HR": "HR.webp",
+    Organization: "organization.webp",
+    Accounting: "Accounting.webp",
+    "ERPNext Settings": "ERPNext_Settings.webp",
+    Manufacturing: "Manufacturing.webp",
+    Projects: "projects.webp",
+    Quality: "quality.webp",
+    Selling: "Selling.webp",
+    Stock: "Stock.webp",
+    Assets: "asset.webp",
+    Subcontracting: "subcontrac.webp",
+    Buying: "Buying.webp",
+    CRM: "CRM.webp",
+    Support: "support.webp",
+    ERPNext: "erpnext.webp",
   };
   const workspaceAliases = {
     company: "Organization",
@@ -40,25 +38,17 @@ import "./login_branding.js";
     crm: "CRM",
   };
 
+  // Translate through Frappe (ms_style/locale/*.po), with {0}-style placeholders. The
+  // "ms_style" context keeps these entries from overriding Frappe's own translation of
+  // the same words; Frappe falls back to its plain entry (doctype names, etc.).
+  function t(message, args = []) {
+    if (typeof window.__ === "function") return window.__(message, args, "ms_style");
+    return message.replace(/\{(\d+)\}/g, (match, index) => args[index] ?? match);
+  }
+
   function getIconPath(name) {
     const fileName = iconPaths[name];
-    return fileName ? `${iconBasePath}${fileName}?v=4` : null;
-  }
-
-  function syncSidebarState() {
-    const container = document.querySelector(".body-sidebar-container");
-    if (!container) return;
-    root.classList.toggle("ms-sidebar-expanded", container.classList.contains("expanded"));
-    root.classList.toggle("ms-sidebar-collapsed", !container.classList.contains("expanded"));
-  }
-
-  function applyConfiguredLogo() {
-    const logo = document.querySelector("#brand-logo");
-    const appLogo = "/assets/ms_style/images/logo-horizontal-dark-bg.png?v=1";
-    if (!logo) return;
-
-    const configuredLogo = new URL(appLogo, window.location.origin).href;
-    if (logo.src !== configuredLogo) logo.src = appLogo;
+    return fileName ? `${iconBasePath}${fileName}?v=5` : null;
   }
 
   let desktopIconUpdateToken = 0;
@@ -155,17 +145,41 @@ import "./login_branding.js";
     });
   }
 
-  function applyWorkspaceIcon() {
-    const sidebarIcon = document.querySelector(".body-sidebar > .sidebar-header img");
-    if (!sidebarIcon) return;
-
+  // Brand icon for the sidebar header, found by the sidebar's own (untranslated) title,
+  // then by the desktop folder that workspace lives in (e.g. Payments -> Accounting),
+  // then by the route.
+  function getWorkspaceIconName() {
+    const title = window.frappe?.app?.sidebar?.sidebar_title;
+    if (title && iconPaths[title]) return title;
+    const folder = title && window.frappe?.boot?.desktop_icons?.find((icon) => icon.label === title)?.parent_icon;
+    if (folder && iconPaths[folder]) return folder;
     const routeName = window.location.pathname.split("/").filter(Boolean).pop();
-    const workspaceName = workspaceAliases[routeName];
-    const iconPath = getIconPath(workspaceName);
-    if (iconPath && sidebarIcon.getAttribute("src") !== iconPath) {
-      sidebarIcon.src = iconPath;
-      sidebarIcon.alt = workspaceName;
+    return workspaceAliases[routeName] || null;
+  }
+
+  function applyWorkspaceIcon() {
+    const logo = document.querySelector(".body-sidebar .sidebar-header .header-logo");
+    const name = logo && getWorkspaceIconName();
+    const iconPath = getIconPath(name);
+    if (!iconPath) return;
+
+    let image = logo.querySelector("img");
+    if (!image) {
+      // Frappe draws a letter avatar when the workspace has no desktop icon of its own.
+      image = document.createElement("img");
+      logo.replaceChildren(image);
     }
+    if (image.getAttribute("src") !== iconPath) image.src = iconPath;
+    if (image.alt !== name) image.alt = name;
+  }
+
+  // navigation.scss draws the navbar logo as a background; use the logo set in
+  // Navbar Settings when there is one instead of always the bundled brand logo.
+  function applyNavbarLogo() {
+    const logo = window.frappe?.boot?.navbar_settings?.app_logo;
+    if (typeof logo !== "string" || !/^\/(files|assets)\//.test(logo)) return;
+    const value = `url("${encodeURI(decodeURI(logo))}")`;
+    if (root.style.getPropertyValue("--ms-navbar-logo-url") !== value) root.style.setProperty("--ms-navbar-logo-url", value);
   }
 
   function applyUserGreeting() {
@@ -174,8 +188,6 @@ import "./login_branding.js";
 
     const userName =
       window.frappe?.session?.user_fullname || window.frappe?.session?.user || "User";
-    const language = window.frappe?.boot?.lang || document.documentElement.lang || "en";
-    const isArabic = language.toLowerCase().startsWith("ar");
     let greeting = avatar.parentElement?.querySelector(".ms-user-greeting");
 
     if (!greeting) {
@@ -184,9 +196,7 @@ import "./login_branding.js";
       avatar.parentElement?.insertBefore(greeting, avatar);
     }
 
-    const direction = isArabic ? "rtl" : "ltr";
-    if (greeting.dir !== direction) greeting.dir = direction;
-    const greetingText = `${isArabic ? "مرحباً" : "Welcome"}, ${userName}`;
+    const greetingText = t("Welcome, {0}", [userName]);
     if (greeting.textContent !== greetingText) greeting.textContent = greetingText;
   }
 
@@ -198,18 +208,22 @@ import "./login_branding.js";
     tools.classList.add("ms-user-tools");
 
     const language = window.frappe?.boot?.lang || document.documentElement.lang || "en";
-    const switcher = document.createElement("label");
+    const switcher = document.createElement("div");
     const button = document.createElement("button");
     switcher.className = "ms-language-switcher";
-    switcher.setAttribute("aria-label", "Language");
     button.type = "button";
     button.className = "ms-language-button";
-    button.setAttribute("aria-label", "Change language");
-    button.innerHTML = '<span class="ms-language-globe">文</span><span class="ms-language-current"></span>';
+    button.innerHTML = '<svg class="icon icon-sm ms-language-globe" aria-hidden="true"><use href="#icon-globe"></use></svg><span class="ms-language-current"></span>';
     const currentLanguage = language.toLowerCase().startsWith("ar") ? "ar" : "en";
     const selectedLanguage = currentLanguage === "ar" ? "en" : "ar";
-    button.querySelector(".ms-language-current").textContent = currentLanguage === "ar" ? "ع" : "EN";
-    button.title = selectedLanguage === "ar" ? "Switch to Arabic" : "Switch to English";
+    // The button switches straight away, so it names the language it switches to
+    // (same as the login page toggle).
+    const label = button.querySelector(".ms-language-current");
+    label.textContent = selectedLanguage === "ar" ? "عربي" : "EN";
+    label.lang = selectedLanguage;
+    const actionLabel = selectedLanguage === "ar" ? "التبديل إلى العربية" : "Switch to English";
+    button.title = actionLabel;
+    button.setAttribute("aria-label", actionLabel);
     button.addEventListener("click", () => {
       button.disabled = true;
       window.frappe?.call({
@@ -233,6 +247,10 @@ import "./login_branding.js";
 
   let myWorkCenterLoaded = false;
   let myWorkCenterLoading = false;
+  // Set when the last load failed. The desk panel then shows the empty fallback and
+  // waits for the next visit to the desk home instead of retrying on every DOM change.
+  let myWorkCenterFailed = false;
+  let myWorkCenterLoadTimer = null;
 
   function escapeWorkCenterHtml(value) {
     return String(value || "").replace(/[&<>'"]/g, (character) => ({
@@ -248,48 +266,14 @@ import "./login_branding.js";
     if (doctype && name) window.frappe?.set_route?.("Form", doctype, name);
   }
 
-  function getWorkRouteKey() {
-    const user = window.frappe?.session?.user || "guest";
-    return `ms_style:recent-work:${encodeURIComponent(user)}`;
-  }
-
-  function getFrequentRoutes() {
-    try {
-      const saved = JSON.parse(window.localStorage.getItem(getWorkRouteKey()) || "[]");
-      return Array.isArray(saved) ? saved.slice(0, 5) : [];
-    } catch (error) {
-      return [];
-    }
-  }
-
-  function recordFrequentRoute() {
-    const pathname = window.location.pathname;
-    if (!pathname.startsWith("/desk/") || pathname === "/desk/") return;
-    const label = pathname.split("/").filter(Boolean).pop().replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-    const route = { path: pathname, label, count: 1 };
-    const routes = getFrequentRoutes().filter((item) => item.path !== pathname);
-    const previous = getFrequentRoutes().find((item) => item.path === pathname);
-    route.count += previous?.count || 0;
-    routes.unshift(route);
-    try {
-      window.localStorage.setItem(getWorkRouteKey(), JSON.stringify(routes.sort((first, second) => second.count - first.count).slice(0, 5)));
-    } catch (error) {
-      // Restricted storage should not affect navigation.
-    }
-  }
-
-  function getQuickCreateItems() {
-    const fallback = ["Purchase Order", "Project"];
-    const routeItems = getFrequentRoutes().map((item) => item.path
-      .split("/")
-      .filter(Boolean)
-      .pop()
-      .replace(/[-_]+/g, " ")
-      .replace(/\b\w/g, (letter) => letter.toUpperCase()));
-    const candidates = [...routeItems, ...fallback];
-    return [...new Set(candidates)]
-      .filter((doctype) => window.frappe?.model?.can_create?.(doctype))
-      .slice(0, 3);
+  // Desk URL for a Route History entry ("List/Sales Invoice/List", "Workspaces/Selling"...),
+  // so the link opens in place through Frappe's router or in a new tab on Ctrl+click.
+  function getRouteHref(route) {
+    const router = window.frappe?.router;
+    if (!router?.make_url) return "#";
+    const parts = router.get_route_from_arguments([route]);
+    if (parts[0] === "Workspaces" && parts[1]) return `/desk/${router.slug(parts[1])}`;
+    return router.make_url(router.convert_from_standard_route(parts));
   }
 
   function renderMyWorkCenter(data) {
@@ -298,8 +282,9 @@ import "./login_branding.js";
 
     const actions = data?.actions || [];
     const recent = data?.recent || [];
-    const frequentRoutes = getFrequentRoutes();
-    const quickCreateItems = getQuickCreateItems();
+    // Both come from the user's Route History on the server (api._get_quick_create / _get_frequent).
+    const frequentRoutes = data?.frequent || [];
+    const quickCreateItems = data?.quick_create || [];
     const counts = data?.counts || { actions: 0, approvals: 0, tasks: 0, drafts: 0 };
     const recentMarkup = recent.length
       ? recent.map((item) => `
@@ -307,40 +292,43 @@ import "./login_branding.js";
             <span>${escapeWorkCenterHtml(item.title)}</span><small>${escapeWorkCenterHtml(item.subtitle)}</small>
           </button>
         `).join("")
-      : '<p class="ms-work-empty">Your recent work will appear here.</p>';
+      : `<p class="ms-work-empty">${t("Your recent work will appear here.")}</p>`;
     const frequentMarkup = frequentRoutes.length
-      ? frequentRoutes.map((item, index) => `<a class="ms-work-route" href="${escapeWorkCenterHtml(item.path)}"><span><b>0${index + 1}</b>${escapeWorkCenterHtml(item.label)}</span><small>${item.count} visits</small></a>`).join("")
-      : '<p class="ms-work-empty">Your frequent work will appear here.</p>';
+      ? frequentRoutes.map((item, index) => `<a class="ms-work-route" href="${escapeWorkCenterHtml(getRouteHref(item.route))}"><span><b>0${index + 1}</b>${escapeWorkCenterHtml(item.label)}</span><small>${t("{0} visits", [item.count])}</small></a>`).join("")
+      : `<p class="ms-work-empty">${t("Your frequent work will appear here.")}</p>`;
+    const support = data?.support || {};
+    const supportPhone = String(support.phone || "").replace(/[^\d+]/g, "");
+    const supportWhatsapp = String(support.whatsapp || "").replace(/\D/g, "");
+    const supportMarkup = supportPhone || supportWhatsapp
+      ? `<section class="ms-work-support"><span>${t("Need help?")}</span>${support.message ? `<p>${escapeWorkCenterHtml(support.message)}</p>` : ""}<div>${supportPhone ? `<a href="tel:${supportPhone}"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-phone"></use></svg>${t("Call")}</a>` : ""}${supportWhatsapp ? `<a href="https://wa.me/${supportWhatsapp}" target="_blank" rel="noopener"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-message-circle"></use></svg>${t("WhatsApp")}</a>` : ""}</div></section>`
+      : "";
     const quickCreateMarkup = quickCreateItems.length
-      ? quickCreateItems.map((doctype) => `<button type="button" data-create-doctype="${escapeWorkCenterHtml(doctype)}">${escapeWorkCenterHtml(doctype)}</button>`).join("")
-      : '<p class="ms-work-empty">No create shortcuts available.</p>';
+      ? quickCreateItems.map((item) => `<button type="button" data-create-doctype="${escapeWorkCenterHtml(item.doctype)}">${escapeWorkCenterHtml(item.label)}</button>`).join("")
+      : `<p class="ms-work-empty">${t("Your create shortcuts will appear here as you work.")}</p>`;
 
     panel.innerHTML = `
       <div class="ms-work-heading">
-        <div><span class="ms-work-eyebrow">PERSONAL WORKSPACE</span><h2>My Work Center</h2><p>Everything that needs your attention.</p></div>
-        <span class="ms-work-status-dot" title="Live workspace"></span>
+        <div><span class="ms-work-eyebrow">${t("Personal workspace")}</span><h2>${t("My Work Center")}</h2><p>${t("Everything that needs your attention.")}</p></div>
+        <span class="ms-work-status-dot" title="${t("Live workspace")}"></span>
       </div>
       <div class="ms-work-summary">
-        <button type="button" data-summary-kind="all"><strong>${counts.actions}</strong><span>Open items</span></button>
-        <button type="button" data-summary-kind="approval"><strong>${counts.approvals}</strong><span>Approvals</span></button>
-        <button type="button" data-summary-kind="task"><strong>${counts.tasks}</strong><span>Tasks</span></button>
-        <button type="button" data-summary-kind="draft"><strong>${counts.drafts}</strong><span>Drafts</span></button>
+        <button type="button" data-summary-kind="all"><strong>${counts.actions}</strong><span>${t("Open items")}</span></button>
+        <button type="button" data-summary-kind="approval"><strong>${counts.approvals}</strong><span>${t("Approvals")}</span></button>
+        <button type="button" data-summary-kind="task"><strong>${counts.tasks}</strong><span>${t("Tasks")}</span></button>
+        <button type="button" data-summary-kind="draft"><strong>${counts.drafts}</strong><span>${t("Drafts")}</span></button>
       </div>
-      <section class="ms-work-section"><div class="ms-work-section-title"><h3>Quick create</h3><span>Based on your work</span></div><div class="ms-work-quick-actions">${quickCreateMarkup}</div></section>
-      ${recent.length ? `<section class="ms-work-section"><div class="ms-work-section-title"><h3>Recent work</h3><span>${recent.length} latest</span></div><div class="ms-work-recent-list">${recentMarkup}</div></section>` : ""}
-      <section class="ms-work-section"><div class="ms-work-section-title"><h3>Most used</h3><span>Top 5</span></div><div class="ms-work-route-list">${frequentMarkup}</div></section>
-      <section class="ms-work-support"><span>Need help?</span><p>Talk to Mohamed directly.</p><div><a href="tel:+201001935187"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-phone"></use></svg>Call</a><a href="https://wa.me/201551533177" target="_blank" rel="noopener"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-message-circle"></use></svg>WhatsApp</a></div></section>
+      <section class="ms-work-section"><div class="ms-work-section-title"><h3>${t("Quick create")}</h3><span>${t("Based on your work")}</span></div><div class="ms-work-quick-actions">${quickCreateMarkup}</div></section>
+      ${recent.length ? `<section class="ms-work-section"><div class="ms-work-section-title"><h3>${t("Recent work")}</h3><span>${t("{0} latest", [recent.length])}</span></div><div class="ms-work-recent-list">${recentMarkup}</div></section>` : ""}
+      <section class="ms-work-section"><div class="ms-work-section-title"><h3>${t("Most used")}</h3><span>${t("Top 5")}</span></div><div class="ms-work-route-list">${frequentMarkup}</div></section>
+      ${supportMarkup}
     `;
 
     panel.querySelectorAll(".ms-work-item, .ms-work-recent").forEach((item) => {
       item.addEventListener("click", () => openWorkCenterDocument(item.dataset.doctype, item.dataset.name));
     });
     panel.querySelectorAll("[data-create-doctype]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const doctype = button.dataset.createDoctype;
-        const routeName = `new-${doctype.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
-        window.frappe?.set_route?.("Form", doctype, routeName);
-      });
+      // frappe.new_doc honours the doctype's Quick Entry dialog and custom create routes.
+      button.addEventListener("click", () => window.frappe?.new_doc?.(button.dataset.createDoctype));
     });
     panel.querySelectorAll("[data-summary-kind]").forEach((button) => {
       button.addEventListener("click", () => openWorkItemsPopup(button.dataset.summaryKind));
@@ -355,12 +343,14 @@ import "./login_branding.js";
       callback: (response) => {
         myWorkCenterLoaded = true;
         myWorkCenterLoading = false;
+        myWorkCenterFailed = false;
         window.msMyWorkCenterData = response?.message || {};
         renderMyWorkCenter(window.msMyWorkCenterData);
       },
       error: () => {
         myWorkCenterLoading = false;
-        window.msMyWorkCenterData = { counts: { actions: 0, approvals: 0, tasks: 0 } };
+        myWorkCenterFailed = true;
+        window.msMyWorkCenterData = { counts: { actions: 0, approvals: 0, tasks: 0, drafts: 0 } };
         renderMyWorkCenter(window.msMyWorkCenterData);
       },
     });
@@ -378,16 +368,27 @@ import "./login_branding.js";
       return;
     }
     let panel = desktop.querySelector(":scope > .ms-my-work-center");
-    if (!panel) {
+    const created = !panel;
+    if (created) {
       panel = document.createElement("aside");
       panel.className = "ms-my-work-center";
-      panel.setAttribute("aria-label", "My Work Center");
+      panel.setAttribute("aria-label", t("My Work Center"));
       desktop.prepend(panel);
     }
     document.documentElement.classList.add("ms-my-work-center-ready");
-    if (!myWorkCenterLoaded) {
-      panel.innerHTML = '<div class="ms-work-loading">Loading your work center...</div>';
-      window.setTimeout(loadMyWorkCenter, 250);
+    // This runs on every observed DOM change, so only touch the panel when it is new:
+    // rewriting it here would itself be a DOM change and re-trigger the observer.
+    if (myWorkCenterLoaded || myWorkCenterFailed) {
+      if (created) renderMyWorkCenter(window.msMyWorkCenterData || {});
+      return;
+    }
+    if (created) panel.innerHTML = `<div class="ms-work-loading">${t("Loading your work center...")}</div>`;
+    // Many DOM changes can land before the delayed load starts; queue it only once.
+    if (!myWorkCenterLoading && !myWorkCenterLoadTimer) {
+      myWorkCenterLoadTimer = window.setTimeout(() => {
+        myWorkCenterLoadTimer = null;
+        loadMyWorkCenter();
+      }, 250);
     }
   }
 
@@ -397,7 +398,7 @@ import "./login_branding.js";
 
     overlay = document.createElement("div");
     overlay.className = "ms-work-center-overlay";
-    overlay.innerHTML = '<div class="ms-work-center-dialog" role="dialog" aria-modal="true" aria-label="My Work Center"><button type="button" class="ms-work-center-close" aria-label="Close">&times;</button><div class="ms-work-center-modal"></div></div>';
+    overlay.innerHTML = `<div class="ms-work-center-dialog" role="dialog" aria-modal="true" aria-label="${t("My Work Center")}"><button type="button" class="ms-work-center-close" aria-label="${t("Close")}">&times;</button><div class="ms-work-center-modal"></div></div>`;
     document.body.appendChild(overlay);
     overlay.addEventListener("click", (event) => {
       if (event.target === overlay || event.target.closest(".ms-work-center-close")) overlay.remove();
@@ -406,7 +407,7 @@ import "./login_branding.js";
     if (myWorkCenterLoaded) {
       renderMyWorkCenter(window.msMyWorkCenterData || {});
     } else {
-      panel.innerHTML = '<div class="ms-work-loading">Loading your work center...</div>';
+      panel.innerHTML = `<div class="ms-work-loading">${t("Loading your work center...")}</div>`;
       loadMyWorkCenter();
     }
   }
@@ -414,10 +415,10 @@ import "./login_branding.js";
   function openWorkItemsPopup(kind) {
     const data = window.msMyWorkCenterData || {};
     const items = (data.actions || []).filter((item) => kind === "all" || item.kind === kind);
-    const title = kind === "approval" ? "Approvals" : kind === "task" ? "Tasks" : kind === "draft" ? "Drafts" : "Open items";
+    const title = t(kind === "approval" ? "Approvals" : kind === "task" ? "Tasks" : kind === "draft" ? "Drafts" : "Open items");
     const overlay = document.createElement("div");
     overlay.className = "ms-work-center-overlay";
-    overlay.innerHTML = `<div class="ms-work-center-dialog ms-work-items-dialog" role="dialog" aria-modal="true" aria-label="${title}"><button type="button" class="ms-work-center-close" aria-label="Close">&times;</button><div class="ms-work-items-content"><span class="ms-work-eyebrow">MY WORK CENTER</span><h2>${title}</h2><p>${items.length} item${items.length === 1 ? "" : "s"} linked to your work.</p><div class="ms-work-items-list">${items.length ? items.map((item) => `<button class="ms-work-item" type="button" data-doctype="${escapeWorkCenterHtml(item.doctype)}" data-name="${escapeWorkCenterHtml(item.name)}"><span class="ms-work-item-icon ${item.kind === "approval" ? "is-approval" : "is-task"}"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-${item.kind === "approval" ? "check" : "check-square"}"></use></svg></span><span class="ms-work-item-copy"><strong>${escapeWorkCenterHtml(item.title)}</strong><small>${escapeWorkCenterHtml(item.subtitle)}</small></span><svg class="icon icon-xs ms-work-item-arrow" aria-hidden="true"><use href="#icon-chevron-right"></use></svg></button>`).join("") : '<p class="ms-work-empty">Nothing needs your attention here.</p>'}</div></div></div>`;
+    overlay.innerHTML = `<div class="ms-work-center-dialog ms-work-items-dialog" role="dialog" aria-modal="true" aria-label="${title}"><button type="button" class="ms-work-center-close" aria-label="${t("Close")}">&times;</button><div class="ms-work-items-content"><span class="ms-work-eyebrow">${t("My Work Center")}</span><h2>${title}</h2><p>${t("Items linked to your work: {0}", [items.length])}</p><div class="ms-work-items-list">${items.length ? items.map((item) => `<button class="ms-work-item" type="button" data-doctype="${escapeWorkCenterHtml(item.doctype)}" data-name="${escapeWorkCenterHtml(item.name)}"><span class="ms-work-item-icon ${item.kind === "approval" ? "is-approval" : "is-task"}"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-${item.kind === "approval" ? "check" : "check-square"}"></use></svg></span><span class="ms-work-item-copy"><strong>${escapeWorkCenterHtml(item.title)}</strong><small>${escapeWorkCenterHtml(item.subtitle)}</small></span><svg class="icon icon-xs ms-work-item-arrow" aria-hidden="true"><use href="#icon-chevron-right"></use></svg></button>`).join("") : `<p class="ms-work-empty">${t("Nothing needs your attention here.")}</p>`}</div></div></div>`;
     document.body.appendChild(overlay);
     overlay.addEventListener("click", (event) => {
       if (event.target === overlay || event.target.closest(".ms-work-center-close")) overlay.remove();
@@ -429,7 +430,6 @@ import "./login_branding.js";
 
   function applyMobileFooter() {
     const footer = document.querySelector(".ms-mobile-footer");
-    const isDeskHome = /^\/desk\/?$/.test(window.location.pathname);
 
     if (window.innerWidth > 767) {
       footer?.remove();
@@ -441,28 +441,29 @@ import "./login_branding.js";
 
     const mobileFooter = document.createElement("nav");
     mobileFooter.className = "ms-mobile-footer";
-    mobileFooter.setAttribute("aria-label", "Mobile navigation");
+    mobileFooter.setAttribute("aria-label", t("Mobile navigation"));
     mobileFooter.innerHTML = `
-      <button type="button" class="ms-mobile-footer-button" data-action="home" aria-label="Home">
+      <button type="button" class="ms-mobile-footer-button" data-action="home">
         <svg class="icon icon-md" aria-hidden="true"><use href="#icon-home"></use></svg>
-        <span>Home</span>
+        <span>${t("Home")}</span>
       </button>
-      <button type="button" class="ms-mobile-footer-button" data-action="search" aria-label="Search">
+      <button type="button" class="ms-mobile-footer-button" data-action="search">
         <svg class="icon icon-md" aria-hidden="true"><use href="#icon-search"></use></svg>
-        <span>Search</span>
+        <span>${t("Search")}</span>
       </button>
-      <button type="button" class="ms-mobile-footer-button" data-action="work" aria-label="My Work">
+      <button type="button" class="ms-mobile-footer-button" data-action="work">
         <svg class="icon icon-md" aria-hidden="true"><use href="#icon-clipboard"></use></svg>
-        <span>Work</span>
+        <span>${t("Work")}</span>
       </button>
-      <button type="button" class="ms-mobile-footer-button" data-action="back" aria-label="Back">
+      <button type="button" class="ms-mobile-footer-button" data-action="back">
         <svg class="icon icon-md" aria-hidden="true"><use href="#icon-arrow-left"></use></svg>
-        <span>Back</span>
+        <span>${t("Back")}</span>
       </button>
     `;
 
     mobileFooter.querySelector('[data-action="home"]').addEventListener("click", () => {
-      window.location.assign("/desk");
+      if (window.frappe?.set_route) window.frappe.set_route("");
+      else window.location.assign("/desk");
     });
     mobileFooter.querySelector('[data-action="search"]').addEventListener("click", () => {
       const searchTrigger =
@@ -496,29 +497,41 @@ import "./login_branding.js";
   function bindResetLayoutLoading() {
     if (document.documentElement.dataset.msResetLayoutLoading) return;
     document.documentElement.dataset.msResetLayoutLoading = "true";
+    // "Reset Layout" is an item of the desktop's right-click menu (frappe.ui.create_menu
+    // in desk/page/desktop/desktop.js), so only that menu's item title is checked here
+    // rather than reading the text of whatever element was clicked.
     document.addEventListener("click", (event) => {
-      const target = event.target.closest("button, a, [role=\"menuitem\"], li, div");
-      const label = target?.textContent?.trim().toLowerCase();
-      if (label === "reset layout" || label?.endsWith("reset layout")) showDesktopLoading();
+      const title = event.target.closest?.(".frappe-menu .dropdown-menu-item")?.querySelector(".menu-item-title");
+      const label = title?.textContent.trim().toLowerCase();
+      if (!label) return;
+      if (label === "reset layout" || label === window.__?.("Reset Layout")?.toLowerCase()) showDesktopLoading();
     }, true);
   }
 
+  // Earlier versions kept a visit log in localStorage; Route History replaced it.
+  function forgetLegacyVisitLog() {
+    try {
+      window.localStorage.removeItem(`ms_style:recent-work:${encodeURIComponent(window.frappe?.session?.user || "guest")}`);
+    } catch (error) {
+      // Restricted storage: nothing to clean up.
+    }
+  }
+
   function initialize() {
-    applyConfiguredLogo();
-    window.setTimeout(applyConfiguredLogo, 0);
-    window.setTimeout(applyConfiguredLogo, 500);
+    applyNavbarLogo();
     applyDesktopIcons();
     applyEditorIdentityIcons();
     applyWorkspaceIcon();
     applyUserGreeting();
     applyLanguageSwitcher();
-    recordFrequentRoute();
+    forgetLegacyVisitLog();
     applyMobileFooter();
     applyMyWorkCenter();
     bindResetLayoutLoading();
     window.frappe?.router?.on?.("change", () => {
-      recordFrequentRoute();
       applyMobileFooter();
+      // A failed load gets one fresh attempt each time the user comes back to the desk home.
+      if (myWorkCenterFailed && /^\/desk\/?$/.test(window.location.pathname)) myWorkCenterFailed = false;
       applyMyWorkCenter();
       if (myWorkCenterLoaded) renderMyWorkCenter(window.msMyWorkCenterData || {});
     });
@@ -526,7 +539,6 @@ import "./login_branding.js";
       document.documentElement.dataset.msFooterResizeSync = "true";
       window.addEventListener("resize", applyMobileFooter, { passive: true });
     }
-    syncSidebarState();
     const desktop = document.querySelector(".desktop-container");
     const container = document.querySelector(".body-sidebar-container");
     let updateQueued = false;
@@ -541,7 +553,6 @@ import "./login_branding.js";
         applyUserGreeting();
         applyLanguageSwitcher();
         applyMyWorkCenter();
-        syncSidebarState();
       });
     };
     const observer = new MutationObserver(() => {

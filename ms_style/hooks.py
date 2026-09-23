@@ -28,7 +28,7 @@ app_license = "mit"
 app_include_css = "ms_style.bundle.css"
 app_include_js = "ms_style.bundle.js"
 web_include_css = "ms_style.bundle.css"
-web_include_js = "ms_style.bundle.js"
+web_include_js = "ms_style_web.bundle.js"
 after_migrate = "ms_style.ms_style.setup.after_migrate"
 
 # include js, css files in header of web template

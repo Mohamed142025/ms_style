@@ -1,40 +1,42 @@
 body:has(.for-login) {
-  --login-ink: #0e3b2e;
-  --login-accent: #197b57;
-  --login-mint: #34d399;
-  --login-muted: #6b7b73;
-  --login-line: rgba(14, 59, 46, .13);
+  --login-ink: var(--ms-roots);
+  --login-accent: var(--ms-emerald);
+  --login-mint: var(--ms-mint);
+  --login-muted: var(--ms-text-muted);
+  --login-line: rgba(var(--ms-roots-rgb), .12);
   --ms-login-logo-url: url("/assets/ms_style/images/logo-horizontal-dark-bg.png");
-  --ms-login-background-url: url("/assets/ms_style/images/Main%20login.png");
+  // Dark-text logo for the white navbar on small screens (the default logo is light text).
+  --ms-login-logo-on-light-url: url("/assets/ms_style/images/digital-roots-horizontal.png");
+  --ms-login-background-url: url("/assets/ms_style/images/main-login.webp");
   min-height: 100vh;
-  background: #f7fbf9;
+  background: color-mix(in srgb, var(--ms-emerald) 4%, #fff);
   color: var(--login-ink);
 }
 
 body:has(.for-login) .navbar {
   position: relative;
   z-index: 20;
-  min-height: 0;
-  padding: 0 clamp(20px, 4vw, 64px);
-  border-bottom: 1px solid rgba(52, 211, 153, .28);
+  min-height: 56px;
+  padding: 8px clamp(20px, 4vw, 64px);
+  border-bottom: 1px solid rgba(var(--ms-mint-rgb), .28);
   background:
-    radial-gradient(circle at 86% 20%, rgba(52, 211, 153, .28), transparent 24%),
-    linear-gradient(110deg, #0e3b2e, #145a43 55%, #197b57);
-  box-shadow: 0 5px 18px rgba(14, 59, 46, .16);
+    radial-gradient(circle at 86% 20%, rgba(var(--ms-mint-rgb), .28), transparent 24%),
+    linear-gradient(110deg, var(--ms-roots), var(--ms-emerald));
+  box-shadow: 0 4px 16px rgba(var(--ms-roots-rgb), .12);
 }
 
 body:has(.for-login) .navbar-brand {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 145px;
-  height: 36px;
-  min-height: 36px;
-  padding: 3px 7px;
-  border: 1px solid rgba(255, 255, 255, .24);
-  border-radius: 0;
-  background-color: rgba(14, 59, 46, .22);
-  box-shadow: 0 5px 18px rgba(14, 59, 46, .10);
+  width: 160px;
+  height: 40px;
+  min-height: 40px;
+  padding: 4px 8px;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 10px;
+  background-color: rgba(var(--ms-roots-rgb), .18);
+  box-shadow: 0 4px 14px rgba(var(--ms-roots-rgb), .08);
   backdrop-filter: blur(12px);
   background-image: var(--ms-login-logo-url);
   background-repeat: no-repeat;
@@ -53,18 +55,18 @@ body:has(.for-login) .navbar select {
   min-height: 30px;
   height: 30px;
   padding: 4px 28px 4px 10px;
-  border: 1px solid rgba(25, 123, 87, .22);
+  border: 1px solid rgba(var(--ms-emerald-rgb), .18);
   border-radius: 10px;
   background: rgba(255, 255, 255, .90);
   color: var(--login-ink);
   font-size: var(--ms-font-base);
   font-weight: 750;
-  box-shadow: 0 5px 18px rgba(14, 59, 46, .08);
+  box-shadow: 0 5px 18px rgba(var(--ms-roots-rgb), .08);
 }
 
 body:has(.for-login) .navbar select:focus {
   border-color: var(--login-accent);
-  box-shadow: 0 0 0 4px rgba(52, 211, 153, .16);
+  box-shadow: 0 0 0 4px rgba(var(--ms-mint-rgb), .18);
   outline: 0;
 }
 
@@ -80,23 +82,23 @@ body:has(.for-login) #language-switcher {
 body:has(.for-login) .ms-login-lang-toggle {
   display: inline-flex;
   align-items: center;
-  min-height: 30px;
-  height: 30px;
-  padding: 4px 14px;
-  border: 1px solid rgba(25, 123, 87, .22);
+  min-height: 36px;
+  height: 36px;
+  padding: 5px 14px;
+  border: 1px solid rgba(var(--ms-emerald-rgb), .18);
   border-radius: 10px;
   background: rgba(255, 255, 255, .90);
   color: var(--login-ink);
   font-size: var(--ms-font-base);
   font-weight: 750;
-  box-shadow: 0 5px 18px rgba(14, 59, 46, .08);
+  box-shadow: 0 5px 18px rgba(var(--ms-roots-rgb), .08);
   cursor: pointer;
 }
 
 body:has(.for-login) .ms-login-lang-toggle:hover,
 body:has(.for-login) .ms-login-lang-toggle:focus-visible {
   border-color: var(--login-accent);
-  box-shadow: 0 0 0 4px rgba(52, 211, 153, .16);
+  box-shadow: 0 0 0 4px rgba(var(--ms-mint-rgb), .18);
   outline: 0;
 }
 
@@ -112,25 +114,25 @@ body:has(.for-login) main.container {
 }
 
 body:has(.for-login) .page-content-wrapper {
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 56px);
   padding-top: 0 !important;
 }
 
 body:has(.for-login) .for-login {
   position: relative;
   display: grid;
-  grid-template-columns: 50% 50%;
-  min-height: calc(100vh - 64px);
+  grid-template-columns: 52% 48%;
+  min-height: calc(100vh - 56px);
   margin-top: 0;
   padding-top: 0;
   padding: 0;
   overflow: hidden;
   background:
-    radial-gradient(circle at 78% 18%, rgba(52, 211, 153, .12), transparent 28%),
-    radial-gradient(circle at 92% 88%, rgba(25, 123, 87, .07), transparent 30%),
+    radial-gradient(circle at 78% 18%, rgba(var(--ms-emerald-rgb), .08), transparent 28%),
+    radial-gradient(circle at 92% 88%, rgba(var(--ms-emerald-rgb), .08), transparent 30%),
     repeating-linear-gradient(90deg, transparent 0 84px, rgba(14, 59, 46, .025) 85px, transparent 86px),
     repeating-linear-gradient(0deg, transparent 0 84px, rgba(25, 123, 87, .025) 85px, transparent 86px),
-    #f7fbf9;
+    #ffffff;
 }
 
   html[dir="rtl"] body:has(.for-login) .for-login::before {
@@ -140,13 +142,13 @@ body:has(.for-login) .for-login {
 body:has(.for-login) .for-login::before {
   position: relative;
   z-index: 1;
-  min-height: calc(100vh - 64px);
+  min-height: calc(100vh - 56px);
   top: 0;
   align-self: start;
   margin: 0;
   border-radius: 0;
-  background: var(--ms-login-background-url) center / cover no-repeat;
-  background-color: transparent;
+  background: var(--ms-login-background-url) center / contain no-repeat;
+  background-color: color-mix(in srgb, var(--ms-emerald) 8%, #fff);
   opacity: 1;
   filter: none;
   mix-blend-mode: normal;
@@ -169,7 +171,7 @@ body:has(.for-login) .for-login::after {
   bottom: 0;
   width: 51%;
   background:
-    radial-gradient(circle at 70% 22%, rgba(52, 211, 153, .11), transparent 28%),
+    radial-gradient(circle at 70% 22%, rgba(var(--ms-emerald-rgb), .08), transparent 28%),
     repeating-linear-gradient(90deg, transparent 0 70px, rgba(14, 59, 46, .025) 71px, transparent 72px),
     repeating-linear-gradient(0deg, transparent 0 70px, rgba(25, 123, 87, .025) 71px, transparent 72px);
   content: "";
@@ -187,49 +189,56 @@ body:has(.for-login) .for-login::after {
 body:has(.for-login) .login-content.page-card {
   position: relative;
   z-index: 2;
-  width: min(78%, 440px);
+  width: min(86%, 410px);
   justify-self: center;
   align-self: center;
   padding: 30px 32px 28px;
-  border: 1px solid rgba(14, 59, 46, .11);
-  border-radius: 22px;
-  background: rgba(255, 255, 255, .92);
-  box-shadow: 0 22px 52px rgba(14, 59, 46, .12), 0 4px 12px rgba(14, 59, 46, .04);
+  border: 1px solid var(--login-line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 18px 42px rgba(var(--ms-roots-rgb), .12), 0 3px 10px rgba(var(--ms-roots-rgb), .04);
   backdrop-filter: blur(18px);
 }
 
 @media (min-width: 1100px) {
   body:has(.for-login) .for-login::before {
-    min-height: calc(100vh - 112px);
-    margin: 24px 24px 24px 0;
-    border-radius: 0 22px 22px 0;
-    background-color: #eef7f3;
+    min-height: calc(100vh - 104px);
+    margin: 20px 20px 20px 0;
+    border-radius: 0 18px 18px 0;
+    background-color: color-mix(in srgb, var(--ms-emerald) 8%, #fff);
     background-position: center;
     background-size: contain;
   }
 
   body:has(.for-login) .login-content.page-card {
-    padding: 36px 38px 32px;
+    padding: 32px 34px 30px;
+  }
+
+  // In RTL the panel is mirrored with scaleX(-1), which mirrors its rounded corners
+  // too. rtlcss turns this value into the LTR one, and the mirror puts the rounding
+  // back on the inner edge that faces the form.
+  html[dir="rtl"] body:has(.for-login) .for-login::before {
+    border-radius: 18px 0 0 18px;
   }
 }
 
 body:has(.for-login) .page-card-head {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 0 0 22px;
+  gap: 12px;
+  padding: 0 0 18px;
   border-bottom: 1px solid var(--login-line);
   background: transparent;
 }
 
 body:has(.for-login) .page-card-head img.app-logo {
-  width: 48px;
-  height: 48px;
-  max-height: 48px;
-  padding: 9px;
-  border: 1px solid rgba(52, 211, 153, .24);
+  width: 44px;
+  height: 44px;
+  max-height: 44px;
+  padding: 8px;
+  border: 1px solid rgba(var(--ms-emerald-rgb), .18);
   border-radius: 14px;
-  background: #eaf8f0;
+  background: color-mix(in srgb, var(--ms-emerald) 8%, #fff);
   object-fit: contain;
   content: url("/assets/ms_style/images/digital-roots-mark.svg");
 }
@@ -251,7 +260,7 @@ body:has(.for-login) .page-card-head img.app-logo {
     background-position: center !important;
     background-size: cover !important;
     background-repeat: no-repeat !important;
-    background-color: #0e3b2e !important;
+    background-color: var(--ms-roots) !important;
   }
 
   body.ms-login-background-full:has(.for-login) .login-content.page-card {
@@ -324,30 +333,30 @@ body:has(.for-login) .password-field {
 }
 
 body:has(.for-login) .form-control {
-  min-height: 48px;
+  min-height: 46px;
   padding: 11px 43px 11px 15px;
   border: 1px solid var(--login-line);
   border-radius: 12px;
   background: rgba(255, 255, 255, .88);
   color: var(--login-ink);
-  box-shadow: 0 4px 14px rgba(14, 59, 46, .04);
+  box-shadow: 0 4px 14px rgba(var(--ms-roots-rgb), .04);
   transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
 }
 
 body:has(.for-login) .form-control::placeholder {
-  color: #9aa9a2;
+  color: rgba(var(--ms-ink-rgb), .55);
 }
 
 body:has(.for-login) .form-control:focus {
   border-color: var(--login-accent);
   background: #fff;
-  box-shadow: 0 0 0 4px rgba(52, 211, 153, .15), 0 6px 18px rgba(14, 59, 46, .06);
+  box-shadow: 0 0 0 4px rgba(var(--ms-emerald-rgb), .18), 0 6px 18px rgba(var(--ms-roots-rgb), .08);
   outline: 0;
 }
 
 body:has(.for-login) .field-icon,
 body:has(.for-login) .toggle-password {
-  color: #789087;
+  color: var(--login-muted);
 }
 
 body:has(.for-login) .toggle-password {
@@ -373,30 +382,36 @@ body:has(.for-login) .page-card-actions {
 }
 
 body:has(.for-login) .btn-login {
-  min-height: 48px;
+  min-height: 46px;
   border: 0;
   border-radius: 12px;
   background: var(--login-accent) !important;
-  color: #fff !important;
+  color: var(--ms-on-dark) !important;
   font-size: var(--ms-font-md);
   font-weight: 800;
-  box-shadow: 0 10px 22px rgba(25, 123, 87, .22);
+  box-shadow: 0 10px 22px rgba(var(--ms-emerald-rgb), .18);
   transition: background-color .18s ease, box-shadow .18s ease, transform .18s ease;
 }
 
 body:has(.for-login) .btn-login:hover,
 body:has(.for-login) .btn-login:focus-visible {
   background: var(--login-ink) !important;
-  box-shadow: 0 12px 26px rgba(14, 59, 46, .22);
+  box-shadow: 0 12px 26px rgba(var(--ms-roots-rgb), .18);
   transform: translateY(-1px);
 }
 
 body:has(.for-login) .btn-login-option {
-  min-height: 42px;
+  min-height: 40px;
   border: 1px solid var(--login-line);
   border-radius: 11px;
   background: rgba(255, 255, 255, .72) !important;
   color: var(--login-ink) !important;
+}
+
+body:has(.for-login) .btn-login:disabled {
+  cursor: wait;
+  opacity: .72;
+  transform: none;
 }
 
 body:has(.for-login) .sign-up-message {
@@ -415,15 +430,20 @@ body:has(.for-login) .login-error-banner {
     min-height: 58px;
     padding: 10px 16px;
     background: rgba(255, 255, 255, .96);
-    box-shadow: 0 4px 18px rgba(14, 59, 46, .08);
+    box-shadow: 0 4px 18px rgba(var(--ms-roots-rgb), .08);
   }
 
   body:has(.for-login) .navbar-brand {
-    width: 132px;
-    height: 34px;
-    min-height: 34px;
-    padding: 3px 6px;
+    width: 140px;
+    height: 36px;
+    min-height: 36px;
+    padding: 3px 7px;
+    border-color: transparent;
+    background-color: transparent;
+    background-image: var(--ms-login-logo-on-light-url);
     background-size: contain;
+    box-shadow: none;
+    backdrop-filter: none;
   }
 
   body:has(.for-login) .navbar-brand img {
@@ -455,21 +475,27 @@ body:has(.for-login) .login-error-banner {
 
   body:has(.for-login) .ms-login-lang-toggle {
     position: absolute;
-    top: 10px;
+    top: 9px;
     right: 16px;
-    height: 38px;
-    min-height: 38px;
+    height: 36px;
+    min-height: 36px;
     padding: 6px 12px;
     border-radius: 10px;
     font-size: var(--ms-font-sm);
   }
 
+  // The navbar is white here, so the focus glow uses Emerald instead of Mint.
+  body:has(.for-login) .ms-login-lang-toggle:hover,
+  body:has(.for-login) .ms-login-lang-toggle:focus-visible {
+    box-shadow: 0 0 0 4px rgba(var(--ms-emerald-rgb), .18);
+  }
+
   body:has(.for-login) .for-login {
     display: grid;
     grid-template-columns: 1fr;
-    min-height: calc(100vh - 58px);
+    min-height: calc(100vh - 56px);
     margin-top: 0;
-    padding: 28px 16px 48px;
+    padding: 24px 16px 40px;
   }
 
   body:has(.for-login) .for-login::before,
@@ -480,7 +506,7 @@ body:has(.for-login) .login-error-banner {
   body:has(.for-login) .for-login {
     position: relative;
     overflow: hidden;
-    background: #0e3b2e;
+    background: var(--ms-roots);
   }
 
   body:has(.for-login) .for-login::before {
@@ -505,7 +531,7 @@ body:has(.for-login) .login-error-banner {
   body:has(.for-login) .login-content.page-card {
     z-index: 2;
     background: rgba(255, 255, 255, .96);
-    box-shadow: 0 22px 52px rgba(0, 0, 0, .24);
+    box-shadow: 0 18px 42px rgba(0, 0, 0, .18);
   }
 
   body:has(.for-login) .login-content.page-card {

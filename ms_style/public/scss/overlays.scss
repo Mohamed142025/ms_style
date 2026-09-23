@@ -19,19 +19,19 @@
 .dropdown-item:hover, .dropdown-item:focus, .awesomplete li:hover,
 .notifications-list .notification-item:hover {
   background: var(--ms-primary-soft);
-  color: var(--ms-primary-dark);
+  color: var(--ms-text-strong);
 }
 
 .modal-backdrop { background: var(--ms-overlay); }
 
-.notification-item.unread { border-left: 3px solid var(--ms-primary-light); }
+.notification-item.unread { border-left: 3px solid var(--ms-accent); }
 .notifications-list .mark-all-read:hover, .notifications-list .notification-settings:hover {
-  color: var(--ms-primary);
+  color: var(--ms-link);
 }
 
 .notifications-list .notification-list-body {
   scrollbar-width: thin;
-  scrollbar-color: var(--ms-primary-light) transparent;
+  scrollbar-color: var(--ms-accent) transparent;
 }
 
 .notifications-list .notification-list-body::-webkit-scrollbar {
@@ -41,18 +41,18 @@
 .notifications-list .notification-list-body::-webkit-scrollbar-track {
   margin: 10px 0;
   border-radius: 999px;
-  background: rgba(14, 59, 46, .04);
+  background: rgba(var(--ms-tint-rgb), .04);
 }
 
 .notifications-list .notification-list-body::-webkit-scrollbar-thumb {
   min-height: 64px;
   border: 2px solid var(--ms-surface-raised);
   border-radius: 999px;
-  background: linear-gradient(180deg, var(--ms-primary-light), var(--ms-primary));
-  box-shadow: 0 2px 8px rgba(14, 59, 46, .18);
+  background: var(--ms-accent);
+  box-shadow: 0 2px 8px rgba(var(--ms-shadow-rgb), .18);
 }
 
 .notifications-list .notification-list-body::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #66E6B5, var(--ms-primary-dark));
-  box-shadow: 0 3px 12px rgba(14, 59, 46, .24);
+  background: var(--ms-text-strong);
+  box-shadow: 0 3px 12px rgba(var(--ms-shadow-rgb), .28);
 }
