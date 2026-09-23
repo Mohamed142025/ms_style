@@ -1,0 +1,18 @@
+.report-filter-area, .report-wrapper, .query-report .dt-scrollable {
+  background: var(--ms-surface-raised);
+  border-color: var(--ms-border);
+}
+
+.report-filter-area { border-radius: var(--ms-radius-lg); box-shadow: var(--ms-shadow-sm); }
+
+.dt-header, .dt-row-header, .report-summary .summary-item {
+  background: var(--ms-surface);
+  color: var(--ms-text-muted);
+  border-color: var(--ms-border);
+}
+
+.dt-row:hover, .dt-cell--focus, .report-summary .summary-item:hover {
+  background: var(--ms-primary-soft);
+}
+
+.chart-container { overflow: hidden; }

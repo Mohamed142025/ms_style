@@ -1,0 +1,118 @@
+.btn, button.btn, .standard-actions .btn {
+  min-height: 34px;
+  border-radius: var(--ms-radius-md);
+  font-weight: 600;
+  border-color: var(--ms-border-strong);
+  background: var(--ms-surface-raised);
+  color: var(--ms-text);
+  box-shadow: none;
+}
+
+.btn:hover, button.btn:hover, .standard-actions .btn:hover {
+  border-color: rgba(25, 123, 87, .32);
+  background: var(--ms-primary-soft);
+  color: var(--ms-primary-dark);
+}
+
+.btn.btn-primary, .btn.btn-primary-dark, .btn.primary-action {
+  background: var(--ms-primary);
+  border-color: var(--ms-primary);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(14, 59, 46, .12);
+}
+
+.btn.btn-primary:hover, .btn.btn-primary:focus-visible,
+.btn.btn-primary-dark:hover, .btn.primary-action:hover {
+  background: var(--ms-primary-dark);
+  border-color: var(--ms-primary-dark);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(14, 59, 46, .18), 0 0 0 3px rgba(52, 211, 153, .14);
+  transform: translateY(-1px);
+}
+
+.btn.btn-primary:active, .btn.btn-primary-dark:active, .btn.primary-action:active {
+  background: #092D23;
+  border-color: #092D23;
+  box-shadow: 0 3px 8px rgba(14, 59, 46, .14);
+  transform: translateY(1px);
+}
+
+.btn.btn-primary:disabled, .btn.btn-primary-dark:disabled, .btn.primary-action:disabled {
+  background: var(--ms-primary);
+  border-color: var(--ms-primary);
+  box-shadow: none;
+}
+
+.btn:active, button:active { transform: translateY(1px); }
+.btn:disabled, button:disabled, .btn.disabled { opacity: .52; cursor: not-allowed; }
+
+.form-control, .frappe-control input, .frappe-control select, .frappe-control textarea,
+.input-with-feedback, .like-disabled-input {
+  min-height: 34px;
+  border: 1px solid var(--ms-border-strong);
+  border-radius: var(--ms-radius-md);
+  background: var(--ms-surface-raised);
+  color: var(--ms-text);
+  box-shadow: none;
+}
+
+.form-control:hover, .frappe-control input:hover, .frappe-control select:hover,
+.frappe-control textarea:hover { border-color: var(--ms-primary); }
+.form-control:focus, .frappe-control input:focus, .frappe-control select:focus,
+.frappe-control textarea:focus {
+  border-color: var(--ms-primary);
+  box-shadow: 0 0 0 3px var(--ms-focus);
+}
+
+input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  margin: 0;
+  border: 1px solid var(--ms-border-strong);
+  border-radius: 5px;
+  background: var(--ms-surface-raised);
+  cursor: pointer;
+  appearance: none;
+  vertical-align: middle;
+  transition: background-color var(--ms-duration-fast) var(--ms-ease),
+    border-color var(--ms-duration-fast) var(--ms-ease),
+    box-shadow var(--ms-duration-fast) var(--ms-ease),
+    transform var(--ms-duration-fast) var(--ms-ease);
+}
+
+input[type="checkbox"]:hover {
+  border-color: var(--ms-primary);
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, .10);
+}
+
+input[type="checkbox"]:focus-visible {
+  border-color: var(--ms-primary);
+  box-shadow: 0 0 0 3px var(--ms-focus);
+}
+
+input[type="checkbox"]:checked {
+  border-color: var(--ms-primary);
+  background-color: var(--ms-primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.2 8.2 6.5 11.3 12.8 4.8' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 13px 13px;
+}
+
+input[type="checkbox"]:active { transform: scale(.94); }
+
+.grid-row-check {
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+}
+
+.control-label, .form-group .control-label { color: var(--ms-text); font-weight: 600; }
+
+.frappe-control[data-fieldtype="Section Break"] .section-head,
+.form-section .section-head {
+  color: var(--ms-primary-dark);
+  font-weight: 700;
+  border-bottom-color: var(--ms-border);
+}

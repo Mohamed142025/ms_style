@@ -1,0 +1,23 @@
+.form-page, .form-layout, .form-dashboard-section, .form-section {
+  background: var(--ms-surface-raised);
+  border-color: var(--ms-border);
+}
+
+.form-section, .form-dashboard-section {
+  border-radius: var(--ms-radius-lg);
+  box-shadow: var(--ms-shadow-sm);
+}
+
+.form-tabs-list .nav-link, .form-tabs-list .nav-item a {
+  color: var(--ms-text-muted);
+  border-bottom: 2px solid transparent;
+}
+
+.form-tabs-list .nav-link:hover, .form-tabs-list .nav-link.active,
+.form-tabs-list .nav-item a:hover, .form-tabs-list .nav-item a.active {
+  color: var(--ms-primary);
+  border-bottom-color: var(--ms-primary-light);
+  background: var(--ms-primary-soft);
+}
+
+.form-sidebar-stats, .form-sidebar .sidebar-label { color: var(--ms-text-muted); }

@@ -1,0 +1,9 @@
+.icon, svg.icon, .octicon {
+  transition: color var(--ms-duration-normal) var(--ms-ease), opacity var(--ms-duration-normal) var(--ms-ease);
+}
+
+.btn:hover .icon, button:hover .icon, .navbar a:hover .icon, .sidebar-item-icon:hover .icon {
+  color: var(--ms-primary-light);
+}
+
+.btn .icon, button .icon { vertical-align: middle; }

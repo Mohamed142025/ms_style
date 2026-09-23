@@ -1,0 +1,45 @@
+:root {
+  --ms-primary-dark: #0E3B2E;
+  --ms-primary: #197B57;
+  --ms-primary-light: #34D399;
+  --ms-primary-soft: rgba(52, 211, 153, 0.12);
+  --ms-surface: #F4F1EA;
+  --ms-surface-raised: #FFFFFF;
+  --ms-surface-hover: #F8FAF8;
+  --ms-dark: #16211C;
+  --ms-text: #20352C;
+  --ms-text-muted: #6B7B73;
+  --ms-border: rgba(14, 59, 46, 0.10);
+  --ms-border-strong: rgba(14, 59, 46, 0.18);
+  --ms-focus: rgba(52, 211, 153, 0.24);
+  --ms-success: #197B57;
+  --ms-warning: #B7791F;
+  --ms-danger: #C2413B;
+  --ms-info: #287A9B;
+  --ms-overlay: rgba(14, 59, 46, 0.42);
+  --ms-shadow-sm: 0 2px 8px rgba(14, 59, 46, 0.05);
+  --ms-shadow-md: 0 8px 25px rgba(14, 59, 46, 0.08);
+  --ms-shadow-lg: 0 20px 60px rgba(14, 59, 46, 0.14);
+  --ms-radius-sm: 6px;
+  --ms-radius-md: 10px;
+  --ms-radius-lg: 14px;
+  --ms-radius-xl: 18px;
+  --ms-duration-fast: 120ms;
+  --ms-duration-normal: 180ms;
+  --ms-duration-slow: 280ms;
+  --ms-ease: cubic-bezier(.2, .8, .2, 1);
+}
+
+[data-theme="dark"], .dark {
+  --ms-surface: #14211B;
+  --ms-surface-raised: #1C2B24;
+  --ms-surface-hover: #243930;
+  --ms-dark: #F4F1EA;
+  --ms-text: #E8F0EB;
+  --ms-text-muted: #AABBB1;
+  --ms-border: rgba(232, 240, 235, 0.12);
+  --ms-border-strong: rgba(232, 240, 235, 0.22);
+  --ms-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.18);
+  --ms-shadow-md: 0 8px 25px rgba(0, 0, 0, 0.24);
+  --ms-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.36);
+}

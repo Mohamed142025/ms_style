@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Framework">
+  <rect width="512" height="512" rx="44" fill="#000"/>
+  <path d="M236 22h40l6 38a137 137 0 0 1 43 18l29-25 29 29-25 29a137 137 0 0 1 18 43l38 6v40l-38 6a137 137 0 0 1-18 43l25 29-29 29-29-25a137 137 0 0 1-43 18l-6 38h-40l-6-38a137 137 0 0 1-43-18l-29 25-29-29 25-29a137 137 0 0 1-18-43l-38-6v-40l38-6a137 137 0 0 1 18-43l-25-29 29-29 29 25a137 137 0 0 1 43-18z" fill="#FFD166"/>
+  <circle cx="256" cy="160" r="89" fill="#F1F3F6" stroke="#000" stroke-width="14"/>
+  <path d="m235 128-39 32 39 32M277 128l39 32-39 32M265 119l-18 82" fill="none" stroke="#000" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="22" y="344" width="78" height="63" fill="#63CBE5"/>
+  <rect x="217" y="429" width="78" height="61" fill="#F4667F"/>
+  <rect x="412" y="344" width="78" height="63" fill="#C4E98E"/>
+</svg>

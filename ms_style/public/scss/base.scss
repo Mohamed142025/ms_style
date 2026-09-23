@@ -1,0 +1,124 @@
+body {
+  background: var(--ms-surface);
+  color: var(--ms-text);
+  font-family: var(--font-stack);
+}
+
+.layout-main-section, .desktop-wrapper, .page-container {
+  background: transparent;
+}
+
+.page-head {
+  color: var(--ms-text);
+}
+
+.page-head .page-head-content {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.page-head .page-title,
+.page-head .title-area,
+.page-head .navbar-breadcrumbs {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.page-head .page-title {
+  flex: 1 1 0%;
+  width: 0;
+}
+
+.page-head .title-area,
+.page-head .navbar-breadcrumbs {
+  display: flex;
+  align-items: center;
+}
+
+.page-head .title-area {
+  width: 100%;
+}
+
+.page-head .navbar-breadcrumbs {
+  flex: 1 1 auto;
+}
+
+.page-head .navbar-breadcrumbs li {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.page-head .navbar-breadcrumbs a {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.page-head .indicator-pill,
+.page-head .page-actions,
+.page-head .standard-actions {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.page-head .page-actions {
+  width: auto;
+  padding-right: 0;
+}
+
+.page-head .standard-actions {
+  flex-wrap: nowrap;
+}
+
+@media (max-width: 767px) {
+  .page-head .page-actions .btn {
+    margin-left: 4px;
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+
+  .page-head .page-actions .btn .hidden-xs {
+    max-width: 54px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+body, button, input, textarea, select {
+  letter-spacing: 0.01em;
+}
+
+button, a, [role="button"], .btn, .form-control, .standard-sidebar-item,
+.list-row, .dropdown-item, .awesomplete li, .widget, .number-card, .shortcut-widget {
+  transition: background-color var(--ms-duration-normal) var(--ms-ease),
+    color var(--ms-duration-normal) var(--ms-ease),
+    border-color var(--ms-duration-normal) var(--ms-ease),
+    box-shadow var(--ms-duration-normal) var(--ms-ease),
+    transform var(--ms-duration-normal) var(--ms-ease),
+    opacity var(--ms-duration-normal) var(--ms-ease);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--ms-primary-light);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--ms-primary-light);
+  color: var(--ms-primary-dark);
+}
+
+.page-head, .page-head-content, .form-page, .list-row-container,
+.frappe-list, .report-wrapper, .dashboard-view {
+  color: var(--ms-text);
+}
+
+.text-muted, .text-muted small, .help-box, .form-control-help {
+  color: var(--ms-text-muted) !important;
+}

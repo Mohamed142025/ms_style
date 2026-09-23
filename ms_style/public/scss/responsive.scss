@@ -1,0 +1,467 @@
+@media (max-width: 991px) {
+  .page-head .page-head-content { gap: 8px; }
+  .form-page, .list-row-container { border-radius: var(--ms-radius-md); }
+  .navbar .search-bar { max-width: 34vw; }
+}
+
+@media (max-width: 767px) {
+  .modal.show:has(.navbar-modal-wrapper) {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .modal-dialog {
+    width: min(100%, 360px);
+    max-width: 360px;
+    margin: 0;
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .modal-content {
+    overflow: hidden;
+    border: 1px solid var(--ms-border);
+    border-radius: 16px;
+    background: var(--ms-surface-raised);
+    box-shadow: 0 20px 48px rgba(14, 59, 46, .22);
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper {
+    height: auto;
+    min-height: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 12px !important;
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .awesomebar-input-row {
+    min-height: 40px;
+    border: 1px solid var(--ms-border-strong);
+    border-radius: 10px;
+    background: var(--ms-surface);
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) #navbar-search {
+    height: 38px;
+    padding-left: 8px;
+    border: 0;
+    outline: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .awesomebar-search-icon {
+    padding-left: 10px;
+    color: var(--ms-primary);
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete ul {
+    max-height: 238px;
+    margin: 10px 0 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete li {
+    margin: 2px 0;
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: var(--ms-text);
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .modal-divider {
+    display: none;
+  }
+
+  .page-head .navbar-modal-search-mobile {
+    display: none !important;
+  }
+
+  .desktop-navbar .desktop-search-wrapper {
+    display: none !important;
+  }
+
+  body.ms-mobile-footer-active {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+
+  body.ms-mobile-footer-active .desktop-container {
+    padding-bottom: calc(88px + env(safe-area-inset-bottom)) !important;
+  }
+
+  .ms-work-center-overlay {
+    position: fixed;
+    z-index: 1100;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 16px;
+    background: rgba(14, 59, 46, .30);
+  }
+
+  .ms-work-center-dialog {
+    position: relative;
+    width: min(100%, 360px);
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    border: 1px solid var(--ms-border);
+    border-radius: 18px;
+    background: var(--ms-surface-raised);
+    box-shadow: 0 20px 48px rgba(14, 59, 46, .24);
+  }
+
+  .ms-work-center-close {
+    position: absolute;
+    z-index: 1;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 8px;
+    background: rgba(14, 59, 46, .07);
+    color: var(--ms-text-muted);
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .ms-work-center-modal {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .ms-work-center-modal .ms-work-heading { padding-right: 28px; }
+  .ms-work-center-modal .ms-work-heading h2 { color: var(--ms-primary-dark); font-size: 19px; }
+  .ms-work-center-modal .ms-work-heading p { margin: 5px 0 0; color: var(--ms-text-muted); font-size: 11px; }
+  .ms-work-center-modal .ms-work-eyebrow { display: block; margin-bottom: 7px; color: var(--ms-primary); font-size: 9px; font-weight: 800; letter-spacing: .12em; }
+  .ms-work-center-modal .ms-work-status-dot { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: var(--ms-primary-light); }
+  .ms-work-center-modal .ms-work-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+  .ms-work-center-modal .ms-work-summary button { padding: 8px 3px; border: 1px solid rgba(25, 123, 87, .10); border-radius: 9px; background: #fff; color: inherit; text-align: center; }
+  .ms-work-center-modal .ms-work-summary strong, .ms-work-center-modal .ms-work-summary span { display: block; }
+  .ms-work-center-modal .ms-work-summary strong { color: var(--ms-primary-dark); font-size: 16px; }
+  .ms-work-center-modal .ms-work-summary span { color: var(--ms-text-muted); font-size: 9px; }
+  .ms-work-center-modal .ms-work-section { padding-top: 12px; border-top: 1px solid rgba(14, 59, 46, .10); }
+  .ms-work-center-modal .ms-work-section-title { display: flex; justify-content: space-between; margin-bottom: 7px; }
+  .ms-work-center-modal .ms-work-section h3 { margin: 0; color: var(--ms-text-muted); font-size: 10px; text-transform: uppercase; }
+  .ms-work-center-modal .ms-work-list, .ms-work-center-modal .ms-work-recent-list { display: grid; gap: 5px; }
+  .ms-work-center-modal .ms-work-route-list { display: grid; gap: 4px; }
+  .ms-work-center-modal .ms-work-route { display: flex; align-items: center; justify-content: space-between; gap: 7px; padding: 6px 7px; border-radius: 7px; color: var(--ms-text); text-decoration: none; }
+  .ms-work-center-modal .ms-work-route span { min-width: 0; overflow: hidden; font-size: 10px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-work-center-modal .ms-work-route b { display: inline-block; width: 18px; color: var(--ms-text-muted); font-size: 9px; }
+  .ms-work-center-modal .ms-work-route small { flex: 0 0 auto; color: var(--ms-text-muted); font-size: 8px; }
+  .ms-work-center-modal .ms-work-item, .ms-work-center-modal .ms-work-recent { display: flex; width: 100%; align-items: center; gap: 7px; padding: 7px; border: 0; border-radius: 8px; background: rgba(14, 59, 46, .04); text-align: left; }
+  .ms-work-center-modal .ms-work-item-copy { display: grid; min-width: 0; flex: 1; }
+  .ms-work-center-modal .ms-work-item-copy strong, .ms-work-center-modal .ms-work-recent span { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-work-center-modal .ms-work-item-copy small, .ms-work-center-modal .ms-work-recent small { overflow: hidden; color: var(--ms-text-muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-work-center-modal .ms-work-item-icon { display: grid; width: 24px; height: 24px; flex: 0 0 24px; place-items: center; border-radius: 7px; background: var(--ms-primary-soft); color: var(--ms-primary); }
+  .ms-work-center-modal .ms-work-quick-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .ms-work-center-modal .ms-work-quick-actions button { padding: 7px; border: 1px solid rgba(25, 123, 87, .18); border-radius: 7px; background: #fff; color: var(--ms-primary-dark); font-size: 10px; }
+  .ms-work-center-modal .ms-work-support { padding: 10px; border-radius: 10px; background: var(--ms-primary-soft); }
+  .ms-work-center-modal .ms-work-support > span { color: var(--ms-primary-dark); font-size: 9px; font-weight: 800; text-transform: uppercase; }
+  .ms-work-center-modal .ms-work-support p { margin: 4px 0 8px; font-size: 11px; }
+  .ms-work-center-modal .ms-work-support div { display: flex; gap: 5px; }
+  .ms-work-center-modal .ms-work-support a { padding: 5px 7px; border-radius: 6px; background: #fff; color: var(--ms-primary-dark); font-size: 10px; text-decoration: none; }
+  .ms-work-items-dialog { width: min(100%, 360px); }
+  .ms-work-items-content { padding: 20px; }
+  .ms-work-items-content h2, .ms-work-items-content p { margin: 0; }
+  .ms-work-items-content h2 { color: var(--ms-primary-dark); font-size: 19px; }
+  .ms-work-items-content p { margin-top: 4px; color: var(--ms-text-muted); font-size: 11px; }
+  .ms-work-items-list { display: grid; gap: 5px; margin-top: 14px; }
+
+  .ms-mobile-footer {
+    position: fixed;
+    z-index: 1000;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    min-height: 68px;
+    padding: 7px 10px calc(7px + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(25, 123, 87, .14);
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 -10px 28px rgba(14, 59, 46, .12);
+    backdrop-filter: blur(16px);
+  }
+
+  .ms-mobile-footer::before {
+    position: absolute;
+    top: -1px;
+    right: 18%;
+    left: 18%;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, transparent, var(--ms-primary-light), transparent);
+    content: "";
+  }
+
+  .ms-mobile-footer-button {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 52px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    margin: 0 2px;
+    padding: 5px 4px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    color: #71827A;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .01em;
+    transition: background-color .18s ease, color .18s ease, transform .18s ease;
+  }
+
+  .ms-mobile-footer-button .icon {
+    width: 19px;
+    height: 19px;
+    padding: 3px;
+    border-radius: 7px;
+    background: rgba(14, 59, 46, .06);
+    color: var(--ms-text);
+    transition: background-color .18s ease, color .18s ease;
+  }
+
+  .ms-mobile-footer-button:hover,
+  .ms-mobile-footer-button:active,
+  .ms-mobile-footer-button:focus-visible {
+    border-color: rgba(52, 211, 153, .20);
+    background: var(--ms-primary-soft);
+    color: var(--ms-primary-dark);
+    outline: none;
+    transform: translateY(-1px);
+  }
+
+  .ms-mobile-footer-button:hover .icon,
+  .ms-mobile-footer-button:active .icon,
+  .ms-mobile-footer-button:focus-visible .icon {
+    background: rgba(52, 211, 153, .22);
+    color: var(--ms-primary-dark);
+  }
+
+  .body-sidebar { box-shadow: var(--ms-shadow-lg); }
+  .page-head .page-head-content { gap: 8px; }
+  .page-head .standard-items-section {
+    min-width: 0;
+    gap: 6px;
+    padding-right: 10px;
+  }
+
+  .page-head .page-actions {
+    min-width: 0;
+    padding-right: 0;
+  }
+
+  .page-head .standard-actions {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 6px;
+    margin-left: 6px;
+  }
+
+  .page-head .page-actions .btn,
+  .page-head .custom-mobile-actions .btn {
+    min-height: 34px;
+    margin-left: 0;
+    border: 1px solid var(--ms-border-strong);
+    border-radius: var(--ms-radius-md);
+    background: var(--ms-surface-raised);
+    color: var(--ms-text);
+    box-shadow: 0 2px 8px rgba(14, 59, 46, .08);
+  }
+
+  .page-head .standard-actions .menu-more-button,
+  .page-head .custom-mobile-actions .btn {
+    background: var(--ms-surface-raised);
+  }
+
+  .page-head .standard-actions .primary-action {
+    border-color: var(--ms-primary);
+    background: var(--ms-primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(25, 123, 87, .22);
+  }
+
+  .form-section, .form-dashboard-section { padding: 12px; }
+  .modal-dialog { margin: 10px; }
+  .navbar .search-bar { max-width: 48vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+}
+
+@media screen and (max-width: 620px) {
+  .desktop-container {
+    min-height: calc(100vh - 52px) !important;
+    padding: 20px 13px !important;
+    align-items: flex-start !important;
+  }
+
+  .desktop-container > .icons-container {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .desktop-container > .icons-container > .icons {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-rows: none !important;
+    gap: 8px !important;
+    row-gap: 12px !important;
+    justify-items: center !important;
+  }
+
+  /* Compact module cards keep the desktop visual language without crowding mobile. */
+  .desktop-container > .icons-container > .icons > .desktop-icon {
+    width: 100% !important;
+    max-width: 104px !important;
+    height: 118px !important;
+    min-height: 118px !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(14, 59, 46, .12) !important;
+    border-radius: 14px !important;
+    background: var(--ms-surface-raised) !important;
+    box-shadow: 0 6px 16px rgba(14, 59, 46, .10) !important;
+    transform: none !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Icon media area: same 50x50 tile for a plain icon or a folder thumbnail. */
+  .desktop-container > .icons-container > .icons > .desktop-icon > .icon-container {
+    flex: 0 0 82px !important;
+    width: 100% !important;
+    height: 82px !important;
+    min-height: 82px !important;
+    aspect-ratio: auto !important;
+    padding: 0 !important;
+    border-radius: 14px 14px 0 0 !important;
+    background-color: var(--ms-surface-raised) !important;
+    background-image: none;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon > .icon-container > img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 !important;
+    object-fit: contain !important;
+    background: var(--ms-surface-raised) !important;
+    border-radius: 14px 14px 0 0 !important;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon > .icon-caption {
+    display: flex !important;
+    flex: 0 0 36px !important;
+    width: 100% !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2px 5px !important;
+    background: var(--white) !important;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon > .icon-caption > .icon-title {
+    width: 100% !important;
+    color: var(--ms-primary-dark) !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: 16px !important;
+    white-space: normal !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    overflow-wrap: anywhere !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon {
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon > .icon-caption {
+    flex: 0 0 auto !important;
+    height: auto !important;
+    min-height: 36px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2px 5px 4px !important;
+  }
+
+  /* Folder cards use the same hero treatment as regular module cards. */
+  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] .ms-folder-hero {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 !important;
+    object-fit: cover !important;
+    background: var(--ms-surface-raised) !important;
+    border-radius: 14px 14px 0 0 !important;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] > .icon-container.folder-icon {
+    background-image: none !important;
+    flex: 0 0 82px !important;
+    width: 100% !important;
+    height: 82px !important;
+    min-height: 82px !important;
+    padding: 0 !important;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] {
+    height: 118px !important;
+    min-height: 118px !important;
+    max-height: 118px !important;
+    align-self: start !important;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] > .icon-container.folder-icon {
+    flex: 0 0 82px !important;
+    height: 82px !important;
+    min-height: 82px !important;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] .ms-folder-hero {
+    width: 100% !important;
+    height: 82px !important;
+    aspect-ratio: auto !important;
+    object-fit: cover !important;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] > .icon-container.folder-icon {
+    width: 100% !important;
+    height: 82px !important;
+    min-height: 82px !important;
+    max-height: 82px !important;
+    flex: 0 0 82px !important;
+    aspect-ratio: auto !important;
+  }
+
+  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] > .icon-container.folder-icon > .icons-container {
+    display: none !important;
+  }
+
+}
+

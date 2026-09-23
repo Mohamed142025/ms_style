@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Selling">
+  <rect width="512" height="512" rx="86" fill="#0E3B2E"/>
+  <path d="M88 430h336" fill="none" stroke="#F4A340" stroke-width="34" stroke-linecap="round"/>
+  <path d="M112 400V250c0-12 10-22 22-22h52c12 0 22 10 22 22v150M250 400V172c0-12 10-22 22-22h52c12 0 22 10 22 22v228M388 400V108c0-12 10-22 22-22h14c12 0 22 10 22 22v292" fill="#31AF9A" stroke="#31AF9A" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M116 176C196 170 264 142 350 84l54-38M404 46h-74M404 46v72" fill="none" stroke="#FFD166" stroke-width="25" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="116" cy="384" r="70" fill="#FFD166"/>
+  <path d="M138 355c-10-22-50-23-61 4-11 28 19 38 39 43 22 5 41 16 32 42-10 28-54 27-65 2M112 330v105" fill="none" stroke="#F4A340" stroke-width="17" stroke-linecap="round"/>
+</svg>

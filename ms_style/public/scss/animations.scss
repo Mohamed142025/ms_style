@@ -1,0 +1,12 @@
+@keyframes ms-fade-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal.show .modal-dialog, .frappe-dialog.show, .dropdown-menu.show {
+  animation: ms-fade-up var(--ms-duration-slow) var(--ms-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal.show .modal-dialog, .frappe-dialog.show, .dropdown-menu.show { animation: none; }
+}

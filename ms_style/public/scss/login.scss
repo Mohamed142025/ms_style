@@ -1,0 +1,519 @@
+body:has(.for-login) {
+  --login-ink: #0e3b2e;
+  --login-accent: #197b57;
+  --login-mint: #34d399;
+  --login-muted: #6b7b73;
+  --login-line: rgba(14, 59, 46, .13);
+  --ms-login-logo-url: url("/assets/ms_style/images/logo-horizontal-dark-bg.png");
+  --ms-login-background-url: url("/assets/ms_style/images/Main%20login.png");
+  min-height: 100vh;
+  background: #f7fbf9;
+  color: var(--login-ink);
+}
+
+body:has(.for-login) .navbar {
+  position: relative;
+  z-index: 20;
+  min-height: 0;
+  padding: 0 clamp(20px, 4vw, 64px);
+  border-bottom: 1px solid rgba(52, 211, 153, .28);
+  background:
+    radial-gradient(circle at 86% 20%, rgba(52, 211, 153, .28), transparent 24%),
+    linear-gradient(110deg, #0e3b2e, #145a43 55%, #197b57);
+  box-shadow: 0 5px 18px rgba(14, 59, 46, .16);
+}
+
+body:has(.for-login) .navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 145px;
+  height: 36px;
+  min-height: 36px;
+  padding: 3px 7px;
+  border: 1px solid rgba(255, 255, 255, .24);
+  border-radius: 0;
+  background-color: rgba(14, 59, 46, .22);
+  box-shadow: 0 5px 18px rgba(14, 59, 46, .10);
+  backdrop-filter: blur(12px);
+  background-image: var(--ms-login-logo-url);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+body:has(.for-login) .navbar-brand img {
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+body:has(.for-login) .navbar select {
+  min-width: 112px;
+  min-height: 30px;
+  height: 30px;
+  padding: 4px 28px 4px 10px;
+  border: 1px solid rgba(25, 123, 87, .22);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .90);
+  color: var(--login-ink);
+  font-size: var(--ms-font-base);
+  font-weight: 750;
+  box-shadow: 0 5px 18px rgba(14, 59, 46, .08);
+}
+
+body:has(.for-login) .navbar select:focus {
+  border-color: var(--login-accent);
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, .16);
+  outline: 0;
+}
+
+/* The native #language-switcher lists all ~17 enabled system languages, which
+   is the right control for the website but not for a product that only ships
+   English/Arabic copy. It's kept in the DOM (still functional, still how the
+   cookie actually gets set) and just visually hidden in favour of a plain
+   two-way toggle built to match it. */
+body:has(.for-login) #language-switcher {
+  display: none !important;
+}
+
+body:has(.for-login) .ms-login-lang-toggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  height: 30px;
+  padding: 4px 14px;
+  border: 1px solid rgba(25, 123, 87, .22);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .90);
+  color: var(--login-ink);
+  font-size: var(--ms-font-base);
+  font-weight: 750;
+  box-shadow: 0 5px 18px rgba(14, 59, 46, .08);
+  cursor: pointer;
+}
+
+body:has(.for-login) .ms-login-lang-toggle:hover,
+body:has(.for-login) .ms-login-lang-toggle:focus-visible {
+  border-color: var(--login-accent);
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, .16);
+  outline: 0;
+}
+
+body:has(.for-login) .ms-login-lang-toggle:disabled {
+  cursor: wait;
+  opacity: .6;
+}
+
+body:has(.for-login) main.container {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+}
+
+body:has(.for-login) .page-content-wrapper {
+  min-height: calc(100vh - 64px);
+  padding-top: 0 !important;
+}
+
+body:has(.for-login) .for-login {
+  position: relative;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  min-height: calc(100vh - 64px);
+  margin-top: 0;
+  padding-top: 0;
+  padding: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 78% 18%, rgba(52, 211, 153, .12), transparent 28%),
+    radial-gradient(circle at 92% 88%, rgba(25, 123, 87, .07), transparent 30%),
+    repeating-linear-gradient(90deg, transparent 0 84px, rgba(14, 59, 46, .025) 85px, transparent 86px),
+    repeating-linear-gradient(0deg, transparent 0 84px, rgba(25, 123, 87, .025) 85px, transparent 86px),
+    #f7fbf9;
+}
+
+  html[dir="rtl"] body:has(.for-login) .for-login::before {
+    transform: scaleX(-1);
+  }
+
+body:has(.for-login) .for-login::before {
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 64px);
+  top: 0;
+  align-self: start;
+  margin: 0;
+  border-radius: 0;
+  background: var(--ms-login-background-url) center / cover no-repeat;
+  background-color: transparent;
+  opacity: 1;
+  filter: none;
+  mix-blend-mode: normal;
+  box-shadow: none;
+  content: "";
+}
+
+body.ms-login-background-full:has(.for-login) .for-login::before {
+  min-height: calc(100vh - 64px);
+  margin: 0;
+  border-radius: 0;
+  background-size: cover;
+}
+
+body:has(.for-login) .for-login::after {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 51%;
+  background:
+    radial-gradient(circle at 70% 22%, rgba(52, 211, 153, .11), transparent 28%),
+    repeating-linear-gradient(90deg, transparent 0 70px, rgba(14, 59, 46, .025) 71px, transparent 72px),
+    repeating-linear-gradient(0deg, transparent 0 70px, rgba(25, 123, 87, .025) 71px, transparent 72px);
+  content: "";
+  pointer-events: none;
+}
+
+/* In English the illustration sits in the grid's first (start) track and the
+   form in the second (end) track, which reads correctly left-to-right. rtlcss
+   mirrors most physical properties automatically, but it never touches CSS
+   Grid's own column order (verified directly against rtlcss 4.1.1), so without
+   this the illustration would stay pinned to the physical left even when the
+   page reads right-to-left. Flipping the grid's own `direction` reorders its
+   auto-placed tracks, and everything else on `::before`/`::after` in this file
+   (their margin, border-radius, `right`) already mirrors correctly on its own. */
+body:has(.for-login) .login-content.page-card {
+  position: relative;
+  z-index: 2;
+  width: min(78%, 440px);
+  justify-self: center;
+  align-self: center;
+  padding: 30px 32px 28px;
+  border: 1px solid rgba(14, 59, 46, .11);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 22px 52px rgba(14, 59, 46, .12), 0 4px 12px rgba(14, 59, 46, .04);
+  backdrop-filter: blur(18px);
+}
+
+@media (min-width: 1100px) {
+  body:has(.for-login) .for-login::before {
+    min-height: calc(100vh - 112px);
+    margin: 24px 24px 24px 0;
+    border-radius: 0 22px 22px 0;
+    background-color: #eef7f3;
+    background-position: center;
+    background-size: contain;
+  }
+
+  body:has(.for-login) .login-content.page-card {
+    padding: 36px 38px 32px;
+  }
+}
+
+body:has(.for-login) .page-card-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 0 22px;
+  border-bottom: 1px solid var(--login-line);
+  background: transparent;
+}
+
+body:has(.for-login) .page-card-head img.app-logo {
+  width: 48px;
+  height: 48px;
+  max-height: 48px;
+  padding: 9px;
+  border: 1px solid rgba(52, 211, 153, .24);
+  border-radius: 14px;
+  background: #eaf8f0;
+  object-fit: contain;
+  content: url("/assets/ms_style/images/digital-roots-mark.svg");
+}
+
+@media (min-width: 601px) {
+  body.ms-login-background-full:has(.for-login) .for-login {
+    min-height: calc(100vh - 41px) !important;
+  }
+
+  body.ms-login-background-full:has(.for-login) .for-login::before {
+    position: absolute;
+    z-index: 1;
+    inset: 0 auto 0 0;
+    width: 50%;
+    height: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    background-position: center !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-color: #0e3b2e !important;
+  }
+
+  body.ms-login-background-full:has(.for-login) .login-content.page-card {
+    grid-column: 2;
+  }
+
+  /* Same rtlcss gap as above: neither `inset` nor `grid-column` gets mirrored
+     automatically, so the full-bleed background mode needs its own explicit
+     RTL values (image pinned to the right, card back in the grid's first
+     track) instead of relying on the LTR ones above. */
+  html[dir="rtl"] body.ms-login-background-full:has(.for-login) .for-login::before {
+    inset: 0 0 0 auto;
+  }
+
+  html[dir="rtl"] body.ms-login-background-full:has(.for-login) .login-content.page-card {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  body.ms-login-background-full:has(.for-login) .for-login::before {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    border-radius: 0;
+    background-position: center;
+    background-size: cover;
+  }
+}
+
+body:has(.for-login) .page-card-head-text h4 {
+  margin: 0;
+  color: var(--login-ink);
+  font-size: var(--ms-font-5xl);
+  font-weight: 820;
+  letter-spacing: -.035em;
+  line-height: 1.1;
+}
+
+body:has(.for-login) .page-card-subtitle {
+  margin: 6px 0 0;
+  color: var(--login-muted);
+  font-size: var(--ms-font-base);
+  line-height: 1.45;
+}
+
+body:has(.for-login) .form-login {
+  padding: 27px 0 0;
+}
+
+body:has(.for-login) .form-group {
+  margin-bottom: 18px;
+}
+
+body:has(.for-login) .form-label {
+  margin-bottom: 7px;
+  color: var(--login-ink);
+  font-size: var(--ms-font-sm);
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+body:has(.for-login) .email-field,
+body:has(.for-login) .password-field {
+  position: relative;
+}
+
+body:has(.for-login) .form-control {
+  min-height: 48px;
+  padding: 11px 43px 11px 15px;
+  border: 1px solid var(--login-line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .88);
+  color: var(--login-ink);
+  box-shadow: 0 4px 14px rgba(14, 59, 46, .04);
+  transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+body:has(.for-login) .form-control::placeholder {
+  color: #9aa9a2;
+}
+
+body:has(.for-login) .form-control:focus {
+  border-color: var(--login-accent);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, .15), 0 6px 18px rgba(14, 59, 46, .06);
+  outline: 0;
+}
+
+body:has(.for-login) .field-icon,
+body:has(.for-login) .toggle-password {
+  color: #789087;
+}
+
+body:has(.for-login) .toggle-password {
+  cursor: pointer;
+}
+
+body:has(.for-login) .forgot-password-message {
+  margin: 8px 0 0;
+  text-align: right;
+}
+
+body:has(.for-login) .forgot-password-message a,
+body:has(.for-login) .sign-up-message a {
+  color: var(--login-accent);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+body:has(.for-login) .page-card-actions {
+  display: grid;
+  gap: 10px;
+  padding: 3px 0 0;
+}
+
+body:has(.for-login) .btn-login {
+  min-height: 48px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--login-accent) !important;
+  color: #fff !important;
+  font-size: var(--ms-font-md);
+  font-weight: 800;
+  box-shadow: 0 10px 22px rgba(25, 123, 87, .22);
+  transition: background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+body:has(.for-login) .btn-login:hover,
+body:has(.for-login) .btn-login:focus-visible {
+  background: var(--login-ink) !important;
+  box-shadow: 0 12px 26px rgba(14, 59, 46, .22);
+  transform: translateY(-1px);
+}
+
+body:has(.for-login) .btn-login-option {
+  min-height: 42px;
+  border: 1px solid var(--login-line);
+  border-radius: 11px;
+  background: rgba(255, 255, 255, .72) !important;
+  color: var(--login-ink) !important;
+}
+
+body:has(.for-login) .sign-up-message {
+  padding: 20px 0 0;
+  color: var(--login-muted);
+  font-size: var(--ms-font-base);
+}
+
+body:has(.for-login) .login-error-banner {
+  border-radius: 10px;
+}
+
+@media (max-width: 600px) {
+  body:has(.for-login) .navbar {
+    position: relative;
+    min-height: 58px;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 4px 18px rgba(14, 59, 46, .08);
+  }
+
+  body:has(.for-login) .navbar-brand {
+    width: 132px;
+    height: 34px;
+    min-height: 34px;
+    padding: 3px 6px;
+    background-size: contain;
+  }
+
+  body:has(.for-login) .navbar-brand img {
+    width: 1px;
+    height: 1px;
+  }
+
+  body:has(.for-login) .navbar-toggler {
+    display: none;
+  }
+
+  body:has(.for-login) #language-switcher {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    width: 112px;
+    margin: 0;
+  }
+
+  body:has(.for-login) #language-switcher select {
+    width: 112px;
+    min-width: 112px;
+    height: 38px;
+    min-height: 38px;
+    padding: 6px 26px 6px 10px;
+    border-radius: 10px;
+    font-size: var(--ms-font-sm);
+  }
+
+  body:has(.for-login) .ms-login-lang-toggle {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    height: 38px;
+    min-height: 38px;
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: var(--ms-font-sm);
+  }
+
+  body:has(.for-login) .for-login {
+    display: grid;
+    grid-template-columns: 1fr;
+    min-height: calc(100vh - 58px);
+    margin-top: 0;
+    padding: 28px 16px 48px;
+  }
+
+  body:has(.for-login) .for-login::before,
+  body:has(.for-login) .for-login::after {
+    display: block;
+  }
+
+  body:has(.for-login) .for-login {
+    position: relative;
+    overflow: hidden;
+    background: #0e3b2e;
+  }
+
+  body:has(.for-login) .for-login::before {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    min-height: 100%;
+    border-radius: 0;
+    background: var(--ms-login-background-url) center / cover no-repeat;
+    content: "";
+  }
+
+  body:has(.for-login) .for-login::after {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    width: 100%;
+    display: none;
+    content: "";
+  }
+
+  body:has(.for-login) .login-content.page-card {
+    z-index: 2;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 22px 52px rgba(0, 0, 0, .24);
+  }
+
+  body:has(.for-login) .login-content.page-card {
+    width: 100%;
+    padding: 24px 22px 22px;
+  }
+
+  body:has(.for-login) .page-card-head {
+    padding-bottom: var(--ms-space-5);
+  }
+}

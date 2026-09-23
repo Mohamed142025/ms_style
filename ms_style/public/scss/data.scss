@@ -1,0 +1,22 @@
+.list-row-container, .list-row-head, .frappe-list .list-row {
+  background: var(--ms-surface-raised);
+  border-color: var(--ms-border);
+}
+
+.list-row-container:hover, .frappe-list .list-row:hover, .report-row:hover {
+  background: var(--ms-primary-soft);
+}
+
+.list-row-head, .list-row-head .list-row-col { color: var(--ms-text-muted); font-weight: 700; }
+.list-row-col a, .frappe-list .list-row a { color: var(--ms-primary); }
+.list-row-col a:hover, .frappe-list .list-row a:hover { color: var(--ms-primary-dark); }
+
+.frappe-control .grid-row, .form-grid .grid-row, .grid-heading-row {
+  border-color: var(--ms-border);
+}
+
+.grid-row:hover { background: var(--ms-primary-soft); }
+.grid-heading-row { background: var(--ms-surface); color: var(--ms-text-muted); font-weight: 700; }
+.grid-row .grid-static-col, .grid-row .data-row { border-color: var(--ms-border); }
+
+.frappe-list .list-paging-area .btn, .pagination .page-link { border-radius: var(--ms-radius-sm); }

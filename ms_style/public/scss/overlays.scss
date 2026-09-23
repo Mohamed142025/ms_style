@@ -1,0 +1,58 @@
+.modal-content, .frappe-dialog, .dropdown-menu, .awesomplete ul,
+.popover, .notifications-list, .search-bar .awesomplete ul {
+  background: var(--ms-surface-raised);
+  color: var(--ms-text);
+  border: 1px solid var(--ms-border);
+  border-radius: var(--ms-radius-lg);
+  box-shadow: var(--ms-shadow-lg);
+}
+
+.modal-header, .modal-footer, .frappe-dialog .modal-header, .frappe-dialog .modal-footer {
+  border-color: var(--ms-border);
+}
+
+.dropdown-item, .awesomplete li, .notifications-list .notification-item {
+  color: var(--ms-text);
+  border-radius: var(--ms-radius-sm);
+}
+
+.dropdown-item:hover, .dropdown-item:focus, .awesomplete li:hover,
+.notifications-list .notification-item:hover {
+  background: var(--ms-primary-soft);
+  color: var(--ms-primary-dark);
+}
+
+.modal-backdrop { background: var(--ms-overlay); }
+
+.notification-item.unread { border-left: 3px solid var(--ms-primary-light); }
+.notifications-list .mark-all-read:hover, .notifications-list .notification-settings:hover {
+  color: var(--ms-primary);
+}
+
+.notifications-list .notification-list-body {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ms-primary-light) transparent;
+}
+
+.notifications-list .notification-list-body::-webkit-scrollbar {
+  width: 7px;
+}
+
+.notifications-list .notification-list-body::-webkit-scrollbar-track {
+  margin: 10px 0;
+  border-radius: 999px;
+  background: rgba(14, 59, 46, .04);
+}
+
+.notifications-list .notification-list-body::-webkit-scrollbar-thumb {
+  min-height: 64px;
+  border: 2px solid var(--ms-surface-raised);
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--ms-primary-light), var(--ms-primary));
+  box-shadow: 0 2px 8px rgba(14, 59, 46, .18);
+}
+
+.notifications-list .notification-list-body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #66E6B5, var(--ms-primary-dark));
+  box-shadow: 0 3px 12px rgba(14, 59, 46, .24);
+}
