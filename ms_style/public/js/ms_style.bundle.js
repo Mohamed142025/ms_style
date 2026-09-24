@@ -569,5 +569,48 @@
     }
   }
 
+  // Charts without their own colors fall back to Frappe's default palette (pink, light
+  // blue). Fill only the missing entries from the brand palette, so a color chosen in a
+  // Dashboard Chart or a report still wins. The palette follows the theme at render time.
+  const chartPalettes = {
+    light: ["#197B57", "#0E3B2E", "#287A9B", "#B7791F", "#A73833", "#34D399"],
+    dark: ["#34D399", "#F4F1EA", "#4AAAD0", "#DC952D", "#D88480", "#197B57"],
+  };
+
+  function withBrandChartColors(options, replaceDefault) {
+    if (!options || options.type === "heatmap") return options;
+    const palette = chartPalettes[root.getAttribute("data-theme") === "dark" ? "dark" : "light"];
+    const colors = Array.isArray(options.colors) ? options.colors : [];
+    const isSet = (color) => (typeof color === "string" ? color.trim() : color?.length);
+    if (!colors.some(isSet) || (replaceDefault && colors.length === 1 && colors[0] === "light-blue")) {
+      return { ...options, colors: palette };
+    }
+    return { ...options, colors: colors.map((color, index) => (isSet(color) ? color : palette[index % palette.length])) };
+  }
+
+  function applyBrandCharts() {
+    const frappe = window.frappe;
+    const Chart = frappe?.Chart;
+    if (!Chart || Chart.msBrandColors) return;
+    // frappe-charts' constructor returns the chart for the given type, so a plain
+    // function works with `new` and callers get the same object as before.
+    const BrandChart = function (parent, options) {
+      return new Chart(parent, withBrandChartColors(options, false));
+    };
+    Object.setPrototypeOf(BrandChart, Chart);
+    BrandChart.prototype = Chart.prototype;
+    BrandChart.msBrandColors = true;
+    frappe.Chart = BrandChart;
+
+    const makeChart = frappe.utils?.make_chart;
+    if (makeChart) {
+      // make_chart pre-fills ["light-blue"] before merging the caller's options.
+      frappe.utils.make_chart = function (wrapper, customOptions = {}) {
+        return makeChart.call(this, wrapper, withBrandChartColors({ type: "bar", ...customOptions }, true));
+      };
+    }
+  }
+
+  applyBrandCharts();
   $(initialize);
 })();

@@ -1,0 +1,138 @@
+// Bridge: Frappe's own design variables mapped to the ms tokens, so every Frappe and
+// ERPNext component (including ones ms_style never styles by hand) draws from the
+// brand instead of Frappe's neutral greys and black.
+//
+// The neutral ramps keep the luminance of Frappe's step at every stop (only the hue
+// moves to the Ink/Sand family), so text and border contrast stays where Frappe put it.
+//
+// Frappe declares these on `:root, [data-theme="light"]` and `[data-theme="dark"]`.
+// This file loads after Frappe with the same specificity, so `:root` below wins in both
+// themes: anything whose dark value differs is declared again in the dark block.
+
+:root {
+  --gray-50: #F9F7F3;
+  --gray-100: #F4F3EF;
+  --gray-200: #EEEDE9;
+  --gray-300: #E3E2DE;
+  --gray-400: #C5C8C6;
+  --gray-500: #959A98;
+  --gray-600: #777E7B;
+  --gray-700: #4C5450;
+  --gray-800: #313A36;
+  --gray-900: var(--ms-ink);
+
+  --outline-gray-1: var(--gray-200);
+  --outline-gray-2: var(--gray-300);
+  --outline-gray-3: var(--gray-400);
+  --outline-gray-4: var(--gray-500);
+  --outline-gray-5: var(--gray-200);
+  --outline-gray-modals: var(--gray-200);
+  --surface-gray-1: var(--gray-50);
+  --surface-gray-2: var(--gray-100);
+  --surface-gray-3: var(--gray-200);
+  --surface-gray-4: var(--gray-300);
+  --surface-gray-5: var(--gray-700);
+  --surface-gray-6: var(--gray-800);
+  --surface-gray-7: var(--gray-900);
+  --surface-menu-bar: var(--gray-50);
+  --ink-gray-1: var(--gray-200);
+  --ink-gray-2: var(--gray-300);
+  --ink-gray-3: var(--gray-400);
+  --ink-gray-4: var(--gray-500);
+  --ink-gray-5: var(--gray-600);
+  --ink-gray-6: var(--gray-700);
+  --ink-gray-7: var(--gray-700);
+  --ink-gray-8: var(--gray-800);
+  --ink-gray-9: var(--gray-900);
+
+  // Text. Frappe's --text-light (grey 600) is 4.2:1 on white; it carries tab labels,
+  // sidebar labels and timestamps, so it takes the AA muted tone.
+  --text-color: var(--ms-text);
+  --heading-color: var(--ms-text-strong);
+  --text-light: var(--ms-text-muted);
+  --text-muted: var(--ms-text-muted);
+
+  // Borders: the ms tints, so Frappe's dividers and ms_style's match.
+  --border-color: var(--ms-border);
+  --dark-border-color: var(--ms-border-strong);
+  --table-border-color: var(--ms-border);
+  --error-border: var(--ms-danger);
+  --error-bg: var(--ms-danger-bg);
+
+  // Accent: Frappe's black primary becomes the brand accent.
+  --primary: var(--ms-primary);
+  --primary-color: var(--ms-accent);
+  --btn-primary: var(--ms-primary);
+  --checkbox-color: var(--ms-primary);
+  --checkbox-gradient: linear-gradient(var(--ms-primary), var(--ms-primary));
+  --date-active-bg: var(--ms-primary);
+  --date-active-text: var(--ms-on-dark);
+  --progress-bar-bg: var(--ms-accent);
+  --focus-default: 0 0 0 3px var(--ms-focus);
+  --checkbox-focus-shadow: 0 0 0 3px var(--ms-focus);
+  --highlight-shadow: 0 0 0 3px var(--ms-focus), 0 0 4px var(--ms-accent);
+  --yellow-highlight-color: rgba(var(--ms-accent-rgb), .18);
+  --awesomplete-hover-bg: var(--ms-primary-soft);
+  --skeleton-bg: rgba(var(--ms-tint-rgb), .08);
+  --scrollbar-thumb-color: rgba(var(--ms-tint-rgb), .28);
+  --scrollbar-track-color: transparent;
+
+  // Elevation: three levels instead of Frappe's seven shadows.
+  --shadow-xs: var(--ms-shadow-sm);
+  --shadow-sm: var(--ms-shadow-sm);
+  --shadow-base: var(--ms-shadow-sm);
+  --shadow-md: var(--ms-shadow-md);
+  --shadow-lg: var(--ms-shadow-md);
+  --shadow-xl: var(--ms-shadow-lg);
+  --shadow-2xl: var(--ms-shadow-lg);
+  --custom-shadow-sm: var(--ms-shadow-sm);
+  --drop-shadow: var(--ms-shadow-sm);
+
+  // Radius: Frappe's 4/8/12/16 steps land on the ms 6/10/14/20 scale.
+  --border-radius-tiny: var(--ms-radius-sm);
+  --border-radius-sm: var(--ms-radius-sm);
+  --border-radius: var(--ms-radius-md);
+  --border-radius-md: var(--ms-radius-md);
+  --border-radius-lg: var(--ms-radius-lg);
+  --border-radius-xl: var(--ms-radius-xl);
+  --border-radius-2xl: var(--ms-radius-xl);
+}
+
+[data-theme="dark"] {
+  // Frappe's dark theme redefines only these two steps; the pages sit on grey 900.
+  --gray-700: #2E3A35;
+  --gray-800: #1C2B24;
+
+  --outline-white: #171D1B;
+  --outline-gray-1: #1C2B24;
+  --outline-gray-2: #2B3631;
+  --outline-gray-3: #37463F;
+  --outline-gray-4: #78827E;
+  --outline-gray-5: #2B3631;
+  --outline-gray-modals: #2B3631;
+  --surface-white: var(--ms-ink);
+  --surface-gray-1: #1C2B24;
+  --surface-gray-2: #242E29;
+  --surface-gray-3: #2B3631;
+  --surface-gray-4: #37463F;
+  --surface-gray-5: #AAB1AD;
+  --surface-gray-6: #D1D5D3;
+  --surface-gray-7: #F9F7F3;
+  --surface-menu-bar: var(--ms-ink);
+  --surface-cards: #1C2B24;
+  --surface-modal: #1C2B24;
+  --surface-selected: #37463F;
+  --ink-white: var(--ms-ink);
+  --ink-gray-1: #1C2B24;
+  --ink-gray-2: #37463F;
+  --ink-gray-3: #6A736F;
+  --ink-gray-4: #6A736F;
+  --ink-gray-5: #78827E;
+  --ink-gray-6: #959A98;
+  --ink-gray-7: #AAB1AD;
+  --ink-gray-8: #D1D5D3;
+  --ink-gray-9: #F9F7F3;
+
+  // Frappe points borders inside dialogs at grey 800, which is the dialog surface here.
+  .modal, .form-in-grid { --border-color: var(--ms-border); }
+}

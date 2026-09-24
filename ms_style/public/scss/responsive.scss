@@ -21,9 +21,9 @@
   .modal.show:has(.navbar-modal-wrapper) .modal-content {
     overflow: hidden;
     border: 1px solid var(--ms-border);
-    border-radius: 16px;
+    border-radius: var(--ms-radius-lg);
     background: var(--ms-surface-raised);
-    box-shadow: 0 20px 48px rgba(var(--ms-shadow-rgb), .18);
+    box-shadow: var(--ms-shadow-lg);
   }
 
   .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper {
@@ -38,7 +38,7 @@
   .modal.show:has(.navbar-modal-wrapper) .awesomebar-input-row {
     min-height: 40px;
     border: 1px solid var(--ms-border-strong);
-    border-radius: 10px;
+    border-radius: var(--ms-radius-md);
     background: var(--ms-surface);
   }
 
@@ -66,7 +66,7 @@
   .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete li {
     margin: 2px 0;
     padding: 9px 10px;
-    border-radius: 8px;
+    border-radius: var(--ms-radius-md);
     color: var(--ms-text);
   }
 
@@ -105,34 +105,34 @@
   .ms-work-center-modal .ms-work-heading { padding-right: 28px; }
   .ms-work-center-modal .ms-work-heading h2 { color: var(--ms-heading); font-size: 19px; }
   .ms-work-center-modal .ms-work-heading p { margin: 5px 0 0; color: var(--ms-text-muted); font-size: 11px; }
-  .ms-work-center-modal .ms-work-eyebrow { display: block; margin-bottom: 7px; color: var(--ms-accent); font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+  .ms-work-center-modal .ms-work-eyebrow { display: block; margin-bottom: 7px; color: var(--ms-accent); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
   .ms-work-center-modal .ms-work-status-dot { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: var(--ms-accent); }
   .ms-work-center-modal .ms-work-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
-  .ms-work-center-modal .ms-work-summary button { padding: 8px 3px; border: 1px solid rgba(var(--ms-accent-rgb), .12); border-radius: 9px; background: var(--ms-surface-raised); color: inherit; text-align: center; }
+  .ms-work-center-modal .ms-work-summary button { padding: 8px 3px; border: 1px solid rgba(var(--ms-accent-rgb), .12); border-radius: var(--ms-radius-md); background: var(--ms-surface-raised); color: inherit; text-align: center; }
   .ms-work-center-modal .ms-work-summary strong, .ms-work-center-modal .ms-work-summary span { display: block; }
   .ms-work-center-modal .ms-work-summary strong { color: var(--ms-text-strong); font-size: 16px; }
-  .ms-work-center-modal .ms-work-summary span { color: var(--ms-text-muted); font-size: 9px; }
+  .ms-work-center-modal .ms-work-summary span { color: var(--ms-text-muted); font-size: 11px; }
   .ms-work-center-modal .ms-work-section { padding-top: 12px; border-top: 1px solid var(--ms-border); }
   .ms-work-center-modal .ms-work-section-title { display: flex; justify-content: space-between; margin-bottom: 7px; }
-  .ms-work-center-modal .ms-work-section h3 { margin: 0; color: var(--ms-text-muted); font-size: 10px; text-transform: uppercase; }
+  .ms-work-center-modal .ms-work-section h3 { margin: 0; color: var(--ms-text-muted); font-size: 11px; text-transform: uppercase; }
   .ms-work-center-modal .ms-work-recent-list { display: grid; gap: 5px; }
   .ms-work-center-modal .ms-work-route-list { display: grid; gap: 4px; }
-  .ms-work-center-modal .ms-work-route { display: flex; align-items: center; justify-content: space-between; gap: 7px; padding: 6px 7px; border-radius: 7px; color: var(--ms-text); text-decoration: none; }
-  .ms-work-center-modal .ms-work-route span { min-width: 0; overflow: hidden; font-size: 10px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-  .ms-work-center-modal .ms-work-route b { display: inline-block; width: 18px; color: var(--ms-text-muted); font-size: 9px; }
+  .ms-work-center-modal .ms-work-route { display: flex; align-items: center; justify-content: space-between; gap: 7px; padding: 6px 7px; border-radius: var(--ms-radius-sm); color: var(--ms-text); text-decoration: none; }
+  .ms-work-center-modal .ms-work-route span { min-width: 0; overflow: hidden; font-size: 11px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-work-center-modal .ms-work-route b { display: inline-block; width: 18px; color: var(--ms-text-muted); font-size: 11px; }
   .ms-work-center-modal .ms-work-route small { flex: 0 0 auto; color: var(--ms-text-muted); font-size: 8px; }
-  .ms-work-center-modal .ms-work-item, .ms-work-center-modal .ms-work-recent { display: flex; width: 100%; align-items: center; gap: 7px; padding: 7px; border: 0; border-radius: 8px; background: rgba(var(--ms-tint-rgb), .04); text-align: left; }
+  .ms-work-center-modal .ms-work-item, .ms-work-center-modal .ms-work-recent { display: flex; width: 100%; align-items: center; gap: 7px; padding: 7px; border: 0; border-radius: var(--ms-radius-md); background: rgba(var(--ms-tint-rgb), .04); text-align: left; }
   .ms-work-center-modal .ms-work-item-copy { display: grid; min-width: 0; flex: 1; }
   .ms-work-center-modal .ms-work-item-copy strong, .ms-work-center-modal .ms-work-recent span { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-  .ms-work-center-modal .ms-work-item-copy small, .ms-work-center-modal .ms-work-recent small { overflow: hidden; color: var(--ms-text-muted); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
-  .ms-work-center-modal .ms-work-item-icon { display: grid; width: 24px; height: 24px; flex: 0 0 24px; place-items: center; border-radius: 7px; background: var(--ms-primary-soft); color: var(--ms-accent); }
+  .ms-work-center-modal .ms-work-item-copy small, .ms-work-center-modal .ms-work-recent small { overflow: hidden; color: var(--ms-text-muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-work-center-modal .ms-work-item-icon { display: grid; width: 24px; height: 24px; flex: 0 0 24px; place-items: center; border-radius: var(--ms-radius-sm); background: var(--ms-primary-soft); color: var(--ms-accent); }
   .ms-work-center-modal .ms-work-quick-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
-  .ms-work-center-modal .ms-work-quick-actions button { padding: 7px; border: 1px solid rgba(var(--ms-accent-rgb), .18); border-radius: 7px; background: var(--ms-surface-raised); color: var(--ms-text-strong); font-size: 10px; }
-  .ms-work-center-modal .ms-work-support { padding: 10px; border-radius: 10px; background: var(--ms-primary-soft); }
-  .ms-work-center-modal .ms-work-support > span { color: var(--ms-text-strong); font-size: 9px; font-weight: 800; text-transform: uppercase; }
+  .ms-work-center-modal .ms-work-quick-actions button { padding: 7px; border: 1px solid rgba(var(--ms-accent-rgb), .18); border-radius: var(--ms-radius-sm); background: var(--ms-surface-raised); color: var(--ms-text-strong); font-size: 11px; }
+  .ms-work-center-modal .ms-work-support { padding: 10px; border-radius: var(--ms-radius-md); background: var(--ms-primary-soft); }
+  .ms-work-center-modal .ms-work-support > span { color: var(--ms-text-strong); font-size: 11px; font-weight: 800; text-transform: uppercase; }
   .ms-work-center-modal .ms-work-support p { margin: 4px 0 8px; font-size: 11px; }
   .ms-work-center-modal .ms-work-support div { display: flex; gap: 5px; }
-  .ms-work-center-modal .ms-work-support a { padding: 5px 7px; border-radius: 6px; background: var(--ms-surface-raised); color: var(--ms-text-strong); font-size: 10px; text-decoration: none; }
+  .ms-work-center-modal .ms-work-support a { padding: 5px 7px; border-radius: var(--ms-radius-sm); background: var(--ms-surface-raised); color: var(--ms-text-strong); font-size: 11px; text-decoration: none; }
   .ms-work-items-dialog { width: min(100%, 360px); }
   .ms-work-items-content { padding: 20px; }
   .ms-work-items-content h2 { font-size: 19px; }
@@ -177,10 +177,10 @@
     margin: 0 2px;
     padding: 5px 4px;
     border: 1px solid transparent;
-    border-radius: 12px;
+    border-radius: var(--ms-radius-lg);
     background: transparent;
     color: var(--ms-text-muted);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: .01em;
     transition: background-color .18s ease, color .18s ease, transform .18s ease;
@@ -190,7 +190,7 @@
     width: 19px;
     height: 19px;
     padding: 3px;
-    border-radius: 7px;
+    border-radius: var(--ms-radius-sm);
     background: rgba(var(--ms-tint-rgb), .08);
     color: var(--ms-text);
     transition: background-color .18s ease, color .18s ease;
@@ -239,7 +239,7 @@
     margin-left: 0;
     border: 1px solid var(--ms-border-strong);
     border-radius: var(--ms-radius-md);
-    box-shadow: 0 2px 8px rgba(var(--ms-shadow-rgb), .08);
+    box-shadow: var(--ms-shadow-sm);
   }
 
   .page-head .page-actions .btn#{$ms-neutral-btn},
@@ -257,7 +257,7 @@
     border-color: var(--ms-primary);
     background: var(--ms-primary);
     color: var(--ms-on-dark);
-    box-shadow: 0 4px 12px rgba(var(--ms-emerald-rgb), .18);
+    box-shadow: var(--ms-shadow-sm);
   }
 
   .form-section, .form-dashboard-section { padding: 12px; }
@@ -269,137 +269,70 @@
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
 
+// Frappe's own phone rules (nested under the desk container, below 570px, injected at
+// runtime after ms_style) fix the tile width and height, a minimum image size, an 8px
+// column gap and 13px page padding. The `html` prefix on the rules below outranks them
+// without !important.
 @media screen and (max-width: 620px) {
-  .desktop-container {
-    min-height: calc(100vh - 52px) !important;
-    padding: 20px 13px !important;
-    align-items: flex-start !important;
+  html .desktop-container {
+    min-height: calc(100vh - 52px);
+    padding: 16px;
+    align-items: flex-start;
   }
 
   .desktop-container > .icons-container {
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
-  .desktop-container > .icons-container > .icons {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    grid-template-rows: none !important;
-    gap: 8px !important;
-    row-gap: 12px !important;
-    justify-items: center !important;
+  // Phones: three equal columns of square artwork (nothing cropped) and a fixed
+  // two-line caption, so every tile is the same height.
+  html .desktop-container > .icons-container > .icons {
+    --ms-desk-caption: 40px;
+    --ms-desk-title: 12px;
+    max-width: none;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
   }
 
-  /* Compact module cards keep the desktop visual language without crowding mobile. */
-  .desktop-container > .icons-container > .icons > .desktop-icon {
-    width: 100% !important;
-    max-width: 104px !important;
-    height: auto !important;
-    min-height: 0 !important;
-    padding: 0 !important;
-    gap: 0 !important;
-    overflow: hidden !important;
-    border: 1px solid var(--ms-border) !important;
-    border-radius: 14px !important;
-    background: var(--ms-surface-raised) !important;
-    box-shadow: 0 6px 16px rgba(var(--ms-shadow-rgb), .12) !important;
-    transform: none !important;
+  html .desktop-container > .icons-container > .icons > .desktop-icon {
+    width: 100%;
+    height: auto;
+    border-radius: var(--ms-radius-lg);
+    box-shadow: var(--ms-shadow-sm);
     -webkit-tap-highlight-color: transparent;
   }
 
+  // Touch screens: no lift on the sticky hover state.
   .desktop-container > .icons-container > .icons > .desktop-icon:hover {
-    transform: none !important;
-    box-shadow: none !important;
+    border-color: var(--ms-border);
+    box-shadow: var(--ms-shadow-sm);
+    transform: none;
   }
 
-  /* Image area: the same 82px band for a plain icon or a folder thumbnail. */
-  .desktop-container > .icons-container > .icons > .desktop-icon > .icon-container {
-    flex: 0 0 82px !important;
-    width: 100% !important;
-    height: 82px !important;
-    min-height: 82px !important;
-    aspect-ratio: auto !important;
-    padding: 0 !important;
-    border-radius: 14px 14px 0 0 !important;
-    background-color: var(--ms-surface-raised) !important;
-    background-image: none;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    overflow: hidden !important;
+  html .desktop-container > .icons-container > .icons > .desktop-icon .icon-container {
+    min-width: 0;
+    min-height: 0;
   }
 
-  .desktop-container > .icons-container > .icons > .desktop-icon > .icon-container > img {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 1 !important;
-    object-fit: contain !important;
-    background: var(--ms-surface-raised) !important;
-    border-radius: 14px 14px 0 0 !important;
-  }
-
-  .desktop-container > .icons-container > .icons > .desktop-icon > .icon-caption {
-    display: flex !important;
-    flex: 0 0 auto !important;
-    width: 100% !important;
-    height: auto !important;
-    min-height: 36px !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 2px 5px 4px !important;
-    background: var(--ms-surface-raised) !important;
-  }
-
-  .desktop-container > .icons-container > .icons > .desktop-icon > .icon-caption > .icon-title {
-    width: 100% !important;
-    color: var(--ms-text-strong) !important;
-    font-size: 12px !important;
-    font-weight: 700 !important;
-    line-height: 16px !important;
-    white-space: normal !important;
-    overflow: hidden !important;
-    text-overflow: clip !important;
-    overflow-wrap: normal !important;
-    hyphens: auto;
-    display: -webkit-box !important;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
-
-  /* The Accounting folder shows one hero image instead of its thumbnail grid. */
-  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] {
-    height: 118px !important;
-    min-height: 118px !important;
-    max-height: 118px !important;
-    align-self: start !important;
-  }
-
-  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] > .icon-container.folder-icon {
-    flex: 0 0 82px !important;
-    width: 100% !important;
-    height: 82px !important;
-    min-height: 82px !important;
-    max-height: 82px !important;
-    aspect-ratio: auto !important;
-    padding: 0 !important;
-    background-image: none !important;
-  }
-
-  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] .ms-folder-hero {
-    display: block !important;
-    width: 100% !important;
-    height: 82px !important;
-    aspect-ratio: auto !important;
-    object-fit: cover !important;
-    background: var(--ms-surface-raised) !important;
-    border-radius: 14px 14px 0 0 !important;
-  }
-
-  .desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] > .icon-container.folder-icon > .icons-container {
-    display: none !important;
-  }
-
+  // "Subcontracting" needs the full tile width at 12px.
+  .desktop-container > .icons-container > .icons > .desktop-icon .icon-caption { padding: 4px; }
 }
 
+// Tablet (768px-1100px): layout only, the sidebar keeps Frappe's behaviour.
+@media screen and (min-width: 768px) and (max-width: 1100px) {
+  // The logo scales into its box instead of being cropped, and the greeting gives its
+  // room back to search.
+  .desktop-navbar .navbar-home {
+    background-origin: content-box;
+    background-size: contain;
+  }
+
+  .desktop-navbar .ms-user-tools .ms-user-greeting { display: none; }
+
+  // Standard filters share the full row width instead of stacking one per line next
+  // to the Filter/Sort buttons.
+  .page-form .standard-filter-section { flex: 1 1 100%; }
+  .page-form .standard-filter-section .form-group { flex: 1 1 150px; max-width: none; }
+}

@@ -1,3 +1,6 @@
+// White tick for checked boxes (light and dark themes).
+$ms-check-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.2 8.2 6.5 11.3 12.8 4.8' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+
 // Frappe's semantic variants (danger, success, link, ...) keep their own colors; only
 // neutral buttons take the ms surface. :where() adds no specificity, so these rules
 // win or lose against Frappe exactly as the plain selectors always did.
@@ -26,7 +29,7 @@ $ms-neutral-btn: ":where(:not(.btn-danger, .btn-success, .btn-warning, .btn-info
   background: var(--ms-primary);
   border-color: var(--ms-primary);
   color: var(--ms-on-dark);
-  box-shadow: 0 4px 10px rgba(var(--ms-shadow-rgb), .12);
+  box-shadow: var(--ms-shadow-sm);
 }
 
 .btn.btn-primary:hover, .btn.btn-primary:focus-visible,
@@ -34,14 +37,14 @@ $ms-neutral-btn: ":where(:not(.btn-danger, .btn-success, .btn-warning, .btn-info
   background: var(--ms-primary-dark);
   border-color: var(--ms-primary-dark);
   color: var(--ms-on-dark);
-  box-shadow: 0 8px 18px rgba(var(--ms-shadow-rgb), .18), 0 0 0 3px var(--ms-focus);
+  box-shadow: var(--ms-shadow-md), 0 0 0 3px var(--ms-focus);
   transform: translateY(-1px);
 }
 
 .btn.btn-primary:active, .btn.btn-primary-dark:active, .btn.primary-action:active {
   background: var(--ms-ink);
   border-color: var(--ms-ink);
-  box-shadow: 0 3px 8px rgba(var(--ms-shadow-rgb), .12);
+  box-shadow: var(--ms-shadow-sm);
   transform: translateY(1px);
 }
 
@@ -49,6 +52,45 @@ $ms-neutral-btn: ":where(:not(.btn-danger, .btn-success, .btn-warning, .btn-info
   background: var(--ms-primary);
   border-color: var(--ms-primary);
   box-shadow: none;
+}
+
+// Frappe's `.btn.btn-default` / `.btn-secondary` (grey fill) outrank the neutral rule
+// above, so page actions like "Update Items" stayed grey. Frappe's desk buttons have
+// no border, so the outline is an inset shadow: a real border would widen every
+// button by 2px and push tight rows (list filters) onto a second line.
+.btn.btn-default, .btn.btn-secondary {
+  border-color: transparent;
+  background-color: var(--ms-surface-raised);
+  color: var(--ms-text);
+  box-shadow: inset 0 0 0 1px var(--ms-border-strong);
+}
+
+.btn.btn-default:hover, .btn.btn-secondary:hover,
+.btn.btn-default:active, .btn.btn-secondary:active,
+.btn.btn-default.active, .btn.btn-default[aria-expanded="true"] {
+  border-color: transparent;
+  background: var(--ms-primary-soft);
+  color: var(--ms-text-strong);
+  box-shadow: inset 0 0 0 1px rgba(var(--ms-accent-rgb), .28);
+}
+
+// Grouped buttons share an edge: draw it once.
+.btn-group > .btn.btn-default:not(:first-child) {
+  box-shadow: inset 0 1px 0 var(--ms-border-strong), inset -1px 0 0 var(--ms-border-strong), inset 0 -1px 0 var(--ms-border-strong);
+}
+
+.btn.btn-xs, .btn.btn-sm { border-radius: var(--ms-radius-md); }
+
+// Page-size buttons: the current size is a disabled `.btn-info`; keep it fully legible
+// and mark it as selected instead of greying it out.
+.list-paging-area .btn-group > .btn-paging.btn-info,
+.list-paging-area .btn-group > .btn-paging.btn-info:disabled {
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px rgba(var(--ms-accent-rgb), .28);
+  background: var(--ms-primary-soft);
+  color: var(--ms-text-strong);
+  font-weight: 700;
+  opacity: 1;
 }
 
 .btn:active, button:active { transform: translateY(1px); }
@@ -70,6 +112,8 @@ $ms-neutral-btn: ":where(:not(.btn-danger, .btn-success, .btn-warning, .btn-info
 .frappe-control textarea:hover, .frappe-control .awesomplete .input-with-feedback:hover { border-color: var(--ms-accent); }
 .form-control:focus, .frappe-control input:focus, .frappe-control select:focus,
 .frappe-control textarea:focus, .frappe-control .awesomplete .input-with-feedback:focus {
+  // Frappe's `.form-control:focus` switches to the grey control fill.
+  background-color: var(--ms-surface-raised);
   border-color: var(--ms-accent);
   box-shadow: 0 0 0 3px var(--ms-focus);
 }
@@ -80,7 +124,7 @@ input[type="checkbox"] {
   min-height: 18px !important;
   margin: 0;
   border: 1px solid var(--ms-border-strong);
-  border-radius: 5px;
+  border-radius: var(--ms-radius-sm);
   background: var(--ms-surface-raised);
   cursor: pointer;
   appearance: none;
@@ -104,7 +148,7 @@ input[type="checkbox"]:focus-visible {
 input[type="checkbox"]:checked {
   border-color: var(--ms-primary);
   background-color: var(--ms-primary);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.2 8.2 6.5 11.3 12.8 4.8' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-image: $ms-check-icon;
   background-position: center;
   background-repeat: no-repeat;
   background-size: 13px 13px;
@@ -126,3 +170,64 @@ input[type="checkbox"]:active { transform: scale(.94); }
   font-weight: 700;
   border-bottom-color: var(--ms-border);
 }
+
+// Frappe's dark theme draws a black tick over a white fill; keep the white tick on the
+// accent fill in both themes.
+[data-theme="dark"] input[type="checkbox"]:checked {
+  border-color: var(--ms-primary);
+  background-color: var(--ms-primary);
+  background-image: $ms-check-icon;
+}
+
+// Read-only values: a quiet fill and no border, so they no longer read as inputs.
+.frappe-control .like-disabled-input,
+.frappe-control .control-value.like-disabled-input {
+  border-color: transparent;
+  background: rgba(var(--ms-tint-rgb), .04);
+}
+
+.form-control:disabled, .frappe-control input:disabled,
+.frappe-control select:disabled, .frappe-control textarea:disabled {
+  border-color: var(--ms-border);
+  background: rgba(var(--ms-tint-rgb), .04);
+  color: var(--ms-text-muted);
+  cursor: not-allowed;
+}
+
+// Missing or invalid values.
+.has-error .form-control, .has-error .frappe-control input, .has-error .input-with-feedback,
+.frappe-control.has-error .awesomplete .input-with-feedback {
+  border-color: var(--ms-danger);
+  box-shadow: 0 0 0 3px var(--ms-danger-bg);
+}
+
+.has-error .control-label, .has-error .help-block { color: var(--ms-danger-text); }
+
+// Datepicker: the accent for the selected day (via the bridge), a ring for today, and
+// legible neighbouring-month days (air-datepicker's #dedede was 1.35:1).
+.datepicker {
+  border-color: var(--ms-border);
+  border-radius: var(--ms-radius-lg);
+  box-shadow: var(--ms-shadow-md);
+}
+
+.datepicker .datepicker--day-name { color: var(--ms-text-muted); font-size: var(--ms-font-xs); font-weight: 600; }
+.datepicker .datepicker--nav-action, .datepicker .datepicker--nav-title, .datepicker .datepicker--button { border-radius: var(--ms-radius-sm); }
+.datepicker .datepicker--nav-title { color: var(--ms-text-strong); font-weight: 700; }
+.datepicker .datepicker--nav-title i { color: var(--ms-text-muted); }
+.datepicker .datepicker--cell { border-radius: var(--ms-radius-sm); }
+.datepicker .datepicker--cell-day.-other-month-,
+.datepicker .datepicker--cell-year.-other-decade- { color: var(--ms-text-muted); }
+.datepicker .datepicker--cell.-current-:not(.-selected-) {
+  color: var(--ms-text-strong);
+  font-weight: 700;
+  box-shadow: inset 0 0 0 1px var(--ms-accent);
+}
+
+// Days outside the allowed range are inactive: dimmed on purpose (WCAG exempts
+// disabled controls), with the not-allowed cursor as the second cue.
+.datepicker .datepicker--cell.-disabled- { color: var(--ms-text-muted); opacity: .52; cursor: not-allowed; }
+
+// Text Editor fields and the small "open link" button inside Link fields.
+.frappe-control .ql-editor:not(.read-mode) { background-color: var(--ms-surface-raised); }
+.frappe-control .link-btn { background-color: transparent; }

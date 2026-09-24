@@ -72,7 +72,7 @@
   --ms-radius-sm: 6px;
   --ms-radius-md: 10px;
   --ms-radius-lg: 14px;
-  --ms-radius-xl: 18px;
+  --ms-radius-xl: 20px;
   --ms-duration-fast: 120ms;
   --ms-duration-normal: 180ms;
   --ms-duration-slow: 280ms;
@@ -87,6 +87,8 @@
   // Light theme.
   --ms-surface: var(--ms-sand);
   --ms-surface-raised: #FFFFFF;
+  // Table headers and footers: a step below the raised surface, opaque for sticky rows.
+  --ms-surface-sunken: var(--ms-sand);
   --ms-text: var(--ms-ink);
   --ms-text-muted: #656C69;
   --ms-text-strong: var(--ms-roots);
@@ -113,6 +115,7 @@
 [data-theme="dark"], .dark {
   --ms-surface: var(--ms-ink);
   --ms-surface-raised: #1C2B24;
+  --ms-surface-sunken: #25332C;
   --ms-text: var(--ms-sand);
   --ms-text-muted: #A9AAA4;
   --ms-text-strong: var(--ms-sand);

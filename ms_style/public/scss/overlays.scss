@@ -29,30 +29,38 @@
   color: var(--ms-link);
 }
 
-.notifications-list .notification-list-body {
-  scrollbar-width: thin;
-  scrollbar-color: var(--ms-accent) transparent;
+// Toasts: the raised surface with a status edge, instead of Frappe's pastel fills.
+.desk-alert {
+  --toast-bg: var(--ms-surface-raised);
+  border: 1px solid var(--ms-border);
+  border-inline-start: 3px solid var(--ms-accent);
+  border-radius: var(--ms-radius-md);
+  box-shadow: var(--ms-shadow-lg);
+  color: var(--ms-text);
 }
 
-.notifications-list .notification-list-body::-webkit-scrollbar {
-  width: 7px;
+.desk-alert.green { --toast-bg: var(--ms-surface-raised); border-inline-start-color: var(--ms-success); }
+.desk-alert.red { --toast-bg: var(--ms-surface-raised); border-inline-start-color: var(--ms-danger); }
+.desk-alert.orange, .desk-alert.yellow { --toast-bg: var(--ms-surface-raised); border-inline-start-color: var(--ms-warning); }
+.desk-alert.blue { --toast-bg: var(--ms-surface-raised); border-inline-start-color: var(--ms-info); }
+.desk-alert .alert-message { color: var(--ms-text); }
+.desk-alert .alert-subtitle, .desk-alert .next-action-container .next-action { color: var(--ms-text-muted); }
+
+// Search results and other matches: the accent tint instead of Frappe's yellow.
+mark, .mark {
+  padding: 0 1px;
+  border-radius: var(--ms-radius-sm);
+  background: rgba(var(--ms-accent-rgb), .18);
+  // Matches inside links kept the accent colour, 3.7:1 on this tint.
+  color: var(--ms-text-strong);
 }
 
-.notifications-list .notification-list-body::-webkit-scrollbar-track {
-  margin: 10px 0;
-  border-radius: 999px;
-  background: rgba(var(--ms-tint-rgb), .04);
-}
+// Popovers (filters, sort, group-by) share the menu surface.
+.popover .popover-body, .popover .popover-header { color: var(--ms-text); }
+.popover .popover-header { border-color: var(--ms-border); background: transparent; font-weight: 700; }
 
-.notifications-list .notification-list-body::-webkit-scrollbar-thumb {
-  min-height: 64px;
-  border: 2px solid var(--ms-surface-raised);
-  border-radius: 999px;
-  background: var(--ms-accent);
-  box-shadow: 0 2px 8px rgba(var(--ms-shadow-rgb), .18);
-}
-
-.notifications-list .notification-list-body::-webkit-scrollbar-thumb:hover {
-  background: var(--ms-text-strong);
-  box-shadow: 0 3px 12px rgba(var(--ms-shadow-rgb), .28);
+// Keyboard hints in the search dialog footer.
+.awesomebar-modal-footer .help-navigation .help-item {
+  border-radius: var(--ms-radius-sm);
+  font-size: var(--ms-font-xs);
 }

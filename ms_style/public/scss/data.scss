@@ -31,7 +31,49 @@
 }
 
 .grid-row:hover { background: var(--ms-primary-soft); }
-.grid-heading-row { background: var(--ms-surface); color: var(--ms-text-muted); font-weight: 700; }
+
+// The strip under a child table (Add Row, Download) took Frappe's --fg-color, a darker
+// band than the form surface in the dark theme.
+.form-grid-container .grid-footer, .grid-field .grid-footer { background-color: transparent; }
+.grid-heading-row { background: var(--ms-surface-sunken); color: var(--ms-text-muted); font-weight: 700; }
+.grid-heading-row .grid-row, .grid-heading-row .grid-static-col, .grid-heading-row .row-check,
+.grid-heading-row .row-index { background-color: var(--ms-surface-sunken); }
 .grid-row .grid-static-col, .grid-row .data-row { border-color: var(--ms-border); }
 
 .frappe-list .list-paging-area .btn, .pagination .page-link { border-radius: var(--ms-radius-sm); }
+
+// One table language for child tables, report datatables and the tree: a sunken header
+// (lists keep a raised header: on the Sand page a sunken one read as detached), tinted
+// rows on hover, tabular figures and an emphasised totals row.
+
+.datatable, .grid-body, .frappe-list .list-row-container, .form-grid, .report-summary {
+  font-variant-numeric: tabular-nums;
+}
+
+.datatable .dt-footer .dt-row, .datatable .dt-row-totalRow .dt-cell {
+  background: var(--ms-surface-sunken);
+  color: var(--ms-text-strong);
+  font-weight: 700;
+}
+
+.datatable .dt-footer { border-top: 1px solid var(--ms-border-strong); }
+.datatable .dt-cell, .datatable .dt-cell--header { border-color: var(--ms-border); }
+
+// Empty states: muted copy under Frappe's illustration, and a clear heading line.
+.frappe-list .no-result .msg-box p, .no-result .msg-box p { color: var(--ms-text-muted); }
+.frappe-list .no-result .msg-box p:first-of-type { color: var(--ms-text-strong); font-weight: 600; }
+.grid-empty { background: transparent; color: var(--ms-text-muted); }
+
+.tree .tree-node .tree-label, .tree-link { color: var(--ms-text); }
+.tree .tree-link.active .tree-label, .tree .tree-link:hover .tree-label { color: var(--ms-text-strong); }
+.tree .tree-link.active { background: var(--ms-primary-soft); border-radius: var(--ms-radius-sm); }
+
+.datatable .dt-header .dt-row-header, .datatable .dt-header .dt-cell--header,
+.datatable .dt-header .dt-cell--header .dt-cell__content {
+  background-color: var(--ms-surface-sunken);
+}
+
+// The child-table body and empty area take the form surface (Frappe used grey 50).
+.form-grid, .form-grid .grid-body { background-color: var(--ms-surface-raised); }
+
+.progress { background-color: rgba(var(--ms-tint-rgb), .08); }

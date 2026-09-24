@@ -104,9 +104,22 @@ button, a, [role="button"], .btn, .form-control, .standard-sidebar-item,
     opacity var(--ms-duration-normal) var(--ms-ease);
 }
 
-*:focus-visible {
+*:focus-visible,
+// Frappe drops the outline on `a:focus` and `.btn:focus`, which outrank a bare
+// :focus-visible and left most buttons and links with no keyboard focus at all.
+:is(a, button, .btn, summary, .nav-link, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
   outline: 2px solid var(--ms-accent);
   outline-offset: 2px;
+}
+
+// Inside menus and lists the ring sits inside the item so scroll containers don't clip it.
+:is(.dropdown-menu, .awesomplete ul, .frappe-menu, .notifications-list) :is(a, button, li, .dropdown-item):focus-visible {
+  outline-offset: -2px;
+}
+
+// The sidebar, navbar and mobile footer are Roots green in every theme.
+:is(.body-sidebar, .desktop-navbar, .ms-mobile-footer) :is(a, button, .btn, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline-color: var(--ms-mint);
 }
 
 ::selection {
@@ -122,3 +135,12 @@ button, a, [role="button"], .btn, .form-control, .standard-sidebar-item,
 .text-muted, .text-muted small, .help-box, .form-control-help {
   color: var(--ms-text-muted) !important;
 }
+
+// Frappe's extra-muted grey (placeholders, "No rows", "No Data") is 2.9:1; placeholders
+// are the same tone. Both take the AA muted tone, still lighter than entered values.
+.text-extra-muted { color: var(--ms-text-muted) !important; }
+.form-control::placeholder, input::placeholder, textarea::placeholder { color: var(--ms-text-muted); }
+
+.text-danger { color: var(--ms-danger-text) !important; }
+.text-success { color: var(--ms-success-text) !important; }
+.text-warning { color: var(--ms-warning-text) !important; }

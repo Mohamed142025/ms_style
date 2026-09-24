@@ -9,3 +9,24 @@
 .indicator-pill.orange, .indicator-pill.warning, .badge-warning { background: var(--ms-warning-bg); color: var(--ms-warning-text); }
 .indicator-pill.red, .indicator-pill.danger, .badge-danger { background: var(--ms-danger-bg); color: var(--ms-danger-text); }
 .indicator-pill.blue, .indicator-pill.info, .badge-info { background: var(--ms-info-bg); color: var(--ms-info-text); }
+
+// Frappe's dark avatars put a pale tint on a mid-tone fill (about 2:1); use dark ink
+// letters on the same fills instead. Orange and red fills fail with either letter
+// colour, so they move to the status tones.
+[data-theme="dark"] {
+  --orange-avatar-bg: var(--ms-warning-text);
+  --orange-avatar-color: var(--ms-ink);
+  --pink-avatar-color: var(--ms-ink);
+  --blue-avatar-color: var(--ms-ink);
+  --green-avatar-color: var(--ms-ink);
+  --dark-green-avatar-color: var(--ms-ink);
+  --red-avatar-bg: var(--ms-danger);
+  --red-avatar-color: var(--ms-on-dark);
+  --yellow-avatar-color: var(--ms-ink);
+}
+
+// The document image placeholder (initial letter) in the form sidebar.
+.sidebar-standard-image .standard-image {
+  background: var(--ms-primary-soft);
+  color: var(--ms-accent);
+}
