@@ -3,8 +3,19 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-.modal.show .modal-dialog, .frappe-dialog.show, .dropdown-menu.show {
+@keyframes ms-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal.show .modal-dialog, .frappe-dialog.show {
   animation: ms-fade-up var(--ms-duration-slow) var(--ms-ease) both;
+}
+
+// Popper positions dropdown menus with an inline transform. Animating transform here
+// (fill-mode both) replaced it, so menus stayed at the toggle and ran out of their card.
+.dropdown-menu.show {
+  animation: ms-fade-in var(--ms-duration-slow) var(--ms-ease) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

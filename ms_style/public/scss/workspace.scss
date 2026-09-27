@@ -50,12 +50,13 @@
   .ms-work-heading h2 { color: var(--ms-heading); font-size: 20px; font-weight: 800; line-height: 1.2; }
   .ms-work-heading p { margin-top: 4px; color: var(--ms-text-muted); font-size: 11px; }
   .ms-work-status-dot { width: 10px; height: 10px; flex: 0 0 auto; margin-top: 4px; border-radius: 50%; background: var(--ms-accent); box-shadow: 0 0 0 5px rgba(var(--ms-accent-rgb), .12); }
-  .ms-work-summary, .ms-work-quick-actions { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; }
-  .ms-work-summary button { padding: 7px 4px; border: 1px solid rgba(var(--ms-accent-rgb), .18); border-radius: var(--ms-radius-md); background: var(--ms-surface-raised); color: inherit; text-align: center; cursor: pointer; }
+  // Summary: two columns of number + label, like Quick create below it. Four in a row
+  // left 58px per box, too narrow for "Approvals" at 11px and wrapping "Open items".
+  .ms-work-summary, .ms-work-quick-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+  .ms-work-summary button { display: flex; min-width: 0; min-height: 44px; align-items: center; gap: 6px; padding: 7px 8px; border: 1px solid rgba(var(--ms-accent-rgb), .18); border-radius: var(--ms-radius-md); background: var(--ms-surface-raised); color: inherit; text-align: start; cursor: pointer; }
   .ms-work-summary button:hover, .ms-work-summary button:focus-visible { border-color: var(--ms-accent); background: var(--ms-primary-soft); outline: none; }
-  .ms-work-summary strong, .ms-work-summary span { display: block; }
-  .ms-work-summary strong { color: var(--ms-text-strong); font-size: var(--ms-font-xl); line-height: 1.1; }
-  .ms-work-summary span { margin-top: 4px; color: var(--ms-text-muted); font-size: 11px; line-height: 1.25; }
+  .ms-work-summary strong { flex: none; color: var(--ms-text-strong); font-size: var(--ms-font-xl); line-height: 1; font-variant-numeric: tabular-nums; }
+  .ms-work-summary span { min-width: 0; color: var(--ms-text-muted); font-size: var(--ms-font-xs); line-height: 1.25; }
   .ms-work-section { padding-top: 11px; border-top: 1px solid var(--ms-border); }
   .ms-work-section-title { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
   .ms-work-section h3 { color: var(--ms-text-muted); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
@@ -349,6 +350,14 @@ html.ms-desktop-icons-ready .desktop-container > .icons-container > .icons > .de
   overflow: hidden;
 }
 
+// Workspace edit mode: a paragraph opens its "Templates" list below itself (Frappe puts
+// it at top: 55px). The card clipping hid the list, and the hover lift moved it under
+// the pointer so the items flickered between hovered and not and clicks were lost.
+.codex-editor .widget.paragraph.edit-mode {
+  overflow: visible;
+  transform: none;
+}
+
 #freeze.in {
   opacity: 1;
   background: rgba(var(--ms-surface-rgb), .78);
@@ -397,25 +406,123 @@ html.ms-desktop-icons-ready .desktop-container > .icons-container > .icons > .de
   font-weight: 700;
 }
 
-.number-widget-box {
-  min-height: 132px;
+// Number cards -------------------------------------------------------------------------
+// A branded tile: a marker on the start edge level with the title (as in the sidebar),
+// the figure large in roots green, the change as a chip, and a soft accent glow and ring
+// in the bottom corner over a sand wash. Only palette tokens are used, so dark mode
+// follows with mint accents. All painted with gradients: no images and no extra DOM. A
+// Number Card's own Background Color and Color are inline styles and still win.
+// Nothing here needs clipping, and clipping cut off the "..." menu (Refresh / Edit).
+.widget.number-widget-box {
+  --ms-card-corner: 100%;
   position: relative;
+  overflow: visible;
+  gap: 8px;
+  min-height: 128px;
+  padding: 18px 20px 16px;
+  container-type: inline-size;
+  background-color: var(--ms-surface-raised);
+  background-image:
+    linear-gradient(180deg, rgba(var(--ms-accent-rgb), .045), transparent 38%),
+    radial-gradient(circle at var(--ms-card-corner) 100%, transparent 0 52px, rgba(var(--ms-accent-rgb), .08) 53px 72px, transparent 73px),
+    radial-gradient(190px 130px at var(--ms-card-corner) 100%, rgba(var(--ms-accent-rgb), .1), transparent 70%),
+    linear-gradient(180deg, transparent 45%, rgba(var(--ms-surface-rgb), .6));
 }
 
-// Week-on-week change under each number: status tones that pass AA on the card
-// (Frappe's green-500 was 2.4:1 and its grey 4.2:1).
+html[dir="rtl"] .widget.number-widget-box { --ms-card-corner: 0%; }
+
+// Keep an open menu above the next card.
+.widget.number-widget-box:has(.card-actions.show) { z-index: 3; }
+
+.widget.number-widget-box .widget-head { padding: 0; }
+
+.widget.number-widget-box .widget-head .widget-label .widget-title,
+.widget.number-widget-box .widget-head .widget-label .widget-title .ellipsis {
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-sm);
+  font-weight: 600;
+}
+
+// The "..." menu as a round button.
+.widget.number-widget-box .widget-head .card-actions > a {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--ms-text-muted);
+  line-height: 1;
+  transition: background-color var(--ms-duration-normal) var(--ms-ease), color var(--ms-duration-normal) var(--ms-ease);
+}
+
+.widget.number-widget-box .widget-head .card-actions > a:hover,
+.widget.number-widget-box .widget-head .card-actions.show > a {
+  background: var(--ms-primary-soft);
+  color: var(--ms-accent);
+}
+
+.widget.number-widget-box .widget-body { text-align: start; }
+
+.widget.number-widget-box .widget-body .widget-content { padding: 0; }
+
+.widget.number-widget-box .widget-body .widget-content .number {
+  margin-top: 2px;
+  color: var(--ms-text-strong);
+  font-size: clamp(22px, 10cqi, 30px);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+}
+
+// Change since the last period: status tones that pass AA on the card (Frappe's
+// green-500 was 2.4:1 and its grey 4.2:1), shown as a chip.
+.widget.number-widget-box .widget-body .widget-content .card-stats { margin-top: 10px; }
 .widget.number-widget-box .widget-body .widget-content .green-stat { color: var(--ms-success-text); }
 .widget.number-widget-box .widget-body .widget-content .red-stat { color: var(--ms-danger-text); }
 .widget.number-widget-box .widget-body .widget-content .grey-stat { color: var(--ms-text-muted); }
 
-.widget .indicator, .number-card .number, .number-widget-box .number {
+.widget.number-widget-box .widget-body .widget-content .percentage-stat-area {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--ms-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--ms-border);
+  font-size: var(--ms-font-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+// The status tint over the chip's solid surface, not over the card's wash.
+.widget.number-widget-box .widget-body .widget-content .green-stat .percentage-stat-area {
+  background: linear-gradient(var(--ms-success-bg), var(--ms-success-bg)), var(--ms-surface-raised);
+  box-shadow: none;
+}
+
+.widget.number-widget-box .widget-body .widget-content .red-stat .percentage-stat-area {
+  background: linear-gradient(var(--ms-danger-bg), var(--ms-danger-bg)), var(--ms-surface-raised);
+  box-shadow: none;
+}
+
+.widget.number-widget-box .widget-body .widget-content .percentage-stat-area .indicator-pill-round {
+  margin-inline-start: -6px;
+  background: transparent;
+  color: inherit;
+}
+
+.widget.number-widget-box .widget-body .widget-content :is(.green-stat, .red-stat) use { stroke: currentColor; }
+
+.widget .indicator, .number-card .number {
   color: var(--ms-link);
   font-weight: 700;
 }
 
 .widget-title, .widget-title .ellipsis { color: var(--ms-text); }
 
-.widget-content, .number-widget-box .widget-content { padding: 8px 16px 16px; }
+.widget-content { padding: 8px 16px 16px; }
 
 .workspace-layout .widget-group-title,
 .workspace-layout .h4,
@@ -517,15 +624,148 @@ html[dir="rtl"] .widget.links-widget-box .link-item:focus-visible .icon {
   transform: translate(2px, -2px) scaleX(-1);
 }
 
+// Workspace cards: links, number and chart ------------------------------------------------
+// One family: a raised card with a faint accent wash at the top, a marker beside the
+// title (as in the sidebar), and a soft neon line along the top edge that brightens on
+// hover. Emerald on light, mint on dark. All static gradients and shadows: no images,
+// no backdrop filters, and only transform, shadow and opacity change on hover.
+.widget:is(.links-widget-box, .number-widget-box, .dashboard-widget-box) {
+  --ms-card-marker-top: 19px;
+  position: relative;
+  border-color: rgba(var(--ms-tint-rgb), .1);
+  border-radius: var(--ms-radius-xl);
+  background-color: var(--ms-surface-raised);
+  box-shadow:
+    inset 0 1px 0 var(--ms-card-highlight),
+    0 1px 2px rgba(var(--ms-shadow-rgb), .04),
+    0 12px 28px -18px rgba(var(--ms-shadow-rgb), .22);
+  transition: transform var(--ms-duration-slow) var(--ms-ease), box-shadow var(--ms-duration-slow) var(--ms-ease),
+    border-color var(--ms-duration-slow) var(--ms-ease);
+}
+
+.widget:is(.links-widget-box, .dashboard-widget-box) {
+  background-image: linear-gradient(180deg, rgba(var(--ms-accent-rgb), .045), transparent 38%);
+}
+
+.widget:is(.links-widget-box, .number-widget-box, .dashboard-widget-box)::before {
+  content: "";
+  position: absolute;
+  top: var(--ms-card-marker-top);
+  inset-inline-start: 0;
+  width: 3px;
+  height: 18px;
+  border-start-end-radius: 3px;
+  border-end-end-radius: 3px;
+  background: var(--ms-accent);
+  box-shadow: 0 0 10px var(--ms-neon-glow);
+}
+
+.widget:is(.links-widget-box, .number-widget-box, .dashboard-widget-box)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ms-neon), transparent);
+  box-shadow: 0 0 12px 1px var(--ms-neon-glow);
+  opacity: .5;
+  pointer-events: none;
+  transition: opacity var(--ms-duration-slow) var(--ms-ease);
+}
+
+@media (hover: hover) {
+  .widget:is(.links-widget-box, .number-widget-box, .dashboard-widget-box):hover {
+    border-color: rgba(var(--ms-accent-rgb), .3);
+    box-shadow:
+      inset 0 1px 0 var(--ms-card-highlight),
+      0 0 0 1px rgba(var(--ms-accent-rgb), .06),
+      0 18px 36px -20px var(--ms-neon-glow);
+    transform: translateY(-2px);
+  }
+
+  .widget:is(.links-widget-box, .number-widget-box, .dashboard-widget-box):hover::after { opacity: 1; }
+}
+
+// On touch screens a tap leaves :hover behind; the card should not stay lifted.
+@media (hover: none) {
+  .widget:is(.links-widget-box, .number-widget-box, .dashboard-widget-box):hover { transform: none; }
+}
+
+.widget:is(.links-widget-box, .dashboard-widget-box) {
+  padding: 18px 20px 14px;
+}
+
+.widget:is(.links-widget-box, .dashboard-widget-box) .widget-head { padding: 0 0 10px; }
+
+.widget:is(.links-widget-box, .dashboard-widget-box) .widget-head .widget-label .widget-title,
+.widget:is(.links-widget-box, .dashboard-widget-box) .widget-head .widget-label .widget-title .ellipsis {
+  color: var(--ms-text-strong);
+  font-size: var(--ms-font-lg);
+  font-weight: 700;
+}
+
+// The chart's own box was styled as a second card inside the card.
+.widget.dashboard-widget-box {
+  --ms-card-marker-top: 23px;
+}
+
+.widget.dashboard-widget-box .chart-container {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+// The brand line glows softly; lines in a colour chosen on the chart stay as they are.
+.widget.dashboard-widget-box .chart-container .line-graph-path:is([style*="rgb(25, 123, 87)"], [style*="rgb(52, 211, 153)"]) {
+  filter: drop-shadow(0 0 4px var(--ms-neon-glow));
+}
+
+// Workspace pages: the cards sit on the page itself, under a soft accent glow, instead of
+// on a white column that the white cards disappeared into.
+.page-container[data-page-route="Workspaces"] {
+  background-image: radial-gradient(1100px 420px at 50% -120px, rgba(var(--ms-accent-rgb), .09), transparent 72%);
+  background-repeat: no-repeat;
+}
+
+.page-container[data-page-route="Workspaces"] .layout-main-section:not(.edit-mode) {
+  background-color: transparent;
+}
+
+// Bootstrap sizes the columns by the screen, not by the room the workspace has: a
+// tablet with the sidebar open got three ~175px columns that cut titles and wrapped
+// amounts. Size them by the workspace width instead.
+.page-container[data-page-route="Workspaces"] .codex-editor__redactor {
+  container: ms-workspace / inline-size;
+}
+
+@container ms-workspace (max-width: 780px) {
+  .codex-editor__redactor > .ce-block.col-md-4 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@container ms-workspace (max-width: 480px) {
+  .codex-editor__redactor > .ce-block:is(.col-sm-6, .col-md-4) {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .widget:is(.links-widget-box, .number-widget-box, .dashboard-widget-box),
+  .widget:is(.links-widget-box, .number-widget-box, .dashboard-widget-box)::after {
+    transition: none;
+  }
+
+  .widget:is(.links-widget-box, .number-widget-box, .dashboard-widget-box):hover { transform: none; }
+}
+
 // Chart widget filter button: the same secondary surface as the "..." menu next to it.
 .widget.dashboard-widget-box .filter-chart {
   background-color: var(--ms-surface-raised);
   box-shadow: inset 0 0 0 1px var(--ms-border-strong);
-}
-
-.widget.number-widget-box .widget-body .widget-content .indicator-pill-round.green {
-  background: var(--ms-success-bg);
-  color: var(--ms-success-text);
 }
 
 // Chart placeholder ("No Data") on the radius scale.

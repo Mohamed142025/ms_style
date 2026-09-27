@@ -335,11 +335,17 @@
     });
   }
 
-  function loadMyWorkCenter() {
-    if (myWorkCenterLoaded || myWorkCenterLoading || !window.frappe?.call) return;
+  // `refresh` re-reads data that is already shown (on coming back to the desk home);
+  // the current data stays on screen until the answer arrives, and if that request
+  // fails.
+  function loadMyWorkCenter(refresh = false) {
+    if ((myWorkCenterLoaded && !refresh) || myWorkCenterLoading || !window.frappe?.call) return;
     myWorkCenterLoading = true;
     window.frappe.call({
       method: "ms_style.ms_style.api.get_my_work_center",
+      // Visits Frappe's router has not sent yet (it batches them for 10 seconds), so
+      // "Most used" already counts the page the user just came back from.
+      args: { pending_routes: (window.frappe.route_history_queue || []).map((entry) => entry.route) },
       callback: (response) => {
         myWorkCenterLoaded = true;
         myWorkCenterLoading = false;
@@ -349,6 +355,7 @@
       },
       error: () => {
         myWorkCenterLoading = false;
+        if (refresh && myWorkCenterLoaded) return;
         myWorkCenterFailed = true;
         window.msMyWorkCenterData = { counts: { actions: 0, approvals: 0, tasks: 0, drafts: 0 } };
         renderMyWorkCenter(window.msMyWorkCenterData);
@@ -406,6 +413,7 @@
     const panel = overlay.querySelector(".ms-work-center-modal");
     if (myWorkCenterLoaded) {
       renderMyWorkCenter(window.msMyWorkCenterData || {});
+      loadMyWorkCenter(true);
     } else {
       panel.innerHTML = `<div class="ms-work-loading">${t("Loading your work center...")}</div>`;
       loadMyWorkCenter();
@@ -517,6 +525,18 @@
     }
   }
 
+  // Workspace edit mode: Frappe hides a paragraph's "Templates" list when the paragraph
+  // blurs, unless the pointer is already over an item. Pressing anywhere in the list
+  // blurred the paragraph first, so the list could vanish before the click arrived.
+  // Keeping focus in the paragraph during that press lets the item's click run as usual.
+  function bindBlockListFocus() {
+    if (root.dataset.msBlockListFocus) return;
+    root.dataset.msBlockListFocus = "true";
+    document.addEventListener("mousedown", (event) => {
+      if (event.target.closest?.(".codex-editor .block-list-container.dropdown-list")) event.preventDefault();
+    }, true);
+  }
+
   function initialize() {
     applyNavbarLogo();
     applyDesktopIcons();
@@ -525,15 +545,19 @@
     applyUserGreeting();
     applyLanguageSwitcher();
     forgetLegacyVisitLog();
+    bindBlockListFocus();
     applyMobileFooter();
     applyMyWorkCenter();
     bindResetLayoutLoading();
     window.frappe?.router?.on?.("change", () => {
       applyMobileFooter();
       // A failed load gets one fresh attempt each time the user comes back to the desk home.
-      if (myWorkCenterFailed && /^\/desk\/?$/.test(window.location.pathname)) myWorkCenterFailed = false;
+      const isDeskHome = /^\/desk\/?$/.test(window.location.pathname);
+      if (myWorkCenterFailed && isDeskHome) myWorkCenterFailed = false;
       applyMyWorkCenter();
       if (myWorkCenterLoaded) renderMyWorkCenter(window.msMyWorkCenterData || {});
+      // Back on the desk home: show the last data at once, then fetch the current one.
+      if (myWorkCenterLoaded && isDeskHome) loadMyWorkCenter(true);
     });
     if (!document.documentElement.dataset.msFooterResizeSync) {
       document.documentElement.dataset.msFooterResizeSync = "true";

@@ -20,3 +20,246 @@
 }
 
 .form-sidebar-stats, .form-sidebar .sidebar-label { color: var(--ms-text-muted); }
+
+// Form sidebar -------------------------------------------------------------------------
+// One floating card in the side column: a header with the full title, the document
+// number and its actions; the Assign/Attachments/Tags/Share rows; and a small timeline
+// of who edited and created the document. Frappe's markup and behaviour are unchanged.
+
+@media (min-width: 992px) {
+  body[data-route^="Form"] .layout-side-section {
+    padding: 12px;
+    border-inline: 0;
+    // The column scrolls on its own; show its scrollbar only while it is in use.
+    scrollbar-color: transparent transparent;
+  }
+
+  body[data-route^="Form"] .layout-side-section:hover {
+    scrollbar-color: var(--scrollbar-thumb-color) transparent;
+  }
+
+  body[data-route^="Form"] .layout-side-section .form-sidebar {
+    width: auto;
+    overflow: hidden;
+    border: 1px solid var(--ms-border);
+    border-radius: var(--ms-radius-xl);
+    background: var(--ms-surface-raised);
+    box-shadow: var(--ms-shadow-sm);
+  }
+}
+
+// Header: title on up to two lines, the number as a chip, actions as one button row.
+.form-sidebar .sidebar-meta-details {
+  padding: 16px;
+  border-bottom: 1px solid var(--ms-border);
+  background: linear-gradient(180deg, rgba(var(--ms-accent-rgb), .08), transparent 72%);
+}
+
+.form-sidebar .sidebar-meta-details > .flex {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  overflow: visible;
+}
+
+.form-sidebar .sidebar-meta-details > .flex > .ellipsis {
+  overflow: visible;
+  white-space: normal;
+}
+
+.form-sidebar .form-title-text { line-height: 1.35; }
+
+.form-sidebar .form-title-text > span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin: 0;
+  overflow: hidden;
+  color: var(--ms-text-strong);
+  font-size: var(--ms-font-lg);
+  font-weight: 700;
+  white-space: normal;
+}
+
+.form-sidebar .form-name-copy { margin-top: 8px; }
+
+.form-sidebar .form-name-copy > span {
+  display: inline-block;
+  max-width: 100%;
+  margin: 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(var(--ms-tint-rgb), .08);
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background-color var(--ms-duration-normal) var(--ms-ease), color var(--ms-duration-normal) var(--ms-ease);
+}
+
+.form-sidebar .form-name-copy:hover > span { background: var(--ms-primary-soft); color: var(--ms-text-strong); }
+
+.form-sidebar .form-stats-likes {
+  align-items: center;
+  gap: 6px;
+}
+
+// The edit and print buttons sit in wrapper divs whose line box added space below them,
+// so they stood lower than the like button.
+.form-sidebar .form-stats-likes > div { display: flex; }
+
+.form-sidebar .form-stats-likes .icon-btn,
+.form-sidebar .form-stats-likes .liked-by {
+  display: inline-grid;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  min-height: 32px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ms-radius-md);
+  background: var(--ms-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--ms-border-strong);
+  color: var(--ms-text-muted);
+  cursor: pointer;
+  transition: background-color var(--ms-duration-normal) var(--ms-ease), box-shadow var(--ms-duration-normal) var(--ms-ease), color var(--ms-duration-normal) var(--ms-ease);
+}
+
+.form-sidebar .form-stats-likes .icon-btn:hover,
+.form-sidebar .form-stats-likes .liked-by:hover {
+  background: var(--ms-primary-soft);
+  box-shadow: inset 0 0 0 1px rgba(var(--ms-accent-rgb), .28);
+  color: var(--ms-accent);
+}
+
+.form-sidebar .form-stats-likes .icon-btn .icon,
+.form-sidebar .form-stats-likes .liked-by .icon { --icon-stroke: currentColor; stroke: currentColor; }
+
+// Assign / Attachments / Tags / Share: rows with a tinted icon tile and an add button
+// that lights up with the row.
+.form-sidebar .sidebar-section:is(.form-assignments, .form-attachments, .form-tags, .form-shared) {
+  padding: 2px 8px;
+}
+
+.form-sidebar .sidebar-meta-details + .sidebar-section { padding-top: 8px; }
+.form-sidebar .sidebar-section.form-shared.border-bottom { padding-bottom: 8px; border-bottom-color: var(--ms-border); }
+
+.form-sidebar .sidebar-section .form-sidebar-items {
+  min-height: 40px;
+  padding: 4px 6px 4px 8px;
+  border-radius: var(--ms-radius-md);
+  color: var(--ms-text);
+  transition: background-color var(--ms-duration-normal) var(--ms-ease);
+}
+
+.form-sidebar .sidebar-section .form-sidebar-items:hover { background: var(--ms-primary-soft); }
+
+.form-sidebar .sidebar-section .form-sidebar-items a,
+.form-sidebar .form-sidebar-label {
+  gap: 10px;
+  color: var(--ms-text);
+  font-weight: 500;
+}
+
+.form-sidebar .form-sidebar-label > .icon {
+  box-sizing: content-box;
+  width: 16px;
+  height: 16px;
+  padding: 6px;
+  border-radius: var(--ms-radius-sm);
+  background: rgba(var(--ms-accent-rgb), .12);
+  stroke: var(--ms-accent);
+  --icon-stroke: var(--ms-accent);
+}
+
+.form-sidebar .sidebar-section .form-sidebar-items .icon-btn {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  place-items: center;
+  padding: 0;
+  border-radius: 999px;
+  color: var(--ms-text-muted);
+  transition: background-color var(--ms-duration-normal) var(--ms-ease), color var(--ms-duration-normal) var(--ms-ease);
+}
+
+.form-sidebar .sidebar-section .form-sidebar-items .icon-btn .icon { stroke: currentColor; --icon-stroke: currentColor; }
+
+.form-sidebar .sidebar-section .form-sidebar-items:hover .icon-btn { background: rgba(var(--ms-accent-rgb), .12); color: var(--ms-accent); }
+.form-sidebar .sidebar-section .form-sidebar-items .icon-btn:hover { background: var(--ms-primary); color: var(--ms-on-dark); }
+
+// What each row lists (assignees, files, people it is shared with, tags) lines up with
+// the row itself. Frappe pulls these lists out with negative margins sized for its own
+// padding, which pushed them past the row edge here.
+.form-sidebar :is(.assignments, .shares) { margin-top: 4px; }
+
+.form-sidebar :is(.assignments, .shares) .dialog-assignment-row {
+  height: 32px;
+  margin: 0 0 2px;
+  padding: 0 8px;
+  border-radius: var(--ms-radius-md);
+}
+
+.form-sidebar :is(.assignments, .shares) .dialog-assignment-row:hover,
+.form-sidebar .attachment-row .data-pill:hover { background-color: var(--ms-primary-soft); }
+
+.form-sidebar .attachment-row { margin: 2px 0; padding-inline-start: 2px; }
+.form-sidebar .attachment-row .data-pill { border-radius: var(--ms-radius-md); }
+.form-sidebar .shares { padding-inline: 8px; }
+.form-sidebar .form-tags .form-tag-row { padding-inline: 8px; }
+
+// Who edited and created the document: a small timeline.
+.form-sidebar .sidebar-section.text-muted { padding: 16px; }
+
+.form-sidebar .sidebar-menu {
+  position: relative;
+  margin: 0;
+  padding-inline-start: 20px;
+}
+
+.form-sidebar .sidebar-menu::before {
+  content: "";
+  position: absolute;
+  inset-block: 6px 18px;
+  inset-inline-start: 4px;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--ms-border);
+}
+
+.form-sidebar .sidebar-menu > li {
+  position: relative;
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-xs);
+  line-height: 1.4;
+}
+
+.form-sidebar .sidebar-menu > li:is(.modified-by, .created-by)::before {
+  content: "";
+  position: absolute;
+  top: 3px;
+  inset-inline-start: -20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ms-surface-raised);
+  box-shadow: inset 0 0 0 2px var(--ms-accent);
+}
+
+.form-sidebar .sidebar-menu > li.created-by::before { box-shadow: inset 0 0 0 2px var(--ms-border-strong); }
+
+.form-sidebar .sidebar-section .modified-by .frappe-timestamp,
+.form-sidebar .sidebar-section .created-by .frappe-timestamp {
+  margin-top: 2px;
+  color: var(--ms-text-strong);
+  font-size: var(--ms-font-xs);
+  font-weight: 600;
+  // "1 month ago" in an Arabic layout read as "month ago 1".
+  unicode-bidi: plaintext;
+}
+
+// Documents with an image field (Customer, Employee...): the image sits in the card.
+.form-sidebar .sidebar-image-section { padding: 16px 16px 0; }
+.form-sidebar .sidebar-image-section :is(.sidebar-image, .standard-image) { border-radius: var(--ms-radius-lg); }

@@ -107,11 +107,11 @@
   .ms-work-center-modal .ms-work-heading p { margin: 5px 0 0; color: var(--ms-text-muted); font-size: 11px; }
   .ms-work-center-modal .ms-work-eyebrow { display: block; margin-bottom: 7px; color: var(--ms-accent); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
   .ms-work-center-modal .ms-work-status-dot { width: 9px; height: 9px; flex: 0 0 auto; border-radius: 50%; background: var(--ms-accent); }
-  .ms-work-center-modal .ms-work-summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
-  .ms-work-center-modal .ms-work-summary button { padding: 8px 3px; border: 1px solid rgba(var(--ms-accent-rgb), .12); border-radius: var(--ms-radius-md); background: var(--ms-surface-raised); color: inherit; text-align: center; }
-  .ms-work-center-modal .ms-work-summary strong, .ms-work-center-modal .ms-work-summary span { display: block; }
-  .ms-work-center-modal .ms-work-summary strong { color: var(--ms-text-strong); font-size: 16px; }
-  .ms-work-center-modal .ms-work-summary span { color: var(--ms-text-muted); font-size: 11px; }
+  // Same summary as the desktop Work Center (workspace.scss): two columns of number + label.
+  .ms-work-center-modal .ms-work-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+  .ms-work-center-modal .ms-work-summary button { display: flex; min-width: 0; min-height: 44px; align-items: center; gap: 6px; padding: 7px 8px; border: 1px solid rgba(var(--ms-accent-rgb), .18); border-radius: var(--ms-radius-md); background: var(--ms-surface-raised); color: inherit; text-align: start; }
+  .ms-work-center-modal .ms-work-summary strong { flex: none; color: var(--ms-text-strong); font-size: var(--ms-font-xl); line-height: 1; font-variant-numeric: tabular-nums; }
+  .ms-work-center-modal .ms-work-summary span { min-width: 0; color: var(--ms-text-muted); font-size: var(--ms-font-xs); line-height: 1.25; }
   .ms-work-center-modal .ms-work-section { padding-top: 12px; border-top: 1px solid var(--ms-border); }
   .ms-work-center-modal .ms-work-section-title { display: flex; justify-content: space-between; margin-bottom: 7px; }
   .ms-work-center-modal .ms-work-section h3 { margin: 0; color: var(--ms-text-muted); font-size: 11px; text-transform: uppercase; }

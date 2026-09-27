@@ -1,11 +1,17 @@
+import json
+
 import frappe
+import redis
 from frappe import _
+from frappe.deferred_insert import queue_prefix
 from urllib.parse import quote
-from frappe.utils import add_days, nowdate, strip_html
+from frappe.utils import add_days, now_datetime, nowdate, strip_html
 
 QUICK_CREATE_LIMIT = 4
 FREQUENT_LIMIT = 5
 ROUTE_HISTORY_DAYS = 30
+# Visits the browser still holds are sent with the request; cap what one call may add.
+PENDING_ROUTES_LIMIT = 50
 # Frappe's own doctypes are framework setup (DocType, Custom Field, Workspace, User...)
 # rather than day-to-day work, apart from these.
 FRAPPE_WORK_DOCTYPES = {"ToDo", "Event", "Note", "Contact", "Address"}
@@ -34,14 +40,45 @@ def get_work_center_support():
 
 
 @frappe.whitelist()
-def get_my_work_center():
+def get_my_work_center(pending_routes=None):
     user = frappe.session.user
     if user == "Guest":
         return {"actions": [], "recent": [], "counts": {"actions": 0, "approvals": 0, "tasks": 0, "drafts": 0}}
 
     # Support details are read outside the per-user cache below so an edit in
     # Website Settings shows up immediately instead of up to a minute later.
-    return {**_get_my_work_center(user), "support": get_work_center_support()}
+    # "Most used" is read outside it too (one grouped query): the visit counts go up as
+    # soon as the user comes back to the desk, including visits not yet written.
+    routes = _get_route_history(user, _get_unsaved_routes(user, pending_routes))
+    return {
+        **_get_my_work_center(user),
+        "frequent": _get_frequent(user, routes),
+        "support": get_work_center_support(),
+    }
+
+
+def _get_unsaved_routes(user, pending_routes=None):
+    """Visits Route History does not have yet.
+
+    Frappe writes them in batches: the browser sends its visits 10 seconds after the
+    last navigation (`pending_routes`, sent by ms_style), and the server queues them
+    for a deferred insert that runs every 15 minutes.
+    """
+    routes = []
+    try:
+        queued = frappe.cache.lrange(f"{queue_prefix}Route History", 0, -1)
+    except redis.exceptions.RedisError:
+        queued = []
+    for batch in queued:
+        records = json.loads(batch)
+        for record in records if isinstance(records, list) else [records]:
+            if record.get("user") == user and record.get("route"):
+                routes.append(record["route"])
+
+    pending = frappe.parse_json(pending_routes) if pending_routes else []
+    if isinstance(pending, list):
+        routes.extend(route for route in pending[:PENDING_ROUTES_LIMIT] if isinstance(route, str) and route)
+    return routes
 
 
 def _get_my_work_center(user):
@@ -163,7 +200,6 @@ def _get_my_work_center(user):
     routes = _get_route_history(user)
     result = {
         "quick_create": _get_quick_create(user, routes, actions),
-        "frequent": _get_frequent(user, routes),
         "actions": actions[:12],
         "recent": [
             {
@@ -187,7 +223,7 @@ def _get_my_work_center(user):
     return result
 
 
-def _get_route_history(user):
+def _get_route_history(user, unsaved_routes=()):
     """Visits per route from Frappe's own Route History, most visited first.
 
     Frappe logs list, report, tree and workspace views there for every user (never
@@ -195,6 +231,7 @@ def _get_route_history(user):
     last ROUTE_HISTORY_DAYS days, or all time for someone with no recent visits, so a
     user back after a break still gets their older habits. Routes outside that window
     stay in the list with count 0: they still show which doctypes the user has opened.
+    `unsaved_routes` are visits Frappe has not written yet; each counts as one visit now.
     """
     since = add_days(nowdate(), -ROUTE_HISTORY_DAYS)
     rows = frappe.db.sql(
@@ -207,6 +244,16 @@ def _get_route_history(user):
         {"user": user, "since": since},
         as_dict=True,
     )
+    by_route = {row.route: row for row in rows}
+    now = now_datetime()
+    for route in unsaved_routes:
+        row = by_route.get(route)
+        if not row:
+            row = by_route[route] = frappe._dict(route=route, recent=0, total=0, last_visit=now)
+            rows.append(row)
+        row.recent = int(row.recent or 0) + 1
+        row.total = int(row.total or 0) + 1
+        row.last_visit = now
     use_recent = any(row.recent for row in rows)
     for row in rows:
         row.count = int((row.recent if use_recent else row.total) or 0)

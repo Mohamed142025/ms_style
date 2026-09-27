@@ -109,6 +109,10 @@
   --ms-shadow-sm: 0 2px 8px rgba(var(--ms-shadow-rgb), .04);
   --ms-shadow-md: 0 8px 25px rgba(var(--ms-shadow-rgb), .08);
   --ms-shadow-lg: 0 20px 60px rgba(var(--ms-shadow-rgb), .12);
+  // Soft "neon" for workspace cards: an accent line and glow, emerald on light.
+  --ms-neon: rgba(var(--ms-accent-rgb), .5);
+  --ms-neon-glow: rgba(var(--ms-accent-rgb), .22);
+  --ms-card-highlight: rgba(255, 255, 255, .8);
   @include ms-derived-tokens;
 }
 
@@ -136,6 +140,10 @@
   --ms-shadow-sm: 0 2px 8px rgba(0, 0, 0, .18);
   --ms-shadow-md: 0 8px 25px rgba(0, 0, 0, .28);
   --ms-shadow-lg: 0 20px 60px rgba(0, 0, 0, .28);
+  // Mint may glow on dark surfaces.
+  --ms-neon: rgba(var(--ms-accent-rgb), .75);
+  --ms-neon-glow: rgba(var(--ms-accent-rgb), .35);
+  --ms-card-highlight: rgba(var(--ms-sand-rgb), .06);
   @include ms-derived-tokens;
   // Inputs and strong dividers need more weight on dark surfaces.
   --ms-border-strong: rgba(var(--ms-tint-rgb), .28);
