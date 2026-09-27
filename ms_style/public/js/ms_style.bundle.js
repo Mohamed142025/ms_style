@@ -1,3 +1,5 @@
+import "./notification_counter";
+
 (() => {
   const root = document.documentElement;
   const iconBasePath = "/assets/ms_style/Icone/";

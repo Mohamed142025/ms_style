@@ -31,6 +31,15 @@ web_include_css = "ms_style.bundle.css"
 web_include_js = "ms_style_web.bundle.js"
 after_migrate = "ms_style.ms_style.setup.after_migrate"
 
+# A changed document notifies its creator and its assignees (ms_style.ms_style.notifications).
+doc_events = {
+    "*": {
+        "on_update": "ms_style.ms_style.notifications.notify_on_update",
+        "on_update_after_submit": "ms_style.ms_style.notifications.notify_on_update",
+        "on_cancel": "ms_style.ms_style.notifications.notify_on_update",
+    },
+}
+
 # include js, css files in header of web template
 # web_include_css = "/assets/ms_style/css/ms_style.css"
 # web_include_js = "/assets/ms_style/js/ms_style.js"

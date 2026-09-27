@@ -300,22 +300,47 @@
 .body-sidebar .keyboard-shortcut { color: var(--ms-on-dark-muted); }
 .body-sidebar .promotional-banner-title { color: var(--ms-mint); }
 
-// gesc_app's unread badge sits over the bell icon; on the sidebar it covered the label.
-// Only its placement and ring change here (its count logic lives in gesc_app).
-.body-sidebar .sidebar-notification .gesc-app-notification-count,
-.desktop-navbar .desktop-notifications .gesc-app-notification-count {
+// The unread count on the bell, in the sidebar and on the desk home. notification_counter.js
+// keeps the number in --ms-unread-count on the root; drawing it here keeps it through every
+// redraw of the sidebar without watching the page.
+.sidebar-notification .sidebar-item-icon,
+.sidebar-notification .standard-sidebar-item,
+.sidebar-notification .item-anchor,
+.desktop-notifications .dropdown-notifications > .nav-link {
+  position: relative;
+  overflow: visible !important;
+}
+
+.ms-has-unread .sidebar-notification .sidebar-item-icon::after,
+.ms-has-unread .desktop-notifications .dropdown-notifications > .nav-link::after {
+  content: var(--ms-unread-count);
+  position: absolute;
   top: -7px;
   right: -9px;
   left: auto;
+  z-index: 2;
+  box-sizing: border-box;
   min-width: 17px;
   height: 17px;
   padding: 0 4px;
   border: 2px solid var(--ms-roots);
   border-radius: 999px;
   background: var(--ms-danger);
+  color: #fff;
   font-size: 11px;
+  font-weight: 700;
   line-height: 13px;
+  text-align: center;
+  pointer-events: none;
 }
+
+// The collapsed sidebar shows the bell alone, without its label.
+.body-sidebar-container:not(.expanded) .sidebar-notification .sidebar-item-label { display: none; }
+
+// Unread notifications stand out from the read ones in the list.
+.notifications-list .notification-item.unread { background-color: var(--ms-primary-soft, rgba(52, 211, 153, .12)); }
+.notifications-list .notification-item.unread:hover { background-color: var(--ms-primary-soft, rgba(52, 211, 153, .2)); }
+.notifications-list .notification-item:not(.unread) { background-color: transparent; }
 
 .body-sidebar .sidebar-header {
   min-height: 58px;
