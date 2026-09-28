@@ -83,11 +83,13 @@
   }
 
   body.ms-mobile-footer-active {
-    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+    --ms-footer-height: calc(66px + env(safe-area-inset-bottom));
   }
 
-  body.ms-mobile-footer-active .desktop-container {
-    padding-bottom: calc(88px + env(safe-area-inset-bottom)) !important;
+  // Pages scroll inside .main-section, not the body, so the room kept for the bottom bar
+  // goes there: the last row of a list or a form ends above the bar.
+  body.ms-mobile-footer-active .main-section {
+    padding-bottom: var(--ms-footer-height);
   }
 
   // Popups share their base rules (workspace.scss); phones only get tighter sizes.
@@ -146,12 +148,19 @@
     bottom: 0;
     left: 0;
     display: flex;
-    min-height: 68px;
-    padding: 7px 10px calc(7px + env(safe-area-inset-bottom));
+    min-height: var(--ms-footer-height);
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
     border-top: 1px solid rgba(var(--ms-accent-rgb), .12);
     background: var(--ms-surface-raised);
     box-shadow: 0 -10px 28px rgba(var(--ms-shadow-rgb), .12);
-    backdrop-filter: blur(16px);
+    transition: transform .2s var(--ms-ease);
+  }
+
+  // Out of the way while the sidebar drawer is open, and while the keyboard is up for a
+  // field (it would sit right above the keyboard, over what is being typed).
+  body:has(.body-sidebar-container.expanded) .ms-mobile-footer,
+  body:has(:is(input:not([type="checkbox"], [type="radio"], [type="button"], [type="submit"], [type="file"]), textarea, [contenteditable="true"]):focus) .ms-mobile-footer {
+    transform: translateY(110%);
   }
 
   .ms-mobile-footer::before {
@@ -166,6 +175,8 @@
   }
 
   .ms-mobile-footer-button {
+    --icon-stroke: currentColor;
+    position: relative;
     display: flex;
     flex: 1 1 0;
     min-width: 0;
@@ -173,44 +184,113 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 4px;
     margin: 0 2px;
-    padding: 5px 4px;
-    border: 1px solid transparent;
+    padding: 6px 2px;
+    border: 0;
     border-radius: var(--ms-radius-lg);
     background: transparent;
     color: var(--ms-text-muted);
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: .01em;
-    transition: background-color .18s ease, color .18s ease, transform .18s ease;
+    line-height: 1.2;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color .15s ease, color .15s ease, transform .1s ease;
   }
 
-  .ms-mobile-footer-button .icon {
-    width: 19px;
-    height: 19px;
-    padding: 3px;
-    border-radius: var(--ms-radius-sm);
-    background: rgba(var(--ms-tint-rgb), .08);
-    color: var(--ms-text);
-    transition: background-color .18s ease, color .18s ease;
+  .ms-mobile-footer-button span {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .ms-mobile-footer-button:hover,
-  .ms-mobile-footer-button:active,
-  .ms-mobile-footer-button:focus-visible {
-    border-color: rgba(var(--ms-accent-rgb), .18);
+  // The icon takes the button's colour, also over the site-wide `button:hover .icon`
+  // accent, which stays on the last tapped button of a touch screen.
+  .ms-mobile-footer .ms-mobile-footer-button .icon {
+    width: 22px;
+    height: 22px;
+    color: inherit;
+  }
+
+  // The page the bar leads to is marked; a tap gives a short press instead of a hover
+  // state that stays on touch screens.
+  .ms-mobile-footer-button.is-active {
+    background: var(--ms-primary-soft);
+    color: var(--ms-link);
+  }
+
+  .ms-mobile-footer-button:active {
     background: var(--ms-primary-soft);
     color: var(--ms-text-strong);
-    outline: none;
-    transform: translateY(-1px);
+    transform: scale(.96);
   }
 
-  .ms-mobile-footer-button:hover .icon,
-  .ms-mobile-footer-button:active .icon,
-  .ms-mobile-footer-button:focus-visible .icon {
-    background: rgba(var(--ms-accent-rgb), .18);
-    color: var(--ms-text-strong);
+  .ms-mobile-footer-button:focus-visible {
+    outline: 2px solid var(--ms-focus);
+    outline-offset: -2px;
+  }
+
+  html[dir="rtl"] .ms-mobile-footer-button[data-action="back"] .icon {
+    transform: scaleX(-1);
+  }
+
+  // Unread notifications, from the same count as the bell (notification_counter.js).
+  .ms-has-unread .ms-mobile-footer-button[data-action="notifications"]::after {
+    content: var(--ms-unread-count);
+    position: absolute;
+    top: 3px;
+    left: calc(50% + 4px);
+    box-sizing: border-box;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    border: 2px solid var(--ms-surface-raised);
+    border-radius: 999px;
+    background: var(--ms-danger);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 14px;
+    text-align: center;
+  }
+
+  // Frappe gives navbars a 3D perspective, which would make the desk home bar, not the
+  // screen, the frame of the notification sheet below.
+  html .desktop-navbar { perspective: none; }
+
+  // Frappe's notification panel as a sheet above the bar. On phones the sidebar keeps it
+  // inside the closed drawer (0px wide) and the desk home bell pushes it past the left
+  // edge. The `html body` prefix outranks Frappe's nested sidebar and phone rules.
+  html body .body-sidebar .standard-items-sections .dropdown-notifications:not(.hidden) .notifications-list,
+  html body .desktop-notifications .dropdown-notifications .notifications-list.show {
+    position: fixed;
+    z-index: 1030;
+    top: auto;
+    right: 8px;
+    bottom: calc(var(--ms-footer-height, 0px) + 8px);
+    left: 8px;
+    display: flex;
+    width: auto;
+    min-width: 0;
+    height: min(70vh, 560px);
+    min-height: 0;
+    max-height: none;
+    flex-direction: column;
+    border: 1px solid var(--ms-border);
+    border-radius: var(--ms-radius-xl);
+    box-shadow: var(--ms-shadow-lg);
+    transform: none;
+  }
+
+  html body .body-sidebar .standard-items-sections .dropdown-notifications:not(.hidden) .notification-list-body,
+  html body .desktop-notifications .dropdown-notifications .notifications-list.show .notification-list-body {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    flex: 1 1 auto;
+    overflow-y: auto;
   }
 
   .body-sidebar { box-shadow: var(--ms-shadow-lg); }

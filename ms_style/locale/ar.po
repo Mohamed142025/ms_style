@@ -133,6 +133,10 @@ msgid "Back"
 msgstr "رجوع"
 
 msgctxt "ms_style"
+msgid "Alerts"
+msgstr "الإشعارات"
+
+msgctxt "ms_style"
 msgid "Approval"
 msgstr "موافقة"
 

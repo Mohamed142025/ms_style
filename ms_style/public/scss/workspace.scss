@@ -15,19 +15,38 @@
 }
 
 @media (min-width: 768px) {
-  html.ms-my-work-center-ready .desktop-container {
+  // The Work Center column is there from the first paint. The panel arrives about a second
+  // after the tiles, and making room for it only then pushed the whole grid sideways and
+  // resized every tile. The `html` prefix outranks Frappe's desktop.css, injected later.
+  html .desktop-container {
     display: grid;
     grid-template-columns: minmax(264px, 286px) minmax(0, 1fr);
     align-items: start;
     gap: 24px;
   }
 
-  html.ms-my-work-center-ready .desktop-container > .icons-container {
+  html .desktop-container > .icons-container {
+    grid-column: 2;
+    grid-row: 1;
     width: 100%;
     min-width: 0;
   }
 
+  // Until the panel is inserted, an empty card the size of its loading state holds the place.
+  html .desktop-container:not(:has(> .ms-my-work-center))::before {
+    content: "";
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 294px;
+    border: 1px solid var(--ms-border);
+    border-radius: var(--ms-radius-xl);
+    background: var(--ms-surface-raised);
+    box-shadow: var(--ms-shadow-md);
+  }
+
   .ms-my-work-center {
+    grid-column: 1;
+    grid-row: 1;
     position: sticky;
     top: 16px;
     display: flex;
@@ -105,29 +124,6 @@
 .ms-work-items-content h2 { color: var(--ms-heading); font-size: 20px; }
 .ms-work-items-content p { margin-top: 5px; color: var(--ms-text-muted); font-size: 12px; }
 .ms-work-items-list { display: grid; gap: 6px; margin-top: 16px; }
-
-html:not(.ms-desktop-icons-ready) .desktop-container > .icons-container > .icons > .desktop-icon > .icon-container {
-  opacity: 1;
-  background: linear-gradient(110deg, rgba(var(--ms-tint-rgb), .08) 8%, rgba(var(--ms-tint-rgb), .04) 18%, rgba(var(--ms-tint-rgb), .08) 33%), var(--ms-surface-raised);
-  background-size: 200% 100%;
-  animation: ms-desktop-skeleton 1.4s linear infinite;
-}
-
-html:not(.ms-desktop-icons-ready) .desktop-container > .icons-container > .icons > .desktop-icon .icon-container img,
-html:not(.ms-desktop-icons-ready) .desktop-container > .icons-container > .icons > .desktop-icon .desktop-alphabet {
-  visibility: hidden;
-}
-
-@keyframes ms-desktop-skeleton {
-  to {
-    background-position: -200% 0;
-  }
-}
-
-html.ms-desktop-icons-ready .desktop-container > .icons-container > .icons > .desktop-icon > .icon-container {
-  opacity: 1;
-  transition: opacity .12s ease;
-}
 
 .desktop-container > .icons-container {
   box-sizing: border-box;

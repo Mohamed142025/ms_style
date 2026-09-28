@@ -53,98 +53,33 @@ import "./notification_counter";
     return fileName ? `${iconBasePath}${fileName}?v=5` : null;
   }
 
-  let desktopIconUpdateToken = 0;
-  let desktopLoadingTimer;
-
-  function waitForImage(image) {
-    if (image.complete) return Promise.resolve();
-    return new Promise((resolve) => {
-      image.addEventListener("load", resolve, { once: true });
-      image.addEventListener("error", resolve, { once: true });
-    });
+  // Desk tiles, folder popups and the sidebar header take their image from
+  // frappe.utils.get_desktop_icon while Frappe draws them (ui/desktop_icon.html). Answering
+  // with the brand artwork there draws it from the start. Swapping it in afterwards showed
+  // Frappe's icons first, and missed the desk Frappe draws anew on every visit to it.
+  function useBrandDesktopIcons() {
+    const utils = window.frappe?.utils;
+    const getDesktopIcon = utils?.get_desktop_icon;
+    if (typeof getDesktopIcon !== "function" || getDesktopIcon.msBrandIcons) return;
+    const brandDesktopIcon = function (name, variant) {
+      return getIconPath(name) || getDesktopIcon.call(this, name, variant);
+    };
+    brandDesktopIcon.msBrandIcons = true;
+    utils.get_desktop_icon = brandDesktopIcon;
   }
 
-  async function applyDesktopIcons() {
-    const desktop = document.querySelector(".desktop-container");
-    if (!desktop) return;
-
-    const updateToken = ++desktopIconUpdateToken;
-    const pendingImages = [];
-    root.classList.remove("ms-desktop-icons-ready");
-    root.classList.add("ms-desktop-icons-loading");
-    Object.entries(iconPaths).forEach(([name]) => {
-      const desktopIcon = document.querySelector(
-        `.desktop-container > .icons-container > .icons > .desktop-icon[data-id="${name}"]`
-      );
-      if (!desktopIcon) return;
-
-      const icon = desktopIcon.querySelector(":scope > .icon-container > .app-icon");
-      const container = desktopIcon.querySelector(":scope > .icon-container");
-      const iconPath = getIconPath(name);
-      if (!iconPath || !container) return;
-
-      if (name === "Accounting" && !icon) {
-        if (!container.querySelector(":scope > .ms-folder-hero")) {
-          const hero = document.createElement("img");
-          hero.className = "ms-folder-hero";
-          hero.src = iconPath;
-          hero.alt = name;
-          container.prepend(hero);
-          pendingImages.push(waitForImage(hero));
-        }
-        return;
-      }
-
-      if (icon) {
-        if (icon.getAttribute("src") !== iconPath) icon.src = iconPath;
-        icon.alt = name;
-        pendingImages.push(waitForImage(icon));
-      } else {
-        let customIcon = container.querySelector(":scope > .ms-custom-icon-image");
-        if (!customIcon) {
-          customIcon = document.createElement("img");
-          customIcon.className = "ms-custom-icon-image";
-          container.prepend(customIcon);
-        }
-        customIcon.src = iconPath;
-        customIcon.alt = name;
-        pendingImages.push(waitForImage(customIcon));
-        const alphabet = container.querySelector(".desktop-alphabet");
-        if (alphabet) alphabet.style.display = "none";
-      }
-    });
-
-    await Promise.all(pendingImages);
-    if (updateToken !== desktopIconUpdateToken || desktop !== document.querySelector(".desktop-container")) return;
-    root.classList.remove("ms-desktop-icons-loading");
-    root.classList.add("ms-desktop-icons-ready");
-  }
-
-  function applyEditorIdentityIcons() {
-    ["Home", "Support", "ERPNext"].forEach((name) => {
-      const card = document.querySelector(`.desktop-icon[data-id="${name}"]`);
-      const container = card?.querySelector(":scope > .icon-container");
-      const iconPath = getIconPath(name);
-      if (!container || !iconPath) return;
-
-      let image = container.querySelector(":scope > .ms-custom-icon-image");
-      const nativeImage = container.querySelector(":scope > img.app-icon");
-      if (nativeImage) {
-        nativeImage.src = iconPath;
-        nativeImage.alt = name;
-      } else {
-        if (!image) {
-          image = document.createElement("img");
-          image.className = "ms-custom-icon-image";
-          container.prepend(image);
-        }
-        image.src = iconPath;
-        image.alt = name;
-      }
-
-      const alphabet = container.querySelector(":scope > .desktop-alphabet");
-      if (alphabet) alphabet.style.display = "none";
-    });
+  // Accounting is a folder on the desk, drawn as thumbnails of the workspaces in it; the
+  // brand artwork goes over them (workspace.scss).
+  function applyFolderHero() {
+    const folder = document.querySelector(
+      '.desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] > .icon-container.folder-icon'
+    );
+    if (!folder || folder.querySelector(":scope > .ms-folder-hero")) return;
+    const hero = document.createElement("img");
+    hero.className = "ms-folder-hero";
+    hero.src = getIconPath("Accounting");
+    hero.alt = "Accounting";
+    folder.prepend(hero);
   }
 
   // Brand icon for the sidebar header, found by the sidebar's own (untranslated) title,
@@ -365,15 +300,18 @@ import "./notification_counter";
     });
   }
 
+  // The desk home is /desk; Frappe also serves its desktop page at /desk/desktop.
+  function isDeskHome() {
+    return /^\/desk(\/desktop)?\/?$/.test(window.location.pathname);
+  }
+
   function applyMyWorkCenter() {
     const desktop = document.querySelector(".desktop-container");
-    const isDeskHome = /^\/desk\/?$/.test(window.location.pathname);
-    const shouldShow = isDeskHome && desktop && window.innerWidth >= 768;
+    const shouldShow = isDeskHome() && desktop && window.innerWidth >= 768;
     const existing = document.querySelector(".ms-my-work-center");
 
     if (!shouldShow) {
       existing?.remove();
-      document.documentElement.classList.remove("ms-my-work-center-ready");
       return;
     }
     let panel = desktop.querySelector(":scope > .ms-my-work-center");
@@ -384,7 +322,6 @@ import "./notification_counter";
       panel.setAttribute("aria-label", t("My Work Center"));
       desktop.prepend(panel);
     }
-    document.documentElement.classList.add("ms-my-work-center-ready");
     // This runs on every observed DOM change, so only touch the panel when it is new:
     // rewriting it here would itself be a DOM change and re-trigger the observer.
     if (myWorkCenterLoaded || myWorkCenterFailed) {
@@ -438,6 +375,50 @@ import "./notification_counter";
     });
   }
 
+  // Phones (up to 767px, Frappe's own mobile width): a bottom bar within thumb reach.
+  const footerButtons = [
+    { action: "home", icon: "home", label: "Home" },
+    { action: "search", icon: "search", label: "Search" },
+    { action: "work", icon: "clipboard", label: "Work" },
+    // "Notifications" does not fit a fifth of a phone screen.
+    { action: "notifications", icon: "bell", label: "Alerts" },
+    { action: "back", icon: "arrow-left", label: "Back" },
+  ];
+
+  const footerActions = {
+    home() {
+      if (window.frappe?.set_route) window.frappe.set_route("");
+      else window.location.assign("/desk");
+    },
+    search() {
+      const searchTrigger =
+        document.querySelector(".page-head .search-bar .search-icon") ||
+        document.querySelector("#desktop-navbar-modal-search");
+      searchTrigger?.click();
+    },
+    work: openMyWorkCenterPopup,
+    // Frappe's own notification panel: the bell on the desk home, elsewhere the one in the
+    // sidebar, which on phones stays inside the closed drawer. responsive.scss shows either
+    // as a sheet above this bar.
+    notifications() {
+      const bell = document.querySelector(".desktop-notifications .dropdown-notifications > .nav-link");
+      if (bell?.offsetParent) bell.click();
+      else document.querySelector(".body-sidebar .dropdown-notifications")?.classList.toggle("hidden");
+    },
+    back() {
+      if (window.history.length > 1) window.history.back();
+      else window.location.assign("/desk");
+    },
+  };
+
+  function updateMobileFooter(footer) {
+    const home = footer.querySelector('[data-action="home"]');
+    const onHome = isDeskHome();
+    home.classList.toggle("is-active", onHome);
+    if (onHome) home.setAttribute("aria-current", "page");
+    else home.removeAttribute("aria-current");
+  }
+
   function applyMobileFooter() {
     const footer = document.querySelector(".ms-mobile-footer");
 
@@ -447,75 +428,34 @@ import "./notification_counter";
       return;
     }
 
-    if (footer) return;
+    if (footer) {
+      updateMobileFooter(footer);
+      return;
+    }
 
     const mobileFooter = document.createElement("nav");
     mobileFooter.className = "ms-mobile-footer";
     mobileFooter.setAttribute("aria-label", t("Mobile navigation"));
-    mobileFooter.innerHTML = `
-      <button type="button" class="ms-mobile-footer-button" data-action="home">
-        <svg class="icon icon-md" aria-hidden="true"><use href="#icon-home"></use></svg>
-        <span>${t("Home")}</span>
-      </button>
-      <button type="button" class="ms-mobile-footer-button" data-action="search">
-        <svg class="icon icon-md" aria-hidden="true"><use href="#icon-search"></use></svg>
-        <span>${t("Search")}</span>
-      </button>
-      <button type="button" class="ms-mobile-footer-button" data-action="work">
-        <svg class="icon icon-md" aria-hidden="true"><use href="#icon-clipboard"></use></svg>
-        <span>${t("Work")}</span>
-      </button>
-      <button type="button" class="ms-mobile-footer-button" data-action="back">
-        <svg class="icon icon-md" aria-hidden="true"><use href="#icon-arrow-left"></use></svg>
-        <span>${t("Back")}</span>
-      </button>
-    `;
-
-    mobileFooter.querySelector('[data-action="home"]').addEventListener("click", () => {
-      if (window.frappe?.set_route) window.frappe.set_route("");
-      else window.location.assign("/desk");
-    });
-    mobileFooter.querySelector('[data-action="search"]').addEventListener("click", () => {
-      const searchTrigger =
-        document.querySelector(".page-head .search-bar .search-icon") ||
-        document.querySelector("#desktop-navbar-modal-search");
-      searchTrigger?.click();
-    });
-    mobileFooter.querySelector('[data-action="work"]').addEventListener("click", openMyWorkCenterPopup);
-    mobileFooter.querySelector('[data-action="back"]').addEventListener("click", () => {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.location.assign("/desk");
-      }
+    mobileFooter.innerHTML = footerButtons
+      .map(
+        ({ action, icon, label }) => `<button type="button" class="ms-mobile-footer-button" data-action="${action}">
+        <svg class="icon icon-md" aria-hidden="true"><use href="#icon-${icon}"></use></svg>
+        <span>${t(label)}</span>
+      </button>`
+      )
+      .join("");
+    mobileFooter.addEventListener("click", (event) => {
+      const button = event.target.closest(".ms-mobile-footer-button");
+      if (!button) return;
+      // Frappe and Bootstrap close open panels on a click elsewhere in the page; this
+      // click opens one, so it stops here.
+      event.stopPropagation();
+      footerActions[button.dataset.action]?.();
     });
 
     document.body.appendChild(mobileFooter);
     document.body.classList.add("ms-mobile-footer-active");
-  }
-
-  function showDesktopLoading() {
-    root.classList.remove("ms-desktop-icons-ready");
-    root.classList.add("ms-desktop-icons-loading");
-    window.clearTimeout(desktopLoadingTimer);
-    desktopLoadingTimer = window.setTimeout(() => {
-      root.classList.remove("ms-desktop-icons-loading");
-      root.classList.add("ms-desktop-icons-ready");
-    }, 1500);
-  }
-
-  function bindResetLayoutLoading() {
-    if (document.documentElement.dataset.msResetLayoutLoading) return;
-    document.documentElement.dataset.msResetLayoutLoading = "true";
-    // "Reset Layout" is an item of the desktop's right-click menu (frappe.ui.create_menu
-    // in desk/page/desktop/desktop.js), so only that menu's item title is checked here
-    // rather than reading the text of whatever element was clicked.
-    document.addEventListener("click", (event) => {
-      const title = event.target.closest?.(".frappe-menu .dropdown-menu-item")?.querySelector(".menu-item-title");
-      const label = title?.textContent.trim().toLowerCase();
-      if (!label) return;
-      if (label === "reset layout" || label === window.__?.("Reset Layout")?.toLowerCase()) showDesktopLoading();
-    }, true);
+    updateMobileFooter(mobileFooter);
   }
 
   // Earlier versions kept a visit log in localStorage; Route History replaced it.
@@ -539,33 +479,37 @@ import "./notification_counter";
     }, true);
   }
 
-  function initialize() {
-    applyNavbarLogo();
-    applyDesktopIcons();
-    applyEditorIdentityIcons();
-    applyWorkspaceIcon();
+  // The desk home is drawn anew every time it is shown (desktop.js empties the page and
+  // renders it again), then Frappe triggers "desktop_screen". Running here, before the
+  // browser paints, puts the additions in place without a flash or a DOM observer.
+  function applyDesk() {
+    applyFolderHero();
     applyUserGreeting();
     applyLanguageSwitcher();
+    applyMyWorkCenter();
+  }
+
+  function initialize() {
+    applyNavbarLogo();
+    applyDesk();
+    applyWorkspaceIcon();
     forgetLegacyVisitLog();
     bindBlockListFocus();
     applyMobileFooter();
-    applyMyWorkCenter();
-    bindResetLayoutLoading();
     window.frappe?.router?.on?.("change", () => {
       applyMobileFooter();
       // A failed load gets one fresh attempt each time the user comes back to the desk home.
-      const isDeskHome = /^\/desk\/?$/.test(window.location.pathname);
-      if (myWorkCenterFailed && isDeskHome) myWorkCenterFailed = false;
+      if (myWorkCenterFailed && isDeskHome()) myWorkCenterFailed = false;
       applyMyWorkCenter();
       if (myWorkCenterLoaded) renderMyWorkCenter(window.msMyWorkCenterData || {});
       // Back on the desk home: show the last data at once, then fetch the current one.
-      if (myWorkCenterLoaded && isDeskHome) loadMyWorkCenter(true);
+      if (myWorkCenterLoaded && isDeskHome()) loadMyWorkCenter(true);
     });
     if (!document.documentElement.dataset.msFooterResizeSync) {
       document.documentElement.dataset.msFooterResizeSync = "true";
       window.addEventListener("resize", applyMobileFooter, { passive: true });
     }
-    const desktop = document.querySelector(".desktop-container");
+    // The sidebar redraws its header on every workspace change.
     const container = document.querySelector(".body-sidebar-container");
     let updateQueued = false;
     const update = () => {
@@ -573,18 +517,12 @@ import "./notification_counter";
       updateQueued = true;
       window.requestAnimationFrame(() => {
         updateQueued = false;
-        applyDesktopIcons();
-        applyEditorIdentityIcons();
         applyWorkspaceIcon();
-        applyUserGreeting();
-        applyLanguageSwitcher();
-        applyMyWorkCenter();
       });
     };
     const observer = new MutationObserver(() => {
       update();
     });
-    if (desktop) observer.observe(desktop, { childList: true, subtree: true });
     if (container) {
       observer.observe(container, {
         attributes: true,
@@ -638,5 +576,7 @@ import "./notification_counter";
   }
 
   applyBrandCharts();
+  useBrandDesktopIcons();
+  $(document).on("desktop_screen", applyDesk);
   $(initialize);
 })();
