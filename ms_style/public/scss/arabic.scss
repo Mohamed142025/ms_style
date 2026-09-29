@@ -1,0 +1,29 @@
+// Arabic text, on the desk and in the employee PWA.
+//
+// IBM Plex Sans Arabic (SIL Open Font License, fonts/ibm-plex-sans-arabic/OFL.txt) is the
+// "MS Arabic" family, first in the font stacks. Its files cover Arabic characters only, so
+// Latin text still comes from Inter and pages without Arabic never download them. It has
+// to come before Inter: Inter carries a few Arabic letters of its own (م, د and إ, for
+// currency signs) in their unjoined forms, and taking those from Inter broke words apart.
+
+$ms-arabic-font-url: "/assets/ms_style/fonts/ibm-plex-sans-arabic/ibm-plex-sans-arabic-arabic";
+$ms-arabic-range: U+0600-06FF, U+0750-077F, U+0870-088E, U+0890-0891, U+0897-08E1, U+08E3-08FF,
+  U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC;
+
+// Each file serves a band of weights, so every weight the interface asks for finds one.
+@each $file, $weights in (400: (100 450), 500: (451 550), 600: (551 650), 700: (651 900)) {
+  @font-face {
+    font-family: "MS Arabic";
+    font-style: normal;
+    font-weight: $weights;
+    font-display: swap;
+    src: url("#{$ms-arabic-font-url}-#{$file}-normal.woff2") format("woff2");
+    unicode-range: $ms-arabic-range;
+  }
+}
+
+$ms-font-stack: "MS Arabic", "InterVariable", "Inter", "-apple-system", "BlinkMacSystemFont", "Segoe UI",
+  "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+
+// Letter spacing pulls joined Arabic letters apart, so Arabic pages have none.
+:lang(ar) { letter-spacing: 0 !important; }

@@ -29,7 +29,17 @@ app_include_css = "ms_style.bundle.css"
 app_include_js = "ms_style.bundle.js"
 web_include_css = "ms_style.bundle.css"
 web_include_js = "ms_style_web.bundle.js"
-after_migrate = "ms_style.ms_style.setup.after_migrate"
+after_migrate = [
+    "ms_style.ms_style.setup.after_migrate",
+    "ms_style.ms_style.document_views.setup",
+]
+
+# The employee PWA at /hrms (ms_hrms) in the brand's identity: its theme and its logo.
+ms_hrms_pwa_include_css = ["ms_style_pwa.bundle.css"]
+ms_hrms_pwa_branding = ["ms_style.ms_style.api.get_pwa_branding"]
+
+# Whether the user may see who opened a document (Ctrl+M, ms_style.ms_style.document_views).
+boot_session = "ms_style.ms_style.document_views.boot_session"
 
 # A changed document notifies its creator and its assignees (ms_style.ms_style.notifications).
 doc_events = {
@@ -37,6 +47,8 @@ doc_events = {
         "on_update": "ms_style.ms_style.notifications.notify_on_update",
         "on_update_after_submit": "ms_style.ms_style.notifications.notify_on_update",
         "on_cancel": "ms_style.ms_style.notifications.notify_on_update",
+        # Records who opens each document in a desk form.
+        "onload": "ms_style.ms_style.document_views.log_view",
     },
 }
 
@@ -258,6 +270,10 @@ doc_events = {
 
 # Automatically update python controller files with type annotations for this app.
 # export_python_type_annotations = True
+
+# Views recorded for every document (document_views) are kept 180 days unless Log
+# Settings says otherwise.
+default_log_clearing_doctypes = {"View Log": 180}
 
 # default_log_clearing_doctypes = {
 # 	"Logging DocType Name": 30  # days to retain logs

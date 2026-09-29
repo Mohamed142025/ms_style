@@ -64,3 +64,11 @@ mark, .mark {
   border-radius: var(--ms-radius-sm);
   font-size: var(--ms-font-xs);
 }
+
+// Who opened this document (Ctrl+M, document_views.js).
+.ms-viewers .ms-viewers-doc { margin-bottom: 12px; color: var(--ms-text-strong); font-weight: 700; }
+.ms-viewers .ms-viewers-table { margin-bottom: 8px; }
+.ms-viewers .ms-viewers-table th { color: var(--ms-text-muted); font-size: var(--ms-font-xs); font-weight: 600; white-space: nowrap; }
+.ms-viewers .ms-viewers-table td { vertical-align: middle; }
+.ms-viewers .ms-viewers-user { display: inline-flex; align-items: center; gap: 8px; }
+.ms-viewers .ms-viewers-note { margin: 0; color: var(--ms-text-muted); font-size: var(--ms-font-xs); }

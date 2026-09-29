@@ -1,0 +1,113 @@
+// The employee PWA at /hrms (ms_hrms) in the Digital Roots identity: Roots green bars with
+// the logo and Mint on them, Sand behind the content, Emerald for actions. ms_hrms loads
+// this file through its ms_hrms_pwa_include_css hook, after the app's own styles; the
+// logo and bar colour come from ms_style.ms_style.api.get_pwa_branding. What is styled:
+// the app's ms-* classes, Ionic's variables and frappe-ui's solid button. CSS only.
+//
+// Written for left-to-right pages; the right-to-left build (rtlcss) mirrors the accent
+// line under the page headers.
+
+@import "variables";
+@import "arabic";
+
+:root {
+  --ion-background-color: var(--ms-sand);
+  --ion-color-primary: var(--ms-emerald);
+  --ion-color-primary-rgb: var(--ms-emerald-rgb);
+  --ion-color-primary-contrast: #FFFFFF;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: var(--ms-roots);
+  --ion-color-primary-tint: var(--ms-emerald);
+  --ion-tab-bar-background: var(--ms-roots);
+  --ion-tab-bar-color: var(--ms-on-dark-muted);
+  --ion-tab-bar-color-selected: var(--ms-mint);
+  --ion-tab-bar-border-color: transparent;
+  --ion-font-family: "MS Arabic", "InterVar", "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+// The Arabic family ahead of the app's own Inter (arabic.scss).
+html { font-family: "MS Arabic", "InterVar", "Inter", ui-sans-serif, system-ui, sans-serif; }
+
+// Home screen bar: the logo on Roots green, as on the desk's navbar. The bar's colour also
+// fills the status bar area above it.
+ion-header:has(.ms-app-header) { background: var(--ms-roots); }
+
+.ms-app-header {
+  background: var(--ms-roots) !important;
+  box-shadow: 0 6px 18px rgba(var(--ms-shadow-rgb), .18) !important;
+}
+
+.ms-app-header .ms-app-logo { height: 30px; }
+.ms-app-header .ms-app-title { color: var(--ms-sand) !important; }
+.ms-app-header .feather { color: var(--ms-on-dark-text); }
+
+// Other screens keep their light header, with the brand's accent line along the bottom
+// (as on the desk's page bar).
+ion-content header.sticky {
+  border-bottom-color: transparent !important;
+  box-shadow: 0 6px 18px rgba(var(--ms-shadow-rgb), .08) !important;
+}
+
+ion-content header.sticky::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(to right, var(--ms-emerald) 0%, var(--ms-mint) 45%, rgba(var(--ms-mint-rgb), 0) 100%);
+}
+
+// Bottom tabs: Roots green, the current tab in Mint.
+.ms-tab-bar {
+  --background: var(--ms-roots);
+  background: var(--ms-roots) !important;
+  box-shadow: 0 -6px 18px rgba(var(--ms-shadow-rgb), .18) !important;
+}
+
+.ms-tab-button {
+  --background: transparent;
+  --color: var(--ms-on-dark-muted);
+  --color-selected: var(--ms-mint);
+  background: transparent !important;
+  color: var(--ms-on-dark-muted) !important;
+}
+
+.ms-tab-button.is-selected { color: var(--ms-mint) !important; }
+
+// frappe-ui's solid (primary) button, and the plain dark button links, in Emerald.
+:is(button, a):is(.bg-surface-gray-7, .bg-gray-900) {
+  background-color: var(--ms-emerald) !important;
+  color: #FFFFFF !important;
+}
+
+:is(button, a):is(.bg-surface-gray-7, .bg-gray-900):is(:hover, :active) {
+  background-color: var(--ms-roots) !important;
+}
+
+// Login: the logo and title on an Emerald card, the form on Sand below it.
+.ms-login { background: var(--ms-sand) !important; }
+
+.ms-login-brand {
+  width: calc(100% - 32px);
+  max-width: 384px;
+  margin-inline: auto;
+  padding: 28px 20px 24px;
+  gap: 16px !important;
+  border: 1px solid rgba(var(--ms-mint-rgb), .18);
+  border-radius: 20px;
+  background:
+    radial-gradient(120% 150% at 100% 0%, rgba(var(--ms-mint-rgb), .28) 0%, rgba(var(--ms-mint-rgb), 0) 55%),
+    linear-gradient(135deg, var(--ms-emerald) 0%, var(--ms-roots) 80%);
+  box-shadow: 0 16px 40px rgba(var(--ms-shadow-rgb), .18);
+}
+
+.ms-login-logo { height: 44px; }
+
+.ms-login-title {
+  color: var(--ms-sand) !important;
+  font-size: 22px !important;
+  line-height: 1.4 !important;
+}
+
+.ms-login-languages button { color: var(--ms-text-muted) !important; }
+.ms-login-languages button.font-semibold { color: var(--ms-emerald) !important; text-decoration: none; }

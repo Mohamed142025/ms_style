@@ -1,4 +1,9 @@
 @import "variables";
+@import "arabic";
+
+// Frappe's font stack with the Arabic family ahead of Inter (arabic.scss).
+:root { --font-stack: #{$ms-font-stack}; }
+
 @import "bridge";
 @import "base";
 @import "typography";

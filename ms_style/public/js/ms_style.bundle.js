@@ -1,4 +1,5 @@
 import "./notification_counter";
+import "./document_views";
 
 (() => {
   const root = document.documentElement;

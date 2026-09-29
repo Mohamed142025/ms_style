@@ -225,3 +225,45 @@ msgstr "أدخل بريدك الإلكتروني وسنرسل لك رابط إع
 
 msgid "Home"
 msgstr "الرئيسية"
+
+msgctxt "ms_style"
+msgid "Who opened this document"
+msgstr "مين فتح المستند"
+
+msgctxt "ms_style"
+msgid "User"
+msgstr "المستخدم"
+
+msgctxt "ms_style"
+msgid "Last opened"
+msgstr "آخر فتح"
+
+msgctxt "ms_style"
+msgid "Times"
+msgstr "عدد المرات"
+
+msgctxt "ms_style"
+msgid "First opened"
+msgstr "أول فتح"
+
+msgctxt "ms_style"
+msgid "A visit is recorded from desk forms, once every 5 minutes per user."
+msgstr "يُسجَّل الفتح من شاشات الديسك، مرة كل 5 دقائق لنفس المستخدم."
+
+msgctxt "ms_style"
+msgid "Nobody has opened this document since visits started being recorded."
+msgstr "لم يفتح أحد هذا المستند منذ بدء التسجيل."
+
+msgctxt "ms_style"
+msgid "Your role cannot see who opened documents."
+msgstr "عرض من فتح المستندات غير متاح لدورك."
+
+msgctxt "ms_style"
+msgid "You do not have permission on this document."
+msgstr "ليس لديك صلاحية على هذا المستند."
+
+msgid "Roles that can see who opened a document"
+msgstr "الأدوار المسموح لها بمعرفة من فتح المستند"
+
+msgid "Ctrl+M on any document, or Who opened this document in the form menu on phones. How long views are kept is set in Log Settings (View Log)."
+msgstr "من أي مستند: Ctrl+M، وعلى الموبايل من قائمة ⋯ ← «مين فتح المستند». مدة الاحتفاظ بالسجل من Log Settings (View Log)."

@@ -17,6 +17,17 @@ PENDING_ROUTES_LIMIT = 50
 FRAPPE_WORK_DOCTYPES = {"ToDo", "Event", "Note", "Contact", "Address"}
 
 
+def get_pwa_branding(brand):
+    """The employee PWA's branding (ms_hrms_pwa_branding hook): the desk navbar's logo on
+    a Roots green bar, as ms_style draws the navbar (ms_style_pwa.bundle.scss)."""
+    logo = frappe.db.get_single_value("Navbar Settings", "app_logo") or "/assets/ms_style/images/logo-horizontal-dark-bg.png"
+    return {
+        "logo": quote(logo, safe="/:?=&[]"),
+        "dark_header": True,
+        "theme_color": "#0E3B2E",
+    }
+
+
 @frappe.whitelist(allow_guest=True)
 def get_login_branding():
     settings = frappe.get_cached_doc("Website Settings")
