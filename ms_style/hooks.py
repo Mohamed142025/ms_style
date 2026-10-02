@@ -110,7 +110,8 @@ doc_events = {
 # ------------
 
 # before_install = "ms_style.install.before_install"
-# after_install = "ms_style.install.after_install"
+# A fresh install gets the login fields and the brand's login image without waiting for a migrate.
+after_install = "ms_style.ms_style.setup.after_migrate"
 
 # Uninstallation
 # ------------

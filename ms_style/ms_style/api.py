@@ -7,6 +7,8 @@ from frappe.deferred_insert import queue_prefix
 from urllib.parse import quote
 from frappe.utils import add_days, now_datetime, nowdate, strip_html
 
+from ms_style.ms_style.setup import DEFAULT_LOGIN_BACKGROUND
+
 QUICK_CREATE_LIMIT = 4
 FREQUENT_LIMIT = 5
 ROUTE_HISTORY_DAYS = 30
@@ -32,7 +34,7 @@ def get_pwa_branding(brand):
 def get_login_branding():
     settings = frappe.get_cached_doc("Website Settings")
     logo = settings.app_logo or "/assets/ms_style/images/logo-horizontal-dark-bg.png"
-    background = settings.get("custom_login_background") or "/assets/ms_style/images/main-login.webp"
+    background = settings.get("custom_login_background") or DEFAULT_LOGIN_BACKGROUND
     return {
         "logo": quote(logo, safe="/:?=&[]"),
         "background": quote(background, safe="/:?=&[]"),

@@ -7,7 +7,7 @@ body:has(.for-login) {
   --ms-login-logo-url: url("/assets/ms_style/images/logo-horizontal-dark-bg.png");
   // Dark-text logo for the white navbar on small screens (the default logo is light text).
   --ms-login-logo-on-light-url: url("/assets/ms_style/images/digital-roots-horizontal.png");
-  --ms-login-background-url: url("/assets/ms_style/images/main-login.webp");
+  --ms-login-background-url: url("/assets/ms_style/images/digital-roots-login.webp");
   min-height: 100vh;
   background: color-mix(in srgb, var(--ms-emerald) 4%, #fff);
   color: var(--login-ink);
