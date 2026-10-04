@@ -23,6 +23,7 @@ import "./document_views";
     CRM: "CRM.webp",
     Support: "support.webp",
     ERPNext: "erpnext.webp",
+    "إدارة الحركة": "fleet.webp",
   };
   const workspaceAliases = {
     company: "Organization",

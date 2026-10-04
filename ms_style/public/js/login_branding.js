@@ -10,7 +10,7 @@
 
   function setupBranding() {
     const fallbackLogo = "/assets/ms_style/images/logo-horizontal-dark-bg.png";
-    const fallbackBackground = "/assets/ms_style/images/digital-roots-login.webp";
+    const fallbackBackground = "/assets/ms_style/images/brand/login-background.webp";
     const allowedPath = (value) => typeof value === "string" && (value.startsWith("/files/") || value.startsWith("/assets/"));
     const cssUrl = (value) => `url("${value}")`;
     const setBrandingVariable = (name, value) => {

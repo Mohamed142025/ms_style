@@ -1,0 +1,153 @@
+// Loading, in the brand's own character: the Digital Roots mark come to life
+// (images/brand/loader.svg — the bars hop, the tall one blinks, the roots drip).
+// It greets a page refresh on the splash screen, stands in for Frappe's spinner while
+// the desk is frozen (loading, saving, submitting), and the workspace placeholders
+// shimmer in the brand's tint instead of sitting flat and grey.
+
+$ms-loader-url: url("/assets/ms_style/images/brand/loader.svg");
+
+// A few playful lines under the mark on the splash screen, in the page's language.
+@keyframes ms-loader-lines-en {
+  0%, 24% { content: "Watering the roots… 🌱"; }
+  25%, 49% { content: "Lining up the bars…"; }
+  50%, 74% { content: "Warming up the numbers…"; }
+  75%, 100% { content: "Almost there…"; }
+}
+
+@keyframes ms-loader-lines-ar {
+  0%, 24% { content: "بنسقي الجذور… 🌱"; }
+  25%, 49% { content: "بنرتّب الأعمدة…"; }
+  50%, 74% { content: "الأرقام بتعمل إحماء…"; }
+  75%, 100% { content: "ثواني وجايين…"; }
+}
+
+@keyframes ms-loader-rise {
+  from { opacity: 0; transform: translateY(8px) scale(.96); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ms-loader-shadow {
+  0%, 100% { transform: scaleX(1); opacity: .28; }
+  32% { transform: scaleX(.72); opacity: .14; }
+  52% { transform: scaleX(1.08); opacity: .32; }
+}
+
+// Splash screen (frappe/templates/includes/splash_screen.html): shown from the first
+// byte until the desk has booted, then removed by Frappe (desk.js).
+.centered.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  transform: none;
+  background:
+    radial-gradient(60% 50% at 50% 42%, rgba(var(--ms-accent-rgb), .14), transparent 70%),
+    rgb(var(--ms-surface-rgb));
+
+  // The static splash image gives way to the living mark.
+  img {
+    display: none;
+  }
+
+  &::before {
+    width: 112px;
+    height: 112px;
+    border-radius: 26px;
+    background: $ms-loader-url center / contain no-repeat;
+    box-shadow: 0 18px 40px rgba(var(--ms-roots-rgb), .28);
+    animation: ms-loader-rise .45s ease-out both;
+    content: "";
+  }
+
+  &::after {
+    min-height: 1.4em;
+    color: var(--ms-text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    animation: ms-loader-lines-en 6s steps(1) infinite, ms-loader-rise .45s .15s ease-out both;
+    content: "Watering the roots… 🌱";
+  }
+}
+
+html[lang^="ar"] .centered.splash::after {
+  font-family: var(--font-stack);
+  letter-spacing: 0;
+  animation-name: ms-loader-lines-ar, ms-loader-rise;
+  content: "بنسقي الجذور… 🌱";
+}
+
+// Frappe's freeze overlay (frappe.dom.freeze): the mark, with a soft shadow beneath it
+// that stretches and shrinks as the bars land, replaces the plain ring.
+#freeze.in {
+  opacity: 1;
+  background: rgba(var(--ms-surface-rgb), .72);
+  backdrop-filter: blur(6px) saturate(140%);
+  -webkit-backdrop-filter: blur(6px) saturate(140%);
+}
+
+#freeze.in::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 84px;
+  height: 84px;
+  margin: -54px 0 0 -42px;
+  border-radius: 20px;
+  background: $ms-loader-url center / contain no-repeat;
+  box-shadow: 0 16px 34px rgba(var(--ms-roots-rgb), .26);
+  animation: ms-loader-rise .3s ease-out both;
+  content: "";
+}
+
+#freeze.in::after {
+  position: absolute;
+  top: calc(50% + 46px);
+  left: 50%;
+  width: 64px;
+  height: 10px;
+  margin-left: -32px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--ms-roots-rgb), .55), transparent);
+  animation: ms-loader-shadow 1.8s ease-in-out infinite;
+  content: "";
+}
+
+// Frappe's message ("Submitting…" and the like) sits under the mark.
+#freeze.in .freeze-message-container {
+  padding-top: 150px;
+  background: transparent;
+  color: var(--ms-text);
+  font-weight: 600;
+}
+
+// Workspace placeholders: a brand-tinted light sweeps across them while they wait.
+@keyframes ms-skeleton-sweep {
+  from { background-position: 150% 0, 0 0; }
+  to { background-position: -50% 0, 0 0; }
+}
+
+.workspace-skeleton .skeleton-card {
+  border: 1px solid rgba(var(--ms-accent-rgb), .08);
+  background-color: transparent;
+  background-image:
+    linear-gradient(100deg, transparent 30%, rgba(var(--ms-accent-rgb), .12) 50%, transparent 70%),
+    linear-gradient(rgba(var(--ms-tint-rgb), .06), rgba(var(--ms-tint-rgb), .06));
+  background-size: 220% 100%, 100% 100%;
+  background-repeat: no-repeat;
+  animation: ms-skeleton-sweep 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .centered.splash::before,
+  .centered.splash::after,
+  #freeze.in::before,
+  #freeze.in::after,
+  .workspace-skeleton .skeleton-card {
+    animation: none;
+  }
+}

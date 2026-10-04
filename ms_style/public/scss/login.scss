@@ -7,41 +7,56 @@ body:has(.for-login) {
   --ms-login-logo-url: url("/assets/ms_style/images/logo-horizontal-dark-bg.png");
   // Dark-text logo for the white navbar on small screens (the default logo is light text).
   --ms-login-logo-on-light-url: url("/assets/ms_style/images/digital-roots-horizontal.png");
-  --ms-login-background-url: url("/assets/ms_style/images/digital-roots-login.webp");
+  --ms-login-background-url: url("/assets/ms_style/images/brand/login-background.webp");
   min-height: 100vh;
   background: color-mix(in srgb, var(--ms-emerald) 4%, #fff);
   color: var(--login-ink);
 }
 
+// The brand's deep green, with a faint emerald glow toward the end and a thin mint line
+// beneath; the light-text logo stands on it alone, with no frame.
 body:has(.for-login) .navbar {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 20;
   min-height: 56px;
   padding: 8px clamp(20px, 4vw, 64px);
-  border-bottom: 1px solid rgba(var(--ms-mint-rgb), .28);
+  border-bottom: 1px solid rgba(var(--ms-mint-rgb), .22);
   background:
-    radial-gradient(circle at 86% 20%, rgba(var(--ms-mint-rgb), .28), transparent 24%),
-    linear-gradient(110deg, var(--ms-roots), var(--ms-emerald));
-  box-shadow: 0 4px 16px rgba(var(--ms-roots-rgb), .12);
+    radial-gradient(120% 220% at 100% 0%, rgba(var(--ms-emerald-rgb), .55), transparent 60%),
+    var(--ms-roots);
+  box-shadow: 0 8px 24px rgba(var(--ms-roots-rgb), .18);
+}
+
+body:has(.for-login) .navbar .container {
+  max-width: none;
+  padding: 0;
 }
 
 body:has(.for-login) .navbar-brand {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 160px;
-  height: 40px;
-  min-height: 40px;
-  padding: 4px 8px;
-  border: 1px solid rgba(255, 255, 255, .28);
-  border-radius: 10px;
-  background-color: rgba(var(--ms-roots-rgb), .18);
-  box-shadow: 0 4px 14px rgba(var(--ms-roots-rgb), .08);
-  backdrop-filter: blur(12px);
+  width: 148px;
+  height: 36px;
+  min-height: 36px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
   background-image: var(--ms-login-logo-url);
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: left center;
   background-size: contain;
+  transition: opacity .18s ease;
+}
+
+body:has(.for-login) .navbar-brand:hover {
+  opacity: .85;
+}
+
+// The login bar holds the logo and the language toggle only.
+body:has(.for-login) .navbar-toggler {
+  display: none;
 }
 
 body:has(.for-login) .navbar-brand img {
@@ -79,26 +94,41 @@ body:has(.for-login) #language-switcher {
   display: none !important;
 }
 
+// The language toggle: a translucent pill with a globe on the green bar.
 body:has(.for-login) .ms-login-lang-toggle {
   display: inline-flex;
   align-items: center;
-  min-height: 36px;
-  height: 36px;
-  padding: 5px 14px;
-  border: 1px solid rgba(var(--ms-emerald-rgb), .18);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, .90);
-  color: var(--login-ink);
-  font-size: var(--ms-font-base);
-  font-weight: 750;
-  box-shadow: 0 5px 18px rgba(var(--ms-roots-rgb), .08);
+  gap: 7px;
+  min-height: 34px;
+  height: 34px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+  font-size: var(--ms-font-sm);
+  font-weight: 650;
+  letter-spacing: .01em;
   cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease;
+}
+
+body:has(.for-login) .ms-login-lang-toggle::before {
+  width: 15px;
+  height: 15px;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M2 12h20'/%3E%3Cpath d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M2 12h20'/%3E%3Cpath d='M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z'/%3E%3C/svg%3E") center / contain no-repeat;
+  opacity: .75;
+  content: "";
 }
 
 body:has(.for-login) .ms-login-lang-toggle:hover,
 body:has(.for-login) .ms-login-lang-toggle:focus-visible {
-  border-color: var(--login-accent);
-  box-shadow: 0 0 0 4px rgba(var(--ms-mint-rgb), .18);
+  border-color: rgba(var(--ms-mint-rgb), .55);
+  background: rgba(255, 255, 255, .16);
+  color: #fff;
+  box-shadow: 0 0 0 3px rgba(var(--ms-mint-rgb), .18);
   outline: 0;
 }
 
@@ -160,7 +190,8 @@ body.ms-login-background-full:has(.for-login) .for-login::before {
   min-height: calc(100vh - 64px);
   margin: 0;
   border-radius: 0;
-  background-size: cover;
+  background-size: contain;
+  background-color: transparent;
 }
 
 body:has(.for-login) .for-login::after {
@@ -245,7 +276,7 @@ body:has(.for-login) .page-card-head img.app-logo {
 
 @media (min-width: 601px) {
   body.ms-login-background-full:has(.for-login) .for-login {
-    min-height: calc(100vh - 41px) !important;
+    min-height: calc(100vh - 56px) !important;
   }
 
   body.ms-login-background-full:has(.for-login) .for-login::before {
@@ -257,27 +288,29 @@ body:has(.for-login) .page-card-head img.app-logo {
     min-height: 0 !important;
     margin: 0 !important;
     border-radius: 0 !important;
+    // The illustration is a transparent cut-out: shown whole (contain, not a cover crop)
+    // and with nothing painted behind it, so the page shows through its empty parts.
+    padding: clamp(16px, 3vw, 40px);
+    background-origin: content-box !important;
+    background-clip: content-box !important;
     background-position: center !important;
-    background-size: cover !important;
+    background-size: contain !important;
     background-repeat: no-repeat !important;
-    background-color: var(--ms-roots) !important;
+    background-color: transparent !important;
   }
 
   body.ms-login-background-full:has(.for-login) .login-content.page-card {
     grid-column: 2;
   }
 
-  /* Same rtlcss gap as above: neither `inset` nor `grid-column` gets mirrored
-     automatically, so the full-bleed background mode needs its own explicit
-     RTL values (image pinned to the right, card back in the grid's first
-     track) instead of relying on the LTR ones above. */
+  /* Same rtlcss gap as above: `inset` is not mirrored automatically, so the
+     image is pinned to the right here. The card keeps `grid-column: 2`: the
+     grid itself reads right-to-left in RTL (login_branding.js), so its second
+     track is already on the left, away from the image. */
   html[dir="rtl"] body.ms-login-background-full:has(.for-login) .for-login::before {
     inset: 0 0 0 auto;
   }
 
-  html[dir="rtl"] body.ms-login-background-full:has(.for-login) .login-content.page-card {
-    grid-column: 1;
-  }
 }
 
 @media (max-width: 600px) {
@@ -426,11 +459,8 @@ body:has(.for-login) .login-error-banner {
 
 @media (max-width: 600px) {
   body:has(.for-login) .navbar {
-    position: relative;
     min-height: 58px;
     padding: 10px 16px;
-    background: rgba(255, 255, 255, .96);
-    box-shadow: 0 4px 18px rgba(var(--ms-roots-rgb), .08);
   }
 
   body:has(.for-login) .navbar-brand {
@@ -440,7 +470,7 @@ body:has(.for-login) .login-error-banner {
     padding: 3px 7px;
     border-color: transparent;
     background-color: transparent;
-    background-image: var(--ms-login-logo-on-light-url);
+    background-image: var(--ms-login-logo-url);
     background-size: contain;
     box-shadow: none;
     backdrop-filter: none;
@@ -482,12 +512,6 @@ body:has(.for-login) .login-error-banner {
     padding: 6px 12px;
     border-radius: 10px;
     font-size: var(--ms-font-sm);
-  }
-
-  // The navbar is white here, so the focus glow uses Emerald instead of Mint.
-  body:has(.for-login) .ms-login-lang-toggle:hover,
-  body:has(.for-login) .ms-login-lang-toggle:focus-visible {
-    box-shadow: 0 0 0 4px rgba(var(--ms-emerald-rgb), .18);
   }
 
   body:has(.for-login) .for-login {

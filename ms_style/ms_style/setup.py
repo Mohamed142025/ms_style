@@ -3,9 +3,20 @@ import frappe
 
 LOGIN_BACKGROUND_FIELD = "custom_login_background"
 LOGIN_FULLSCREEN_FIELD = "custom_login_background_full_screen"
-# The brand's login illustration (source: digital-roots-login.svg next to it). It fills an
-# empty Login Background, and the login page falls back to it when the field is cleared.
-DEFAULT_LOGIN_BACKGROUND = "/assets/ms_style/images/digital-roots-login.webp"
+BRAND_IMAGES_PATH = "/assets/ms_style/images/brand"
+# The brand's login illustration, a transparent cut-out. The login page falls back to it
+# when the field is cleared.
+DEFAULT_LOGIN_BACKGROUND = f"{BRAND_IMAGES_PATH}/login-background.webp"
+# The brand's images in Website Settings come from ms_style itself (public/images/brand),
+# not from files uploaded to a site: every migrate sets them, so a new site or a restored
+# backup shows the same brand. To change one, replace its file in ms_style.
+BRAND_IMAGES = {
+    "app_logo": f"{BRAND_IMAGES_PATH}/app-logo.png",
+    LOGIN_BACKGROUND_FIELD: DEFAULT_LOGIN_BACKGROUND,
+    "banner_image": f"{BRAND_IMAGES_PATH}/banner.png",
+    "splash_image": f"{BRAND_IMAGES_PATH}/splash.png",
+    "favicon": f"{BRAND_IMAGES_PATH}/favicon.png",
+}
 SUPPORT_SECTION_FIELD = "custom_ms_support_section"
 DEPRECATED_FIELDS = ("custom_login_background_color", "custom_login_background_transparent")
 
@@ -113,7 +124,14 @@ def after_migrate():
             frappe.get_doc({"doctype": "Custom Field", "dt": "Website Settings", **field_data}).insert(
                 ignore_permissions=True
             )
-    # An image chosen in Website Settings is kept; only an empty field gets the brand's.
-    if not frappe.db.get_single_value("Website Settings", LOGIN_BACKGROUND_FIELD):
-        frappe.db.set_single_value("Website Settings", LOGIN_BACKGROUND_FIELD, DEFAULT_LOGIN_BACKGROUND)
+    set_brand_images()
+
+
+def set_brand_images():
+    for fieldname, url in BRAND_IMAGES.items():
+        if frappe.db.get_single_value("Website Settings", fieldname) != url:
+            frappe.db.set_single_value("Website Settings", fieldname, url)
+    from frappe.website.utils import clear_cache as clear_website_cache
+
     frappe.clear_cache(doctype="Website Settings")
+    clear_website_cache()

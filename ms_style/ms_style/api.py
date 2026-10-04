@@ -30,6 +30,15 @@ def get_pwa_branding(brand):
     }
 
 
+def show_login_navbar(context):
+    """update_website_context: Frappe draws the login page's navbar only with the language
+    picker on (www/login.html), and the brand's login keeps its logo and language toggle
+    there. Turned on for the login page alone, so the site's other pages are unchanged."""
+    path = (getattr(frappe.local, "path", None) or context.get("path") or "").strip("/")
+    if path == "login":
+        return {"show_language_picker": 1}
+
+
 @frappe.whitelist(allow_guest=True)
 def get_login_branding():
     settings = frappe.get_cached_doc("Website Settings")

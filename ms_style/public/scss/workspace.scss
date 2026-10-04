@@ -354,39 +354,7 @@
   transform: none;
 }
 
-#freeze.in {
-  opacity: 1;
-  background: rgba(var(--ms-surface-rgb), .78);
-  backdrop-filter: blur(3px);
-}
-
-// Keep Frappe's freeze message (e.g. "Submitting...") readable: drop its grey panel
-// so the spinner below shows through, and push the text under the spinner.
-#freeze.in .freeze-message-container {
-  padding-top: 148px;
-  background: transparent;
-  color: var(--ms-text);
-}
-
-#freeze.in::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 38px;
-  height: 38px;
-  margin: -19px 0 0 -19px;
-  border: 3px solid rgba(var(--ms-accent-rgb), .18);
-  border-top-color: var(--ms-accent);
-  border-radius: 50%;
-  animation: ms-freeze-spinner .8s linear infinite;
-}
-
-@keyframes ms-freeze-spinner {
-  to {
-    transform: rotate(360deg);
-  }
-}
+// The freeze overlay (Frappe's loading and saving screen) is drawn in loader.scss.
 
 .module-card:hover, .shortcut-widget:hover, .widget:hover, .number-card:hover,
 .number-widget-box:hover,

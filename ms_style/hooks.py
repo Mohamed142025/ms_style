@@ -34,6 +34,10 @@ after_migrate = [
     "ms_style.ms_style.document_views.setup",
 ]
 
+# The login page keeps its navbar (logo and language toggle) whatever the language picker
+# setting is (ms_style.ms_style.api.show_login_navbar).
+update_website_context = ["ms_style.ms_style.api.show_login_navbar"]
+
 # The employee PWA at /hrms (ms_hrms) in the brand's identity: its theme and its logo.
 ms_hrms_pwa_include_css = ["ms_style_pwa.bundle.css"]
 ms_hrms_pwa_branding = ["ms_style.ms_style.api.get_pwa_branding"]
