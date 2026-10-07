@@ -227,6 +227,68 @@ function bank(x, y, w, h) {
 <rect x="${x - 8}" y="${y + h - 14}" width="${w + 16}" height="${14}" rx="3" fill="${C.greenDark}" ${O}/>`;
 }
 
+// A factory: a body with a sawtooth roof and a chimney.
+function factory(x, y, w, h) {
+  const teeth = 3, tw = w / teeth;
+  let roof = `M${x} ${y + 26}`;
+  for (let i = 0; i < teeth; i++) roof += ` L${x + i * tw} ${y} L${x + (i + 1) * tw} ${y + 26}`;
+  return `<rect x="${x}" y="${y + 26}" width="${w}" height="${h - 26}" rx="3" fill="url(#body)" ${O}/>
+<path d="${roof} Z" fill="${C.green}" ${O}/>
+<rect x="${x + w - 30}" y="${y - 34}" width="18" height="60" rx="3" fill="${C.greenDark}" ${O}/>
+<ellipse cx="${x + w - 21}" cy="${y - 44}" rx="14" ry="9" fill="${C.mint}" opacity=".8"/><ellipse cx="${x + w - 8}" cy="${y - 58}" rx="10" ry="7" fill="${C.mint}" opacity=".6"/>
+<rect x="${x + 14}" y="${y + 44}" width="22" height="16" rx="2" fill="${C.cream}"/><rect x="${x + 50}" y="${y + 44}" width="22" height="16" rx="2" fill="${C.cream}"/><rect x="${x + 86}" y="${y + 44}" width="22" height="16" rx="2" fill="${C.cream}"/>
+<rect x="${x + w / 2 - 12}" y="${y + h - 30}" width="24" height="30" rx="3" fill="${C.outline}"/>`;
+}
+
+// Storage shelving: two levels of boxes.
+function shelf(x, y, w) {
+  return `<rect x="${x}" y="${y}" width="8" height="${124}" rx="2" fill="${C.greenDark}" ${O}/><rect x="${x + w - 8}" y="${y}" width="8" height="${124}" rx="2" fill="${C.greenDark}" ${O}/>
+<rect x="${x - 4}" y="${y + 52}" width="${w + 8}" height="8" rx="2" fill="${C.green}" ${O}/><rect x="${x - 4}" y="${y + 116}" width="${w + 8}" height="8" rx="2" fill="${C.green}" ${O}/>
+${box(x + 16, y + 14, 38)}${box(x + 60, y + 22, 30, C.tanDark)}${box(x + 14, y + 78, 38, C.tanDark)}${box(x + 58, y + 70, 46)}`;
+}
+
+// A kanban board with three columns of cards.
+function kanban(x, y, w, h) {
+  const cw = (w - 40) / 3;
+  let cards = "";
+  [[0, 3], [1, 2], [2, 1]].forEach(([c, n]) => {
+    for (let i = 0; i < n; i++)
+      cards += `<rect x="${(x + 12 + c * (cw + 8)).toFixed(1)}" y="${y + 36 + i * 26}" width="${cw.toFixed(1)}" height="20" rx="4" fill="${i === 0 && c === 1 ? C.green : C.mint}" ${O}/>`;
+  });
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="url(#paper)" ${O}/>
+<rect x="${x}" y="${y}" width="${w}" height="24" rx="10" fill="${C.green}" ${O}/><rect x="${x}" y="${y + 12}" width="${w}" height="12" fill="${C.green}"/>${cards}`;
+}
+
+// A shopping cart.
+function cart(x, y) {
+  return `<path d="M${x} ${y} H${x + 22} L${x + 40} ${y + 70} H${x + 126} L${x + 144} ${y + 20} H${x + 32}" fill="none" stroke="${C.outline}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M${x + 32} ${y + 20} H${x + 144} L${x + 126} ${y + 70} H${x + 40} Z" fill="url(#body)" ${O}/>
+<path d="M${x + 44} ${y + 36} H${x + 128} M${x + 50} ${y + 54} H${x + 122}" stroke="${C.cream}" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+<circle cx="${x + 56}" cy="${y + 92}" r="11" fill="${C.deep}" ${O}/><circle cx="${x + 114}" cy="${y + 92}" r="11" fill="${C.deep}" ${O}/><circle cx="${x + 56}" cy="${y + 92}" r="4" fill="${C.cream}"/><circle cx="${x + 114}" cy="${y + 92}" r="4" fill="${C.cream}"/>`;
+}
+
+// A safe with a dial.
+function safe(x, y, w, h) {
+  return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="${C.greenDark}" ${O}/><rect x="${x + 12}" y="${y + 12}" width="${w - 24}" height="${h - 24}" rx="6" fill="url(#body)" ${O}/>
+<circle cx="${x + w / 2}" cy="${y + h / 2}" r="22" fill="${C.cream}" ${O}/><circle cx="${x + w / 2}" cy="${y + h / 2}" r="9" fill="none" stroke="${C.green}" stroke-width="4"/>
+<path d="M${x + w / 2} ${y + h / 2 - 22} v8 M${x + w / 2} ${y + h / 2 + 22} v-8 M${x + w / 2 - 22} ${y + h / 2} h8 M${x + w / 2 + 22} ${y + h / 2} h-8" stroke="${C.outline}" stroke-width="3" stroke-linecap="round"/>
+<rect x="${x + w - 30}" y="${y + h / 2 - 16}" width="8" height="32" rx="3" fill="${C.cream}" ${O}/>
+<rect x="${x + 14}" y="${y + h}" width="14" height="10" fill="${C.outline}"/><rect x="${x + w - 28}" y="${y + h}" width="14" height="10" fill="${C.outline}"/>`;
+}
+
+// A speech bubble.
+function bubble(x, y, w, h, fill = C.cream, tail = "left") {
+  const tx = tail === "left" ? x + 20 : x + w - 20;
+  return `<path d="M${x + 10} ${y} H${x + w - 10} Q${x + w} ${y} ${x + w} ${y + 10} V${y + h - 10} Q${x + w} ${y + h} ${x + w - 10} ${y + h} H${tx + 14} L${tx} ${y + h + 14} V${y + h} H${x + 10} Q${x} ${y + h} ${x} ${y + h - 10} V${y + 10} Q${x} ${y} ${x + 10} ${y} Z" fill="${fill}" ${O}/>`;
+}
+
+// A headset.
+function headset(cx, y, r) {
+  return `<path d="M${cx - r} ${y + r + 10} V${y + r} A${r} ${r} 0 0 1 ${cx + r} ${y + r} V${y + r + 10}" fill="none" stroke="${C.outline}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="${cx - r - 12}" y="${y + r}" width="24" height="40" rx="8" fill="${C.green}" ${O}/><rect x="${cx + r - 12}" y="${y + r}" width="24" height="40" rx="8" fill="${C.green}" ${O}/>
+<path d="M${cx + r} ${y + r + 40} Q${cx + r} ${y + r + 66} ${cx + 10} ${y + r + 66}" fill="none" stroke="${C.outline}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${cx + 6}" cy="${y + r + 66}" r="7" fill="${C.cream}" ${O}/>`;
+}
+
 // Scenes -----------------------------------------------------------------------------------
 const scenes = {
   framework: {
@@ -505,6 +567,126 @@ ${doc(80, 92, 96, 118, { lines: 3 })}
 <circle cx="128" cy="128" r="18" fill="${C.green}" ${O}/><circle cx="122" cy="122" r="3.5" fill="${C.cream}"/><circle cx="134" cy="134" r="3.5" fill="${C.cream}"/><path d="M120 136 L136 120" stroke="${C.cream}" stroke-width="4" stroke-linecap="round"/>
 ${coin(206, 178, 20)}${coin(236, 186, 15)}${coin(190, 194, 13)}
 ${tray(214, 212, 90)}`,
+  },
+  home: {
+    file: "home",
+    badges: ["house", "layout-grid"],
+    scene: `${ground()}
+<path d="M86 160 L160 96 L234 160" fill="none" stroke="${C.outline}" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M100 150 V236 H220 V150" fill="url(#body)" ${O}/>
+<path d="M86 160 L160 96 L234 160" fill="none" stroke="${C.greenLight}" stroke-width="3" stroke-linecap="round"/>
+<rect x="144" y="186" width="32" height="50" rx="4" fill="${C.outline}"/><circle cx="170" cy="212" r="3" fill="${C.gold}"/>
+<rect x="112" y="166" width="22" height="22" rx="3" fill="${C.cream}" ${O}/><rect x="186" y="166" width="22" height="22" rx="3" fill="${C.cream}" ${O}/>
+<rect x="196" y="110" width="16" height="30" rx="2" fill="${C.greenDark}" ${O}/>`,
+  },
+  crm: {
+    file: "crm",
+    badges: ["handshake", "messages-square"],
+    scene: `${ground()}
+${person(116, 122, { scale: 1.1 })}
+${person(204, 122, { scale: 1.1, body: C.greenDark })}
+${bubble(126, 72, 70, 40, C.cream, "left")}<path d="M140 92 H182" stroke="${C.green}" stroke-width="4" stroke-linecap="round"/>
+<path d="M146 198 Q160 212 174 198" fill="none" stroke="${C.cream}" stroke-width="6" stroke-linecap="round"/>
+<path d="M150 150 Q160 142 170 150 Q180 160 160 176 Q140 160 150 150 Z" fill="${C.gold}" ${O}/>`,
+  },
+  support: {
+    file: "support",
+    badges: ["headset", "life-buoy"],
+    scene: `${ground()}
+${person(150, 112, { scale: 1.25 })}
+${headset(150, 108, 42)}
+${bubble(206, 150, 64, 44, C.cream, "left")}${check(238, 172, 0.8, C.green)}`,
+  },
+  hr: {
+    file: "hr",
+    badges: ["users-round", "id-card"],
+    scene: `${ground()}
+${person(104, 134, { body: C.greenDark, scale: 0.9 })}
+${person(216, 134, { body: C.greenDark, scale: 0.9 })}
+${person(160, 106, { scale: 1.2 })}
+<rect x="130" y="196" width="60" height="40" rx="6" fill="url(#paper)" ${O}/><circle cx="146" cy="214" r="8" fill="${C.green}"/><path d="M160 208 H180 M160 220 H176" stroke="${C.greenLight}" stroke-width="3.5" stroke-linecap="round"/>`,
+  },
+  accounting: {
+    file: "accounting",
+    badges: ["calculator", "receipt"],
+    scene: `${ground()}
+${doc(84, 92, 100, 144, { lines: 5 })}
+<rect x="156" y="120" width="84" height="116" rx="10" fill="${C.greenDark}" ${O}/><rect x="166" y="130" width="64" height="26" rx="4" fill="${C.cream}" ${O}/>
+${[0, 1, 2].map((r) => [0, 1, 2].map((c) => `<rect x="${166 + c * 22}" y="${166 + r * 22}" width="16" height="16" rx="3" fill="${r === 2 && c === 2 ? C.gold : C.mint}"/>`).join("")).join("")}
+${coin(236, 206, 16)}`,
+  },
+  buying: {
+    file: "buying",
+    badges: ["shopping-bag", "tag"],
+    scene: `${ground()}
+${box(78, 176, 60)}${box(140, 176, 60, C.tanDark)}
+<path d="M172 120 Q172 92 196 92 Q220 92 220 120" fill="none" stroke="${C.outline}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M160 118 H232 L242 236 H150 Z" fill="url(#body)" ${O}/><path d="M172 142 H228" stroke="${C.cream}" stroke-width="4" stroke-linecap="round" opacity=".85"/>
+<path d="M82 128 L110 110 L130 130 L112 152 Z" fill="${C.gold}" ${O}/><circle cx="110" cy="126" r="4" fill="${C.outline}"/>`,
+  },
+  manufacturing: {
+    file: "manufacturing",
+    badges: ["factory", "cog"],
+    scene: `${ground()}
+${factory(84, 130, 152, 106)}
+${gear(224, 112, 20, 8, C.green)}`,
+  },
+  projects: {
+    file: "projects",
+    badges: ["square-kanban", "calendar-check"],
+    scene: `${ground()}
+${kanban(78, 100, 164, 120)}
+<rect x="196" y="190" width="52" height="46" rx="6" fill="url(#paper)" ${O}/>${check(222, 214, 0.9, C.green)}`,
+  },
+  quality: {
+    file: "quality",
+    badges: ["badge-check", "search"],
+    scene: `${ground()}
+${shield(150, 90, 120, 146, "url(#body)")}
+${shield(150, 108, 86, 108, C.cream)}
+${check(150, 160, 1.8, C.green)}
+${magnifier(226, 190, 22)}`,
+  },
+  selling: {
+    file: "selling",
+    badges: ["shopping-cart", "trending-up"],
+    scene: `${ground()}
+${cart(72, 128)}
+${box(132, 100, 34)}${box(170, 96, 30, C.tanDark)}
+${trend([[196, 110], [222, 96], [238, 106], [262, 84]], C.mint)}${coin(252, 130, 14)}`,
+  },
+  stock: {
+    file: "stock",
+    badges: ["warehouse", "package"],
+    scene: `${ground()}
+${shelf(80, 112, 118)}
+<rect x="210" y="162" width="40" height="52" rx="5" fill="url(#paper)" ${O}/><rect x="222" y="156" width="16" height="10" rx="2" fill="${C.green}" ${O}/>${check(230, 186, 0.6, C.green)}<path d="M220 202 H240" stroke="${C.greenLight}" stroke-width="3" stroke-linecap="round"/>`,
+  },
+  assets: {
+    file: "assets",
+    badges: ["vault", "building-2"],
+    scene: `${ground()}
+${building(76, 100, 56, 126, { cols: 2, rows: 3, fill: C.greenDark, door: false })}
+${safe(140, 118, 108, 108)}
+${coin(258, 212, 14)}`,
+  },
+  subcontracting: {
+    file: "subcontracting",
+    badges: ["waypoints", "handshake"],
+    scene: `${ground()}
+${person(108, 126, { scale: 1 })}
+${person(212, 126, { scale: 1, body: C.greenDark })}
+${doc(134, 96, 52, 66, { lines: 2, title: false })}
+${arrow(140, 196, 180, 196, C.mint)}${arrow(180, 212, 140, 212, C.mint)}
+<rect x="136" y="166" width="48" height="14" rx="4" fill="${C.gold}" ${O}/>`,
+  },
+  "erpnext-settings": {
+    file: "erpnext-settings",
+    badges: ["settings", "wrench"],
+    scene: `${ground()}
+${gear(150, 160, 48, 10, "url(#body)")}
+${gear(226, 196, 22, 8, C.greenDark)}
+<g transform="rotate(45 100 120)"><rect x="92" y="78" width="16" height="78" rx="5" fill="${C.cream}" ${O}/><path d="M86 74 h28 v18 l-8 8 h-12 l-8 -8 Z" fill="${C.cream}" ${O}/></g>`,
   },
   "shift-attendance": {
     file: "shift-attendance",

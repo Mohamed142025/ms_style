@@ -5,7 +5,7 @@
 // document, report or page by its name (sidebar items, workspace cards).
 
 const artBasePath = "/assets/ms_style/Icone/";
-const artVersion = "v7";
+const artVersion = "v8";
 
 // Desk module -> illustration. Keys are the Desktop Icon labels (untranslated). The
 // pictures in tools/illustrations (build.mjs) are drawn in the style of the first ones.
@@ -41,22 +41,22 @@ const deskArt = {
   Recruitment: "recruitment.webp",
   "Tax & Benefits": "tax-benefits.webp",
   "Shift & Attendance": "shift-attendance.webp",
-  Home: "Home.webp",
-  HR: "HR.webp",
-  "Frappe HR": "HR.webp",
-  Accounting: "Accounting.webp",
-  "ERPNext Settings": "ERPNext_Settings.webp",
-  Manufacturing: "Manufacturing.webp",
+  Home: "home.webp",
+  HR: "hr.webp",
+  "Frappe HR": "hr.webp",
+  Accounting: "accounting.webp",
+  "ERPNext Settings": "erpnext-settings.webp",
+  Manufacturing: "manufacturing.webp",
   Projects: "projects.webp",
   Quality: "quality.webp",
-  Selling: "Selling.webp",
-  Stock: "Stock.webp",
-  Assets: "asset.webp",
-  Subcontracting: "subcontrac.webp",
-  Buying: "Buying.webp",
-  CRM: "CRM.webp",
+  Selling: "selling.webp",
+  Stock: "stock.webp",
+  Assets: "assets.webp",
+  Subcontracting: "subcontracting.webp",
+  Buying: "buying.webp",
+  CRM: "crm.webp",
   Support: "support.webp",
-  ERPNext: "erpnext.webp",
+  ERPNext: "framework.webp",
   "إدارة الحركة": "fleet.webp",
   "أمين المخزن": "ws-storekeeper.webp",
   "المكتب الفني": "ws-technical-office.webp",
