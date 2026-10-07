@@ -132,71 +132,88 @@
   padding: 12px;
 }
 
-// Module grid: at most 6 columns (138-160px tiles) that share the row, so the 14px/12px
+// Module grid: at most 7 columns (118-140px tiles) that share the row, so the 14px/12px
 // gaps hold at every width instead of stretching around fixed-width tiles. Narrower
 // screens drop a column rather than squeezing the names.
 .desktop-container > .icons-container > .icons {
-  --ms-desk-tile-min: 138px;
-  --ms-desk-caption: 44px;
-  --ms-desk-title: 13px;
+  --ms-desk-tile-min: 118px;
+  --ms-desk-caption: 32px;
+  --ms-desk-title: 12px;
   width: 100%;
-  max-width: calc(6 * 160px + 5 * 12px);
+  max-width: calc(7 * 140px + 6 * 12px);
   grid-template-columns: repeat(auto-fill, minmax(var(--ms-desk-tile-min), 1fr));
   grid-template-rows: none;
   gap: 14px 12px;
 }
 
-// Module tiles: the square image on top and a two-line caption below.
+// Module tiles: the brand picture, whole, across the top of the card and a caption below.
+// The cards are narrower than before (seven across a wide screen), which keeps them
+// short without cropping the pictures.
 .desktop-container > .icons-container > .icons > .desktop-icon {
   width: 100%;
   height: auto;
   min-height: 0;
-  padding: 0;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   gap: 0;
+  padding: 0;
   overflow: hidden;
   border: 1px solid var(--ms-border);
   border-radius: var(--ms-radius-xl);
   background: var(--ms-surface-raised);
-  box-shadow: var(--ms-shadow-md);
-  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  box-shadow: var(--ms-shadow-sm);
+  transition: transform var(--ms-duration-slow) var(--ms-ease), box-shadow var(--ms-duration-slow) var(--ms-ease),
+    border-color var(--ms-duration-slow) var(--ms-ease);
 }
 
 .desktop-container > .icons-container > .icons > .desktop-icon:hover,
 .desktop-container > .icons-container > .icons > .desktop-icon:focus-visible {
-  border-color: rgba(var(--ms-accent-rgb), .28);
-  box-shadow: var(--ms-shadow-lg);
-  transform: translateY(-4px);
+  border-color: rgba(var(--ms-accent-rgb), .4);
+  box-shadow: 0 18px 36px -18px var(--ms-neon-glow), var(--ms-shadow-md);
+  transform: translateY(-3px);
 }
 
 .desktop-container > .icons-container > .icons > .desktop-icon .icon-container {
+  display: block;
   flex: 0 0 auto;
   width: 100%;
   height: auto;
-  aspect-ratio: 1;
+  min-width: 0;
+  min-height: 0;
   padding: 0;
+  aspect-ratio: 1;
   border-radius: 0;
-  background-color: var(--ms-surface-raised);
+  background: var(--ms-roots);
   box-shadow: none;
+  overflow: hidden;
 }
 
-.desktop-container > .icons-container > .icons > .desktop-icon .icon-container img {
+.desktop-container > .icons-container > .icons > .desktop-icon .icon-container img,
+.desktop-container > .icons-container > .icons > .desktop-icon .ms-folder-hero {
   display: block;
   width: 100%;
   height: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: auto;
   object-fit: contain;
+  object-position: center;
   border-radius: 0;
   box-shadow: none;
+  filter: none;
+  transition: transform var(--ms-duration-slow) var(--ms-ease);
 }
 
+.desktop-container > .icons-container > .icons > .desktop-icon:hover .icon-container img,
+.desktop-container > .icons-container > .icons > .desktop-icon:hover .ms-folder-hero { transform: scale(1.04); }
+
 .desktop-container > .icons-container > .icons > .desktop-icon .icon-caption {
-  flex: 0 0 var(--ms-desk-caption);
+  flex: 0 0 auto;
   width: 100%;
-  height: var(--ms-desk-caption);
+  height: auto;
   min-height: var(--ms-desk-caption);
   align-items: center;
   justify-content: center;
-  padding: 4px 8px 6px;
+  padding: 5px 6px 7px;
   background: var(--ms-surface-raised);
   text-align: center;
 }
@@ -215,126 +232,93 @@
   text-align: center;
   white-space: normal;
   text-overflow: clip;
-  // Break long names at a hyphenation point (Subcontract-ing), never mid-letter.
-  overflow-wrap: normal;
+  // Long names break at a hyphenation point (Subcontract-ing) where the browser can,
+  // and anywhere rather than being cut off where it cannot.
+  overflow-wrap: anywhere;
   hyphens: auto;
 }
 
-/* Keep folder modules independent from the outer module card. */
-.desktop-container > .icons-container > .icons > .desktop-icon:has(> .icon-container > .icons-container) {
-  align-self: start;
-}
-
-.desktop-container > .icons-container > .icons > .desktop-icon:has(> .icon-container > .icons-container) > .icon-container.folder-icon {
-  flex: 1 1 auto;
-  width: 100%;
-  height: 156px;
-  min-height: 156px;
-  aspect-ratio: auto;
-  padding: 12px;
+// Folders (Accounting): Frappe draws them as thumbnails of the workspaces inside. A folder
+// with a brand tile shows the tile instead (ms_style.bundle.js puts it in); the others
+// keep the thumbnails, inside the same 72px box.
+.desktop-container > .icons-container > .icons > .desktop-icon > .icon-container.folder-icon {
   display: block;
+  flex: 0 0 auto;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  aspect-ratio: 1;
   overflow: hidden;
 }
 
+.desktop-container > .icons-container > .icons > .desktop-icon .folder-icon:has(> .ms-folder-hero) > .icons-container { display: none; }
+
 .desktop-container > .icons-container > .icons > .desktop-icon .folder-icon > .icons-container {
   width: 100%;
-  height: auto;
+  height: 100%;
   margin: 0;
-  padding: 0;
-  display: block;
-  overflow: visible;
+  padding: 14px;
+  border-radius: 0;
+  background: var(--ms-roots);
+  overflow: hidden;
 }
 
 .desktop-container > .icons-container > .icons > .desktop-icon .folder-icon > .icons-container > .icons {
   width: 100%;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: none;
-  gap: 8px;
+  gap: 4px;
 }
 
 .desktop-container > .icons-container > .icons > .desktop-icon .folder-icon > .icons-container > .icons > .desktop-icon {
   width: auto;
-  height: 42px;
+  height: auto;
   min-width: 0;
   padding: 0;
   gap: 0;
   border: 0;
-  border-radius: var(--ms-radius-md);
+  border-radius: 6px;
   background: transparent;
   box-shadow: none;
   transform: none;
 }
 
 .desktop-container > .icons-container > .icons > .desktop-icon .folder-icon > .icons-container > .icons > .desktop-icon .icon-container {
-  width: 38px;
-  height: 38px;
-  min-width: 38px;
-  min-height: 38px;
-  padding: 5px;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  padding: 0;
   aspect-ratio: 1;
-  border-radius: var(--ms-radius-md);
-  background: var(--ms-primary-soft);
+  border-radius: 6px;
+  background: transparent;
 }
 
 .desktop-container > .icons-container > .icons > .desktop-icon .folder-icon > .icons-container > .icons > .desktop-icon .icon-container img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  border-radius: 0;
-  box-shadow: none;
+  filter: none;
+  border-radius: 6px;
 }
 
-.desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] > .icon-container.folder-icon {
-  width: 100%;
-  height: auto;
-  min-height: 0;
-  aspect-ratio: 1;
-  padding: 0 !important;
-  flex: 0 0 auto !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--ms-surface-raised);
-  background-image: url("/assets/ms_style/Icone/Accounting.webp?v=5");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
-.desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"]:has(> .icon-container.folder-icon) > .icon-container.folder-icon {
-  height: auto !important;
-  min-height: 0 !important;
-  aspect-ratio: 1 !important;
-  flex: 0 0 auto !important;
-  padding: 0 !important;
-}
-
-.desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"]:has(> .icon-container.folder-icon) {
-  height: auto !important;
-  min-height: 0 !important;
-  align-self: start;
-}
-
-.desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] .ms-folder-hero {
-  display: block;
-  width: 100%;
-  height: 100%;
-  aspect-ratio: 1;
+// Folder popups and the sidebar header: the same pictures, rounded at their small size.
+.modal .icons-container .desktop-icon .icon-container img,
+.sidebar-header .header-logo img {
+  border-radius: 22%;
   object-fit: cover;
-  border-radius: 0;
-}
-
-.desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] > .icon-container.folder-icon > .icons-container {
-  display: none;
 }
 
 @media screen and (max-width: 1100px) {
   .desktop-container > .icons-container > .icons {
-    --ms-desk-tile-min: 120px;
-    // Two 16px lines plus the caption padding.
-    --ms-desk-caption: 42px;
+    --ms-desk-tile-min: 110px;
+    --ms-desk-caption: 32px;
     --ms-desk-title: 12px;
   }
+
+}
+
+@media screen and (max-width: 520px) {
+  // Three tiles across a phone: the caption gets the width the padding took.
+  .desktop-container > .icons-container > .icons > .desktop-icon .icon-caption { padding: 5px 4px 7px; }
 }
 
 .workspace-layout .ce-block__content,
@@ -356,8 +340,7 @@
 
 // The freeze overlay (Frappe's loading and saving screen) is drawn in loader.scss.
 
-.module-card:hover, .shortcut-widget:hover, .widget:hover, .number-card:hover,
-.number-widget-box:hover,
+.module-card:hover, .shortcut-widget-box:hover, .number-card:hover,
 .dashboard-card:hover, .report-card:hover {
   border-color: rgba(var(--ms-accent-rgb), .28);
   box-shadow: var(--ms-shadow-md);
@@ -497,10 +480,62 @@ html[dir="rtl"] .widget.number-widget-box { --ms-card-corner: 0%; }
   font-weight: 700;
 }
 
-.workspace-layout .h4 {
-  display: block;
-  padding: 12px 0 8px;
-  border-top: 2px solid var(--ms-accent);
+// Section headers ("Reports & Masters"): a Mint-ringed dot, the title, and a hairline that
+// fades out across the page. Smaller headers (h5, h6) share the row without the line.
+.codex-editor .ce-header :is(.h3, .h4, .h5, .h6) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 18px 0 8px;
+  border: 0;
+  color: var(--ms-text-strong);
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+
+.codex-editor .ce-header .h3 { font-size: var(--ms-font-2xl); }
+.codex-editor .ce-header .h4 { font-size: var(--ms-font-lg); }
+.codex-editor .ce-header :is(.h5, .h6) { padding-top: 12px; color: var(--ms-text-muted); font-size: var(--ms-font-sm); letter-spacing: .02em; }
+
+.codex-editor .ce-header :is(.h3, .h4, .h5, .h6)::before {
+  content: "";
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ms-accent);
+  box-shadow: 0 0 0 4px rgba(var(--ms-accent-rgb), .16);
+}
+
+.codex-editor .ce-header :is(.h3, .h4)::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  margin-inline-start: 6px;
+  background: linear-gradient(to right, var(--ms-border-strong), transparent);
+}
+
+html[dir="rtl"] .codex-editor .ce-header :is(.h3, .h4)::after { background: linear-gradient(to left, var(--ms-border-strong), transparent); }
+
+// In edit mode the header is a text field; the decorations would sit in the way.
+.layout-main-section.edit-mode .ce-header :is(.h3, .h4, .h5, .h6)::before,
+.layout-main-section.edit-mode .ce-header :is(.h3, .h4, .h5, .h6)::after { display: none; }
+
+// Paragraph blocks: plain text on the page, not a boxed field.
+.codex-editor .ce-paragraph,
+.codex-editor .widget.paragraph .widget-body,
+.codex-editor .widget.paragraph {
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-md);
+  line-height: 1.6;
+}
+
+.layout-main-section:not(.edit-mode) .codex-editor .ce-paragraph.widget {
+  padding: 0 0 4px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .workspace-layout .widget-links a,
@@ -526,28 +561,49 @@ html[dir="rtl"] .widget.number-widget-box { --ms-card-corner: 0%; }
   transform: translateY(-1px);
 }
 
+// Links card rows: tight lines, every other one on a soft accent wash (zebra striping,
+// as in data tables), the list clipped to a rounded block of its own.
+.widget.links-widget-box .widget-body {
+  display: flex;
+  flex-direction: column;
+  margin: 0 -6px;
+  overflow: hidden;
+  border-radius: var(--ms-radius-md);
+}
+
 .widget.links-widget-box .link-item {
   position: relative;
-  width: calc(100% + 8px);
-  min-height: 32px;
+  width: 100%;
+  min-height: 30px;
   align-items: center;
-  padding: 6px 10px;
-  margin: 2px -4px;
-  border: 1px solid transparent;
-  border-radius: var(--ms-radius-md);
+  margin: 0;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 0;
   color: var(--ms-text);
+  font-size: var(--ms-font-sm);
+  line-height: 20px;
   text-decoration: none;
+  transition: background-color var(--ms-duration-fast) var(--ms-ease), color var(--ms-duration-fast) var(--ms-ease);
 }
+
+.widget.links-widget-box .link-item:nth-child(odd) { background: var(--ms-row-alt); }
 
 .widget.links-widget-box .link-item:hover,
 .widget.links-widget-box .link-item:focus-visible {
-  border-color: rgba(var(--ms-accent-rgb), .28);
-  background: var(--ms-primary-soft);
-  color: var(--ms-text-strong);
+  background: var(--ms-accent);
+  color: var(--ms-on-dark);
+  font-weight: 600;
   text-decoration: none;
-  box-shadow: var(--ms-shadow-sm);
-  transform: translateX(3px);
+  outline: none;
 }
+
+.widget.links-widget-box .link-item:hover .link-text,
+.widget.links-widget-box .link-item:focus-visible .link-text { color: var(--ms-on-dark); }
+
+// The hovered card itself answers too.
+.widget.links-widget-box:hover { border-color: rgba(var(--ms-accent-rgb), .45); }
+.widget.links-widget-box:hover .ms-card-icon { background: var(--ms-accent); color: var(--ms-on-dark); box-shadow: none; }
 
 .widget.links-widget-box .link-item .link-content {
   display: flex;
@@ -566,14 +622,83 @@ html[dir="rtl"] .widget.number-widget-box { --ms-card-corner: 0%; }
 .widget.links-widget-box .link-item .icon {
   flex: 0 0 auto;
   color: var(--ms-text-muted);
-  transition: transform var(--ms-duration-normal) var(--ms-ease), color var(--ms-duration-normal) var(--ms-ease);
+  opacity: .7;
+  transition: transform var(--ms-duration-normal) var(--ms-ease), color var(--ms-duration-normal) var(--ms-ease), opacity var(--ms-duration-normal) var(--ms-ease);
 }
 
 .widget.links-widget-box .link-item:hover .icon,
 .widget.links-widget-box .link-item:focus-visible .icon {
-  color: var(--ms-link);
+  color: var(--ms-on-dark);
+  opacity: 1;
   transform: translate(2px, -2px);
 }
+
+// Card title: a glyph for what the card holds and the number of links (workspace_cards.js).
+.widget .widget-title { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.widget .widget-title .ellipsis { min-width: 0; }
+
+.ms-card-icon {
+  display: inline-grid;
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(var(--ms-accent-rgb), .18), rgba(var(--ms-accent-rgb), .08));
+  color: var(--ms-accent);
+  box-shadow: inset 0 0 0 1px rgba(var(--ms-accent-rgb), .12);
+}
+
+.ms-card-icon .icon,
+.widget.links-widget-box .widget-head .widget-label .widget-title .ms-card-icon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: 0 !important;
+  --icon-stroke: currentColor;
+  stroke: currentColor;
+}
+
+.ms-card-count {
+  flex: 0 0 auto;
+  margin-inline-start: auto;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgba(var(--ms-tint-rgb), .06);
+  color: var(--ms-text-muted);
+  font-size: var(--ms-font-xs);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+// Shortcuts: a tile with its glyph, the name, and the count on the end.
+.widget.shortcut-widget-box {
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+  padding: 12px 14px;
+  border-color: rgba(var(--ms-tint-rgb), .1);
+  border-radius: var(--ms-radius-lg);
+  background: var(--ms-surface-raised);
+  box-shadow: inset 0 1px 0 var(--ms-card-highlight), var(--ms-shadow-sm);
+  cursor: pointer;
+}
+
+.widget.shortcut-widget-box .widget-head { width: 100%; padding: 0; }
+.widget.shortcut-widget-box .widget-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.widget.shortcut-widget-box .widget-label { min-width: 0; flex: 1 1 auto; }
+.widget.shortcut-widget-box .widget-title,
+.widget.shortcut-widget-box .widget-title .ellipsis { color: var(--ms-text-strong); font-size: var(--ms-font-sm); font-weight: 700; }
+.widget.shortcut-widget-box .widget-control { display: inline-flex; flex: 0 0 auto; align-items: center; }
+// The count pill says it is a link; the arrow took the room the name needs.
+.widget.shortcut-widget-box .widget-control > .icon,
+.widget.shortcut-widget-box .widget-control > .es-icon { display: none; }
+.widget.shortcut-widget-box .widget-title { gap: 8px; }
+.widget.shortcut-widget-box .ms-card-icon { width: 26px; height: 26px; border-radius: 8px; }
+.widget.shortcut-widget-box .ms-card-icon .icon { width: 14px; height: 14px; }
+.widget.shortcut-widget-box:hover { border-color: rgba(var(--ms-accent-rgb), .45); background: var(--ms-primary-soft); }
+.widget.shortcut-widget-box .indicator-pill { font-weight: 700; font-variant-numeric: tabular-nums; }
+.widget.shortcut-widget-box:hover .ms-card-icon { background: var(--ms-accent); color: var(--ms-on-dark); }
 
 // SVG arrows don't follow the text direction: rtlcss flips their translate() offsets
 // but not the glyph itself, so mirror the glyph in RTL.
@@ -611,7 +736,7 @@ html[dir="rtl"] .widget.links-widget-box .link-item:focus-visible .icon {
   background-image: linear-gradient(180deg, rgba(var(--ms-accent-rgb), .045), transparent 38%);
 }
 
-.widget:is(.links-widget-box, .number-widget-box, .dashboard-widget-box)::before {
+.widget:is(.number-widget-box, .dashboard-widget-box)::before {
   content: "";
   position: absolute;
   top: var(--ms-card-marker-top);
@@ -659,14 +784,19 @@ html[dir="rtl"] .widget.links-widget-box .link-item:focus-visible .icon {
   padding: 18px 20px 14px;
 }
 
+.widget.links-widget-box { padding: 16px 18px 12px; }
+
 .widget:is(.links-widget-box, .dashboard-widget-box) .widget-head { padding: 0 0 10px; }
+.widget.links-widget-box .widget-head { padding: 0 0 12px; }
 
 .widget:is(.links-widget-box, .dashboard-widget-box) .widget-head .widget-label .widget-title,
 .widget:is(.links-widget-box, .dashboard-widget-box) .widget-head .widget-label .widget-title .ellipsis {
   color: var(--ms-text-strong);
-  font-size: var(--ms-font-lg);
+  font-size: var(--ms-font-md);
   font-weight: 700;
 }
+
+.widget.links-widget-box .widget-head .widget-label { min-width: 0; flex: 1 1 auto; }
 
 // The chart's own box was styled as a second card inside the card.
 .widget.dashboard-widget-box {
@@ -739,4 +869,55 @@ html[dir="rtl"] .widget.links-widget-box .link-item:focus-visible .icon {
 .codex-editor-overlay__rectangle {
   border-color: rgba(var(--ms-accent-rgb), .28);
   background-color: rgba(var(--ms-accent-rgb), .18);
+}
+
+// Edit Layout: Frappe hangs the "remove" button 5px above the tile, where the card's
+// clipping hid all but a corner of it. It sits inside the tile instead, over the picture.
+.desktop-container > .icons-container > .icons > .desktop-icon .hide-button {
+  top: 8px;
+  left: auto;
+  inset-inline-end: 8px;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, .35);
+  border-radius: 999px;
+  background: rgba(var(--ms-roots-rgb), .82);
+  color: var(--ms-on-dark);
+  box-shadow: var(--ms-shadow-sm);
+  cursor: pointer;
+  transition: background-color var(--ms-duration-fast) var(--ms-ease), transform var(--ms-duration-fast) var(--ms-ease);
+}
+
+.desktop-container > .icons-container > .icons > .desktop-icon .hide-button .icon {
+  width: 14px;
+  height: 14px;
+  --icon-stroke: currentColor;
+  stroke: currentColor;
+}
+
+.desktop-container > .icons-container > .icons > .desktop-icon .hide-button:hover {
+  background: var(--ms-danger);
+  transform: scale(1.08);
+}
+
+// Tiles being edited: a dashed accent frame, and the "add workspace" tile centred.
+.desktop-container > .icons-container > .icons > .desktop-icon.desktop-edit-mode {
+  border: 1px dashed rgba(var(--ms-accent-rgb), .5);
+}
+
+.desktop-container > .icons-container > .icons > .desktop-icon.add-new-icon {
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 120px;
+  color: var(--ms-text-muted);
+  font-weight: 600;
+}
+
+.desktop-container > .icons-container > .icons > .desktop-icon.add-new-icon:hover {
+  color: var(--ms-accent);
+  background: var(--ms-primary-soft);
 }

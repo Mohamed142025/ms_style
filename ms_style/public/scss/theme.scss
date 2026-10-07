@@ -1,0 +1,107 @@
+// Light / dark switch (theme_toggle.js): a segmented control with a sliding thumb, drawn
+// from the theme on the root so every copy of it shows the same state. The thumb moves
+// with CSS alone; aria-pressed is kept in step by the script. Both bars it sits on are
+// Roots green in every theme, so the control is always drawn for a dark surface.
+.ms-theme-toggle {
+  --ms-toggle-size: 30px;
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  isolation: isolate;
+  padding: 2px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .1);
+}
+
+.ms-theme-toggle::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 2px;
+  bottom: 2px;
+  left: 2px;
+  width: calc(50% - 2px);
+  border-radius: 999px;
+  background: var(--ms-mint);
+  box-shadow: 0 2px 8px rgba(var(--ms-mint-rgb), .35);
+  transition: transform var(--ms-duration-slow) var(--ms-ease);
+}
+
+// rtlcss mirrors `left` and translateX for the RTL bundle, so the thumb starts under the
+// first button and slides to the second in both directions.
+[data-theme="dark"] .ms-theme-toggle::before { transform: translateX(100%); }
+
+.ms-theme-toggle button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--ms-toggle-size);
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ms-on-dark-muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--ms-duration-normal) var(--ms-ease);
+}
+
+.ms-theme-toggle button .icon {
+  width: 14px;
+  height: 14px;
+  --icon-stroke: currentColor;
+  stroke: currentColor;
+}
+
+.ms-theme-toggle button:hover { color: var(--ms-on-dark); }
+.ms-theme-toggle button[aria-pressed="true"] { color: var(--ms-roots); }
+.ms-theme-toggle button:focus-visible { outline: 2px solid var(--ms-mint); outline-offset: 2px; }
+
+// Compact: icons only. In the navbar, and when the sidebar is collapsed.
+.desktop-navbar .ms-theme-toggle button,
+.body-sidebar-container:not(.expanded) .ms-theme-toggle button { padding: 0 8px; }
+.desktop-navbar .ms-theme-toggle button span,
+.body-sidebar-container:not(.expanded) .ms-theme-toggle button span { display: none; }
+
+// Sidebar: a full-width control above the user block; stacked when collapsed.
+.body-sidebar .ms-theme-toggle {
+  display: grid;
+  margin: 0 0 10px;
+}
+
+.body-sidebar-container:not(.expanded) .ms-theme-toggle {
+  grid-auto-flow: row;
+  width: 32px;
+  margin-inline: auto;
+}
+
+.body-sidebar-container:not(.expanded) .ms-theme-toggle::before {
+  top: 2px;
+  right: 2px;
+  bottom: auto;
+  left: 2px;
+  width: auto;
+  height: calc(50% - 2px);
+}
+
+.body-sidebar-container:not(.expanded) [data-theme="dark"] .ms-theme-toggle::before,
+[data-theme="dark"] .body-sidebar-container:not(.expanded) .ms-theme-toggle::before { transform: translateY(100%); }
+
+.body-sidebar-container:not(.expanded) .ms-theme-toggle button { height: 26px; padding: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ms-theme-toggle::before { transition: none; }
+}
+
+@media screen and (max-width: 520px) {
+  .desktop-navbar .ms-theme-toggle button { padding: 0 6px; }
+}
+
+// Frappe's own cross-fade between themes (theme_toggle.js uses the View Transitions API).
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 260ms; }

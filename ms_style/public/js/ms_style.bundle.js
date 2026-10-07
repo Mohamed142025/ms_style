@@ -1,44 +1,19 @@
 import "./notification_counter";
 import "./document_views";
+import "./sidebar_icons";
+import "./workspace_cards";
+import { getDeskIcon } from "./brand_icons";
+import { applyNavbarThemeToggle, applySidebarThemeToggle } from "./theme_toggle";
 
 (() => {
   const root = document.documentElement;
-  const iconBasePath = "/assets/ms_style/Icone/";
-  const iconPaths = {
-    Framework: "framework.webp",
-    Home: "Home.webp",
-    HR: "HR.webp",
-    "Frappe HR": "HR.webp",
-    Organization: "organization.webp",
-    Accounting: "Accounting.webp",
-    "ERPNext Settings": "ERPNext_Settings.webp",
-    Manufacturing: "Manufacturing.webp",
-    Projects: "projects.webp",
-    Quality: "quality.webp",
-    Selling: "Selling.webp",
-    Stock: "Stock.webp",
-    Assets: "asset.webp",
-    Subcontracting: "subcontrac.webp",
-    Buying: "Buying.webp",
-    CRM: "CRM.webp",
-    Support: "support.webp",
-    ERPNext: "erpnext.webp",
-    "إدارة الحركة": "fleet.webp",
-  };
+  // Workspaces whose route is not their module's name on the desk.
   const workspaceAliases = {
     company: "Organization",
-    organization: "Organization",
     hr: "HR",
     "erpnext-settings": "ERPNext Settings",
     "global-defaults": "ERPNext Settings",
-    manufacturing: "Manufacturing",
-    projects: "Projects",
-    quality: "Quality",
-    selling: "Selling",
-    stock: "Stock",
     assets: "Assets",
-    subcontracting: "Subcontracting",
-    buying: "Buying",
     crm: "CRM",
   };
 
@@ -50,38 +25,37 @@ import "./document_views";
     return message.replace(/\{(\d+)\}/g, (match, index) => args[index] ?? match);
   }
 
-  function getIconPath(name) {
-    const fileName = iconPaths[name];
-    return fileName ? `${iconBasePath}${fileName}?v=5` : null;
-  }
-
   // Desk tiles, folder popups and the sidebar header take their image from
   // frappe.utils.get_desktop_icon while Frappe draws them (ui/desktop_icon.html). Answering
-  // with the brand artwork there draws it from the start. Swapping it in afterwards showed
+  // with the brand tile there draws it from the start. Swapping it in afterwards showed
   // Frappe's icons first, and missed the desk Frappe draws anew on every visit to it.
   function useBrandDesktopIcons() {
     const utils = window.frappe?.utils;
     const getDesktopIcon = utils?.get_desktop_icon;
     if (typeof getDesktopIcon !== "function" || getDesktopIcon.msBrandIcons) return;
     const brandDesktopIcon = function (name, variant) {
-      return getIconPath(name) || getDesktopIcon.call(this, name, variant);
+      return getDeskIcon(name) || getDesktopIcon.call(this, name, variant);
     };
     brandDesktopIcon.msBrandIcons = true;
     utils.get_desktop_icon = brandDesktopIcon;
   }
 
-  // Accounting is a folder on the desk, drawn as thumbnails of the workspaces in it; the
-  // brand artwork goes over them (workspace.scss).
+  // Folders on the desk (Accounting) are drawn as thumbnails of the workspaces in them;
+  // a folder with a brand tile shows the tile instead (workspace.scss hides the thumbnails).
   function applyFolderHero() {
-    const folder = document.querySelector(
-      '.desktop-container > .icons-container > .icons > .desktop-icon[data-id="Accounting"] > .icon-container.folder-icon'
-    );
-    if (!folder || folder.querySelector(":scope > .ms-folder-hero")) return;
-    const hero = document.createElement("img");
-    hero.className = "ms-folder-hero";
-    hero.src = getIconPath("Accounting");
-    hero.alt = "Accounting";
-    folder.prepend(hero);
+    document
+      .querySelectorAll(".desktop-container > .icons-container > .icons > .desktop-icon > .icon-container.folder-icon")
+      .forEach((folder) => {
+        if (folder.querySelector(":scope > .ms-folder-hero")) return;
+        const name = folder.parentElement.dataset.id;
+        const tile = getDeskIcon(name);
+        if (!tile) return;
+        const hero = document.createElement("img");
+        hero.className = "ms-folder-hero";
+        hero.src = tile;
+        hero.alt = name;
+        folder.prepend(hero);
+      });
   }
 
   // Brand icon for the sidebar header, found by the sidebar's own (untranslated) title,
@@ -89,9 +63,9 @@ import "./document_views";
   // then by the route.
   function getWorkspaceIconName() {
     const title = window.frappe?.app?.sidebar?.sidebar_title;
-    if (title && iconPaths[title]) return title;
+    if (getDeskIcon(title)) return title;
     const folder = title && window.frappe?.boot?.desktop_icons?.find((icon) => icon.label === title)?.parent_icon;
-    if (folder && iconPaths[folder]) return folder;
+    if (getDeskIcon(folder)) return folder;
     const routeName = window.location.pathname.split("/").filter(Boolean).pop();
     return workspaceAliases[routeName] || null;
   }
@@ -99,7 +73,7 @@ import "./document_views";
   function applyWorkspaceIcon() {
     const logo = document.querySelector(".body-sidebar .sidebar-header .header-logo");
     const name = logo && getWorkspaceIconName();
-    const iconPath = getIconPath(name);
+    const iconPath = getDeskIcon(name);
     if (!iconPath) return;
 
     let image = logo.querySelector("img");
@@ -488,6 +462,7 @@ import "./document_views";
     applyFolderHero();
     applyUserGreeting();
     applyLanguageSwitcher();
+    applyNavbarThemeToggle();
     applyMyWorkCenter();
   }
 
@@ -495,6 +470,7 @@ import "./document_views";
     applyNavbarLogo();
     applyDesk();
     applyWorkspaceIcon();
+    applySidebarThemeToggle();
     forgetLegacyVisitLog();
     bindBlockListFocus();
     applyMobileFooter();
@@ -520,6 +496,7 @@ import "./document_views";
       window.requestAnimationFrame(() => {
         updateQueued = false;
         applyWorkspaceIcon();
+        applySidebarThemeToggle();
       });
     };
     const observer = new MutationObserver(() => {

@@ -267,3 +267,23 @@ msgstr "الأدوار المسموح لها بمعرفة من فتح المست
 
 msgid "Ctrl+M on any document, or Who opened this document in the form menu on phones. How long views are kept is set in Log Settings (View Log)."
 msgstr "من أي مستند: Ctrl+M، وعلى الموبايل من قائمة ⋯ ← «مين فتح المستند». مدة الاحتفاظ بالسجل من Log Settings (View Log)."
+
+msgctxt "ms_style"
+msgid "Theme"
+msgstr "المظهر"
+
+msgctxt "ms_style"
+msgid "Light"
+msgstr "فاتح"
+
+msgctxt "ms_style"
+msgid "Dark"
+msgstr "داكن"
+
+msgctxt "ms_style"
+msgid "Switch to light mode"
+msgstr "التبديل إلى الوضع الفاتح"
+
+msgctxt "ms_style"
+msgid "Switch to dark mode"
+msgstr "التبديل إلى الوضع الداكن"

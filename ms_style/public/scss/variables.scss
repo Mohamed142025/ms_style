@@ -17,6 +17,8 @@
   --ms-warning-bg: rgba(var(--ms-warning-rgb), var(--ms-status-alpha));
   --ms-danger-bg: rgba(var(--ms-danger-rgb), var(--ms-status-alpha));
   --ms-info-bg: rgba(var(--ms-info-rgb), var(--ms-status-alpha));
+  // Alternate rows in lists (workspace link cards).
+  --ms-row-alt: rgba(var(--ms-accent-rgb), var(--ms-row-alpha));
 }
 
 :root {
@@ -102,6 +104,7 @@
   --ms-soft-alpha: .08;
   --ms-focus-alpha: .18;
   --ms-status-alpha: .12;
+  --ms-row-alpha: .06;
   --ms-success-text: #166A4B;
   --ms-warning-text: #875917;
   --ms-danger-text: #A73833;
@@ -133,6 +136,7 @@
   --ms-soft-alpha: .12;
   --ms-focus-alpha: .28;
   --ms-status-alpha: .18;
+  --ms-row-alpha: .09;
   --ms-success-text: var(--ms-mint);
   --ms-warning-text: #DC952D;
   --ms-danger-text: #D88480;
