@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320">
+<defs>
+<radialGradient id="bg" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#175443"/><stop offset="0.6" stop-color="#134033"/><stop offset="1" stop-color="#103a2f"/></radialGradient>
+<radialGradient id="disc" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#1d6250"/><stop offset="1" stop-color="#165645"/></radialGradient>
+<linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38a07f"/><stop offset="1" stop-color="#2c8268"/></linearGradient>
+<linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3efe4"/><stop offset="1" stop-color="#e2dccb"/></linearGradient>
+</defs>
+<rect width="320" height="320" fill="url(#bg)"/>
+<g stroke="#2b5a4d" stroke-width="2" fill="none" stroke-linecap="round"><path d="M24 60 H62 L74 72"/><path d="M24 236 H58"/><path d="M296 82 H262"/><path d="M296 260 H264 L252 248"/></g>
+<g fill="#134033" stroke="#2f6a5a" stroke-width="2"><circle cx="22" cy="60" r="4"/><circle cx="22" cy="236" r="4"/><circle cx="298" cy="82" r="4"/><circle cx="298" cy="260" r="4"/></g>
+<circle cx="160" cy="165" r="128" fill="none" stroke="#1d5a49" stroke-width="2"/>
+<circle cx="160" cy="165" r="116" fill="url(#disc)"/>
+<path d="M60 110 A116 116 0 0 1 214 62" fill="none" stroke="#2f8a6e" stroke-width="7" stroke-linecap="round"/>
+<path d="M262 214 A116 116 0 0 1 160 281" fill="none" stroke="#2f8a6e" stroke-width="7" stroke-linecap="round"/>
+<circle cx="160" cy="165" r="104" fill="none" stroke="#2a7560" stroke-width="1.5" stroke-dasharray="2 7"/>
+<path d="M62 236 H258" stroke="#0f3328" stroke-width="5" stroke-linecap="round"/>
+<rect x="72" y="96" width="176" height="112" rx="10" fill="#ece8dc" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><rect x="72" y="96" width="176" height="112" rx="10" fill="none" stroke="#2f8d72" stroke-width="6" stroke-opacity=".0"/>
+<rect x="84" y="108" width="152" height="88" rx="6" fill="#163a30"/>
+<path d="M96 170 L120 150 L138 162 L160 130 L182 148 L206 124 L224 138" fill="none" stroke="#a1dbc7" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="138" y="208" width="44" height="18" fill="#24715a" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><rect x="112" y="226" width="96" height="10" rx="4" fill="#2f8d72" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M252.6 118.0 L244.3 126.4 L244.2 138.2 L232.4 138.3 L224.0 146.6 L215.6 138.3 L203.8 138.2 L203.7 126.4 L195.4 118.0 L203.7 109.6 L203.8 97.8 L215.6 97.7 L224.0 89.4 L232.4 97.7 L244.2 97.8 L244.3 109.6 Z" fill="#2f8d72" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="224" cy="118" r="9.24" fill="#ece8dc" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="82" cy="96" r="25" fill="#ece8dc" stroke="#0f3328" stroke-width="3"/>
+<g transform="translate(67.625 81.625) scale(1.198)" fill="none" stroke="#2f8d72" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915" /><circle cx="12" cy="12" r="3" /></g>
+<circle cx="240" cy="92" r="25" fill="#ece8dc" stroke="#0f3328" stroke-width="3"/>
+<g transform="translate(225.625 77.625) scale(1.198)" fill="none" stroke="#2f8d72" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></g>
+<path d="M268 142 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z" fill="#a1dbc7"/><path d="M118 67 l2.0999999999999996 4.8999999999999995 4.8999999999999995 2.0999999999999996 -4.8999999999999995 2.0999999999999996 -2.0999999999999996 4.8999999999999995 -2.0999999999999996 -4.8999999999999995 -4.8999999999999995 -2.0999999999999996 4.8999999999999995 -2.0999999999999996 Z" fill="#a1dbc7"/>
+</svg>

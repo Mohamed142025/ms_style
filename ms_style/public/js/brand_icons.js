@@ -5,12 +5,42 @@
 // document, report or page by its name (sidebar items, workspace cards).
 
 const artBasePath = "/assets/ms_style/Icone/";
-const artVersion = "v6";
+const artVersion = "v7";
 
-// Desk module -> illustration. Keys are the Desktop Icon labels (untranslated). Framework
-// (a robot) and Organization (an abstract knot) did not read as their module and are
-// composed instead.
+// Desk module -> illustration. Keys are the Desktop Icon labels (untranslated). The
+// pictures in tools/illustrations (build.mjs) are drawn in the style of the first ones.
 const deskArt = {
+  Framework: "framework.webp",
+  Organization: "organization.webp",
+  "Custom HR": "custom-hr.webp",
+  "My Workspaces": "my-workspaces.webp",
+  Build: "build.webp",
+  Data: "data.webp",
+  Email: "email.webp",
+  Users: "users.webp",
+  System: "system.webp",
+  Website: "website.webp",
+  Printing: "printing.webp",
+  Automation: "automation.webp",
+  Integrations: "integrations.webp",
+  Invoicing: "invoicing.webp",
+  Payments: "payments.webp",
+  "Financial Reports": "financial-reports.webp",
+  "Accounts Setup": "accounts-setup.webp",
+  Taxes: "taxes.webp",
+  Banking: "banking.webp",
+  Budget: "budget.webp",
+  "Share Management": "share-management.webp",
+  Subscription: "subscription.webp",
+  Leaves: "leaves.webp",
+  Tenure: "tenure.webp",
+  Payroll: "payroll.webp",
+  Expenses: "expenses.webp",
+  "HR Setup": "hr-setup.webp",
+  Performance: "performance.webp",
+  Recruitment: "recruitment.webp",
+  "Tax & Benefits": "tax-benefits.webp",
+  "Shift & Attendance": "shift-attendance.webp",
   Home: "Home.webp",
   HR: "HR.webp",
   "Frappe HR": "HR.webp",

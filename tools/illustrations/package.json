@@ -1,0 +1,8 @@
+{
+  "name": "ms-style-illustrations",
+  "private": true,
+  "type": "module",
+  "description": "Renders the desk module illustrations (ms_style/public/Icone/*.webp) from build.mjs",
+  "scripts": { "build": "node build.mjs" },
+  "dependencies": { "@resvg/resvg-js": "^2.6.2", "sharp": "^0.33.5" }
+}

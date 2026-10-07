@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320">
+<defs>
+<radialGradient id="bg" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#175443"/><stop offset="0.6" stop-color="#134033"/><stop offset="1" stop-color="#103a2f"/></radialGradient>
+<radialGradient id="disc" cx="50%" cy="40%" r="60%"><stop offset="0" stop-color="#1d6250"/><stop offset="1" stop-color="#165645"/></radialGradient>
+<linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#38a07f"/><stop offset="1" stop-color="#2c8268"/></linearGradient>
+<linearGradient id="paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f3efe4"/><stop offset="1" stop-color="#e2dccb"/></linearGradient>
+</defs>
+<rect width="320" height="320" fill="url(#bg)"/>
+<g stroke="#2b5a4d" stroke-width="2" fill="none" stroke-linecap="round"><path d="M24 60 H62 L74 72"/><path d="M24 236 H58"/><path d="M296 82 H262"/><path d="M296 260 H264 L252 248"/></g>
+<g fill="#134033" stroke="#2f6a5a" stroke-width="2"><circle cx="22" cy="60" r="4"/><circle cx="22" cy="236" r="4"/><circle cx="298" cy="82" r="4"/><circle cx="298" cy="260" r="4"/></g>
+<circle cx="160" cy="165" r="128" fill="none" stroke="#1d5a49" stroke-width="2"/>
+<circle cx="160" cy="165" r="116" fill="url(#disc)"/>
+<path d="M60 110 A116 116 0 0 1 214 62" fill="none" stroke="#2f8a6e" stroke-width="7" stroke-linecap="round"/>
+<path d="M262 214 A116 116 0 0 1 160 281" fill="none" stroke="#2f8a6e" stroke-width="7" stroke-linecap="round"/>
+<circle cx="160" cy="165" r="104" fill="none" stroke="#2a7560" stroke-width="1.5" stroke-dasharray="2 7"/>
+<path d="M62 236 H258" stroke="#0f3328" stroke-width="5" stroke-linecap="round"/>
+<path d="M164.8 150.0 L151.8 162.3 L153.9 180.1 L136.0 181.2 L126.1 196.1 L111.7 185.5 L94.6 190.5 L90.4 173.1 L74.0 166.0 L82.0 150.0 L74.0 134.0 L90.4 126.9 L94.6 109.5 L111.7 114.5 L126.1 103.9 L136.0 118.8 L153.9 119.9 L151.8 137.7 Z" fill="url(#body)" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="118" cy="150" r="15.12" fill="#ece8dc" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M232.4 184.0 L221.9 194.7 L221.7 209.7 L206.7 209.9 L196.0 220.4 L185.3 209.9 L170.3 209.7 L170.1 194.7 L159.6 184.0 L170.1 173.3 L170.3 158.3 L185.3 158.1 L196.0 147.6 L206.7 158.1 L221.7 158.3 L221.9 173.3 Z" fill="#24715a" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="196" cy="184" r="11.76" fill="#ece8dc" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M226.0 112.0 L218.0 120.7 L216.2 132.3 L204.5 131.5 L194.2 137.3 L187.5 127.6 L176.6 123.3 L180.0 112.0 L176.6 100.7 L187.5 96.4 L194.2 86.7 L204.5 92.5 L216.2 91.7 L218.0 103.3 Z" fill="#2f8d72" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="200" cy="112" r="8.4" fill="#ece8dc" stroke="#0f3328" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M226 140 l-10 24 h14 l-12 26" fill="none" stroke="#f2d98a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="82" cy="96" r="25" fill="#ece8dc" stroke="#0f3328" stroke-width="3"/>
+<g transform="translate(67.625 81.625) scale(1.198)" fill="none" stroke="#2f8d72" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="8" x="3" y="3" rx="2" /><path d="M7 11v4a2 2 0 0 0 2 2h4" /><rect width="8" height="8" x="13" y="13" rx="2" /></g>
+<circle cx="240" cy="92" r="25" fill="#ece8dc" stroke="#0f3328" stroke-width="3"/>
+<g transform="translate(225.625 77.625) scale(1.198)" fill="none" stroke="#2f8d72" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></g>
+<path d="M268 142 l3 7 7 3 -7 3 -3 7 -3 -7 -7 -3 7 -3 Z" fill="#a1dbc7"/><path d="M118 67 l2.0999999999999996 4.8999999999999995 4.8999999999999995 2.0999999999999996 -4.8999999999999995 2.0999999999999996 -2.0999999999999996 4.8999999999999995 -2.0999999999999996 -4.8999999999999995 -4.8999999999999995 -2.0999999999999996 4.8999999999999995 -2.0999999999999996 Z" fill="#a1dbc7"/>
+</svg>
