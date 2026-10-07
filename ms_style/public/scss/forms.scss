@@ -263,3 +263,111 @@
 // Documents with an image field (Customer, Employee...): the image sits in the card.
 .form-sidebar .sidebar-image-section { padding: 16px 16px 0; }
 .form-sidebar .sidebar-image-section :is(.sidebar-image, .standard-image) { border-radius: var(--ms-radius-lg); }
+
+// Child tables -------------------------------------------------------------------------
+// The strip under a table: its buttons stay on one line each and wrap as a row when the
+// table is narrow (on phones "Add row" broke into two lines in a 60px button).
+.form-grid-container .grid-footer,
+.grid-field .grid-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.form-grid-container .grid-footer .grid-buttons,
+.form-grid-container .grid-footer .grid-pagination,
+.form-grid-container .grid-footer > .flex,
+.form-grid-container .grid-footer > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.form-grid-container .grid-footer .btn { white-space: nowrap; }
+
+// The table scrolls sideways when its columns do not fit; a fade on the far edge says so.
+.form-grid-container .form-grid { position: relative; }
+
+@media (max-width: 767px) {
+  .frappe-control[data-fieldtype="Table"] .form-grid-container { position: relative; }
+
+  .frappe-control[data-fieldtype="Table"] .form-grid-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    inset-inline-end: 0;
+    width: 28px;
+    border-radius: 0 var(--ms-radius-md) var(--ms-radius-md) 0;
+    background: linear-gradient(to right, transparent, rgba(var(--ms-surface-rgb), .9));
+    pointer-events: none;
+  }
+
+  html[dir="rtl"] .frappe-control[data-fieldtype="Table"] .form-grid-container::after {
+    border-radius: var(--ms-radius-md) 0 0 var(--ms-radius-md);
+    background: linear-gradient(to left, transparent, rgba(var(--ms-surface-rgb), .9));
+  }
+
+  // A row's edit form on a phone: the fields are a list, so each one gets the same gap.
+  .grid-row-open .form-in-grid .frappe-control { margin-bottom: 10px; }
+}
+
+// Link suggestions: fit the screen and wrap long titles instead of running off it.
+.awesomplete > ul {
+  max-width: min(100vw - 32px, 480px);
+}
+
+// In a child table whose columns overflow, Frappe clips the table control sideways; the
+// suggestion list of a Link cell was cut with it. Let it out while a list is open, and
+// on phones hang it from the table's end edge so it stays on screen whichever column
+// opened it.
+.frappe-control[data-fieldtype="Table"].form-group:has(.awesomplete > ul:not([hidden])) { overflow-x: visible; }
+
+@media (max-width: 767px) {
+  .form-grid-container .awesomplete > ul {
+    left: auto !important;
+    inset-inline-end: 0;
+    width: min(100%, 320px);
+    max-width: calc(100vw - 32px);
+  }
+}
+
+.awesomplete > ul > li {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+// Fields on phones: touch-sized inputs (WCAG 2.5.8 wants at least 24px, platform guides
+// 44px; Frappe's are 28px), a tighter rhythm between fields, and smaller labels.
+@media (max-width: 767px) {
+  .form-column { padding: 0 12px; }
+  .form-section .section-body { padding-top: 8px; }
+  .frappe-control .form-group,
+  .form-layout .frappe-control { margin-bottom: 10px; }
+  .frappe-control .control-label { margin-bottom: 4px; font-size: var(--ms-font-sm); }
+  .frappe-control .help-box { margin-top: 3px; font-size: var(--ms-font-xs); }
+  .frappe-control .control-input .form-control,
+  .frappe-control .control-input .input-with-feedback,
+  .frappe-control .control-input .like-disabled-input,
+  .frappe-control .control-input .btn-attach,
+  .form-in-grid .frappe-control .form-control {
+    min-height: 38px;
+    font-size: var(--ms-font-md);
+  }
+  .frappe-control .control-input .form-control:not(textarea) { height: 38px; }
+  .frappe-control .control-input select.form-control { padding-right: 32px; }
+  .frappe-control .checkbox { margin: 6px 0 10px; }
+  .frappe-control .checkbox .label-area { font-size: var(--ms-font-sm); }
+  .form-section .section-head { font-size: var(--ms-font-lg); }
+}
+
+// Tablets with the sidebar open: three 190px columns cut labels and values. Two columns
+// fit; the third wraps below, as Frappe itself does on phones.
+@media (min-width: 768px) and (max-width: 1100px) {
+  body:has(.body-sidebar-container.expanded) .form-section .form-column.col-sm-4 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}

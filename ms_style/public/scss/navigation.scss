@@ -299,9 +299,11 @@
 .body-sidebar .keyboard-shortcut { color: var(--ms-on-dark-muted); }
 .body-sidebar .promotional-banner-title { color: var(--ms-mint); }
 
-// The unread count on the bell, in the sidebar and on the desk home. notification_counter.js
-// keeps the number in --ms-unread-count on the root; drawing it here keeps it through every
-// redraw of the sidebar without watching the page.
+// The unread count. The expanded sidebar shows it once, as a pill at the end of the row
+// (Frappe's own count, which it keeps live). The collapsed sidebar and the desk navbar show
+// it as a badge on the bell, drawn by CSS from --ms-unread-count on the root
+// (notification_counter.js), so it survives every redraw of the sidebar. The badge stays
+// inside its row: before, it hung out above the bell next to a second copy of the number.
 .sidebar-notification .sidebar-item-icon,
 .sidebar-notification .standard-sidebar-item,
 .sidebar-notification .item-anchor,
@@ -310,27 +312,52 @@
   overflow: visible !important;
 }
 
-.ms-has-unread .sidebar-notification .sidebar-item-icon::after,
-.ms-has-unread .desktop-notifications .dropdown-notifications > .nav-link::after {
-  content: var(--ms-unread-count);
-  position: absolute;
-  top: -7px;
-  right: -9px;
-  left: auto;
-  z-index: 2;
-  box-sizing: border-box;
-  min-width: 17px;
-  height: 17px;
-  padding: 0 4px;
-  border: 2px solid var(--ms-roots);
+.sidebar-notification .sidebar-item-suffix { margin-inline-start: auto; }
+
+.sidebar-notification .sidebar-notification-count {
+  display: inline-block;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
   border-radius: 999px;
   background: var(--ms-danger);
   color: #fff;
   font-size: 11px;
   font-weight: 700;
-  line-height: 13px;
+  line-height: 20px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.sidebar-notification .sidebar-notification-count.hidden { display: none; }
+
+.body-sidebar-container:not(.expanded) .sidebar-notification .sidebar-item-suffix { display: none; }
+
+.ms-has-unread .body-sidebar-container:not(.expanded) .sidebar-notification .sidebar-item-icon::after,
+.ms-has-unread .desktop-notifications .dropdown-notifications > .nav-link::after {
+  content: var(--ms-unread-count);
+  position: absolute;
+  top: -6px;
+  inset-inline-end: -8px;
+  z-index: 2;
+  box-sizing: border-box;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border: 2px solid var(--ms-roots);
+  border-radius: 999px;
+  background: var(--ms-danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 12px;
   text-align: center;
   pointer-events: none;
+}
+
+.ms-has-unread .desktop-notifications .dropdown-notifications > .nav-link::after {
+  top: 2px;
+  inset-inline-end: 2px;
 }
 
 // The collapsed sidebar shows the bell alone, without its label.
@@ -501,8 +528,9 @@
 .body-sidebar .standard-sidebar-item .item-anchor:focus-visible { outline-offset: -2px; }
 
 // Frappe's collapse button sits on the sidebar edge: Roots with a Sand icon instead of
-// a white disc.
+// a white disc, level with the user block (the theme switch sits where Frappe had it).
 .body-sidebar .sidebar-toggle-btn {
+  bottom: 30px;
   border-color: rgba(var(--ms-mint-rgb), .28);
   background: var(--ms-roots);
   color: var(--ms-on-dark-text);

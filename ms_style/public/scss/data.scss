@@ -22,6 +22,16 @@
   background-color: var(--ms-surface-raised);
 }
 
+// List rows alternate: every other row on the soft accent wash (the first container in
+// .result is the header row). The sticky right block repeats the row's colour.
+.frappe-list .result > .list-row-container:nth-child(even) { background-color: var(--ms-row-alt); }
+
+// Frappe's phone layout paints that block again with its own rule; the doubled class
+// outranks it without !important.
+.frappe-list .result > .list-row-container:nth-child(even) .list-row .level-right.level-right {
+  background: linear-gradient(var(--ms-row-alt), var(--ms-row-alt)), var(--ms-surface-raised);
+}
+
 .frappe-list .list-row:hover .level-right {
   background: linear-gradient(var(--ms-primary-soft), var(--ms-primary-soft)), var(--ms-surface-raised);
 }
