@@ -326,9 +326,14 @@
   min-width: 0;
 }
 
-.widget, .number-widget-box, .chart-container {
+.widget, .number-widget-box {
   overflow: hidden;
 }
+
+// A chart card holds nothing that needs clipping, and clipping cut the chart's tooltip
+// (reports.scss). Raised while pointed at, so the tooltip is drawn over the cards around it.
+.widget.dashboard-widget-box { overflow: visible; }
+.widget.dashboard-widget-box:hover { z-index: 2; }
 
 // Workspace edit mode: a paragraph opens its "Templates" list below itself (Frappe puts
 // it at top: 55px). The card clipping hid the list, and the hover lift moved it under
@@ -797,6 +802,17 @@ html[dir="rtl"] .widget.links-widget-box .link-item:focus-visible .icon {
 }
 
 .widget.links-widget-box .widget-head .widget-label { min-width: 0; flex: 1 1 auto; }
+
+// Workspace edit mode: Frappe stretches every card's head to the card's full height (made
+// for shortcuts, which are all head). On these cards the title then floated mid-card and
+// the links were squeezed into what was left and cut off. They keep the head they have
+// outside edit mode; this matches Frappe's selector so it can override it.
+.page-container[data-page-route="Workspaces"] .codex-editor .ce-block .ce-block__content .widget.edit-mode {
+  &:is(.links-widget-box, .number-widget-box, .dashboard-widget-box) .widget-head { height: auto; }
+  &.links-widget-box .widget-head { padding: 0 0 12px; }
+  &.dashboard-widget-box .widget-head { padding: 0 0 10px; }
+  &.number-widget-box .widget-head { padding: 0; }
+}
 
 // The chart's own box was styled as a second card inside the card.
 .widget.dashboard-widget-box {

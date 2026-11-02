@@ -287,3 +287,7 @@ msgstr "التبديل إلى الوضع الفاتح"
 msgctxt "ms_style"
 msgid "Switch to dark mode"
 msgstr "التبديل إلى الوضع الداكن"
+
+msgctxt "ms_style"
+msgid "Language"
+msgstr "اللغة"

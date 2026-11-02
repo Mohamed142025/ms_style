@@ -1,8 +1,9 @@
 // Light / dark switch (theme_toggle.js): a segmented control with a sliding thumb, drawn
 // from the theme on the root so every copy of it shows the same state. The thumb moves
 // with CSS alone; aria-pressed is kept in step by the script. Both bars it sits on are
-// Roots green in every theme, so the control is always drawn for a dark surface.
-.ms-theme-toggle {
+// Roots green in every theme, so the control is always drawn for a dark surface. The
+// Arabic / English switch under it in the sidebar (language_toggle.js) is the same control.
+:is(.ms-theme-toggle, .ms-language-toggle) {
   --ms-toggle-size: 30px;
   position: relative;
   display: inline-grid;
@@ -15,7 +16,7 @@
   background: rgba(255, 255, 255, .1);
 }
 
-.ms-theme-toggle::before {
+:is(.ms-theme-toggle, .ms-language-toggle)::before {
   content: "";
   position: absolute;
   z-index: -1;
@@ -31,9 +32,10 @@
 
 // rtlcss mirrors `left` and translateX for the RTL bundle, so the thumb starts under the
 // first button and slides to the second in both directions.
-[data-theme="dark"] .ms-theme-toggle::before { transform: translateX(100%); }
+[data-theme="dark"] .ms-theme-toggle::before,
+.ms-language-toggle[data-ms-language="en"]::before { transform: translateX(100%); }
 
-.ms-theme-toggle button {
+:is(.ms-theme-toggle, .ms-language-toggle) button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -59,29 +61,36 @@
   stroke: currentColor;
 }
 
-.ms-theme-toggle button:hover { color: var(--ms-on-dark); }
-.ms-theme-toggle button[aria-pressed="true"] { color: var(--ms-roots); }
-.ms-theme-toggle button:focus-visible { outline: 2px solid var(--ms-mint); outline-offset: 2px; }
+:is(.ms-theme-toggle, .ms-language-toggle) button:hover { color: var(--ms-on-dark); }
+:is(.ms-theme-toggle, .ms-language-toggle) button[aria-pressed="true"] { color: var(--ms-roots); }
+:is(.ms-theme-toggle, .ms-language-toggle) button:focus-visible { outline: 2px solid var(--ms-mint); outline-offset: 2px; }
+.ms-language-toggle button:disabled { cursor: wait; }
+
+// The language is named in full; its short form (ع / EN) stands in where only icons fit.
+.ms-language-toggle button b { font-weight: inherit; }
+.body-sidebar-container.expanded .ms-language-toggle button b { display: none; }
 
 // Compact: icons only. In the navbar, and when the sidebar is collapsed.
 .desktop-navbar .ms-theme-toggle button,
-.body-sidebar-container:not(.expanded) .ms-theme-toggle button { padding: 0 8px; }
+.body-sidebar-container:not(.expanded) :is(.ms-theme-toggle, .ms-language-toggle) button { padding: 0 8px; }
 .desktop-navbar .ms-theme-toggle button span,
-.body-sidebar-container:not(.expanded) .ms-theme-toggle button span { display: none; }
+.body-sidebar-container:not(.expanded) :is(.ms-theme-toggle, .ms-language-toggle) button span { display: none; }
 
 // Sidebar: a full-width control above the user block; stacked when collapsed.
-.body-sidebar .ms-theme-toggle {
+.body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) {
   display: grid;
   margin: 0 0 10px;
 }
 
-.body-sidebar-container:not(.expanded) .ms-theme-toggle {
+.body-sidebar .ms-theme-toggle:has(+ .ms-language-toggle) { margin-bottom: 6px; }
+
+.body-sidebar-container:not(.expanded) :is(.ms-theme-toggle, .ms-language-toggle) {
   grid-auto-flow: row;
   width: 32px;
   margin-inline: auto;
 }
 
-.body-sidebar-container:not(.expanded) .ms-theme-toggle::before {
+.body-sidebar-container:not(.expanded) :is(.ms-theme-toggle, .ms-language-toggle)::before {
   top: 2px;
   right: 2px;
   bottom: auto;
@@ -91,12 +100,13 @@
 }
 
 .body-sidebar-container:not(.expanded) [data-theme="dark"] .ms-theme-toggle::before,
-[data-theme="dark"] .body-sidebar-container:not(.expanded) .ms-theme-toggle::before { transform: translateY(100%); }
+[data-theme="dark"] .body-sidebar-container:not(.expanded) .ms-theme-toggle::before,
+.body-sidebar-container:not(.expanded) .ms-language-toggle[data-ms-language="en"]::before { transform: translateY(100%); }
 
-.body-sidebar-container:not(.expanded) .ms-theme-toggle button { height: 26px; padding: 0; }
+.body-sidebar-container:not(.expanded) :is(.ms-theme-toggle, .ms-language-toggle) button { height: 26px; padding: 0; }
 
 @media (prefers-reduced-motion: reduce) {
-  .ms-theme-toggle::before { transition: none; }
+  :is(.ms-theme-toggle, .ms-language-toggle)::before { transition: none; }
 }
 
 @media screen and (max-width: 520px) {

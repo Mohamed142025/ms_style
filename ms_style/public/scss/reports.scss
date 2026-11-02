@@ -15,7 +15,23 @@
   background: var(--ms-primary-soft);
 }
 
-.chart-container { overflow: hidden; }
+// A chart's tooltip sits above the point it describes, and with many series it is a grid
+// several rows tall: clipping the chart cut it to its last row. Nothing else in the chart
+// reaches outside it.
+.chart-container { overflow: visible; }
+
+// Many series: the grid takes the chart's width, as many columns as fit, so it stays a
+// few rows tall above the point; a name takes as many lines as it needs. Under the chart
+// container, to outrank the styles frappe-charts adds to the page when it loads.
+.chart-container .graph-svg-tip.comparison { max-width: 100%; }
+.chart-container .graph-svg-tip.comparison:has(ul.tooltip-grid) { width: min(100%, 1040px); }
+.chart-container .graph-svg-tip.comparison ul.tooltip-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 2px 4px; }
+.chart-container .graph-svg-tip.comparison ul.tooltip-grid li { min-width: 0; padding: 4px 8px 8px; }
+.chart-container .graph-svg-tip.comparison ul.tooltip-grid li .tooltip-label { max-width: none; overflow-wrap: anywhere; }
+
+// Frappe draws charts left to right; each name still reads in its own direction, so an
+// Arabic name with a dash in it is not shown back to front.
+.chart-container .graph-svg-tip .tooltip-label, .chart-container .graph-svg-tip .title { unicode-bidi: plaintext; }
 
 // Frappe draws the column filter row as grey pills that read like loading skeletons;
 // give them the same surface and border as every other input.

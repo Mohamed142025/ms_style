@@ -4,6 +4,7 @@ import "./sidebar_icons";
 import "./workspace_cards";
 import { getDeskIcon } from "./brand_icons";
 import { applyNavbarThemeToggle, applySidebarThemeToggle } from "./theme_toggle";
+import { applySidebarLanguageToggle } from "./language_toggle";
 
 (() => {
   const root = document.documentElement;
@@ -241,7 +242,11 @@ import { applyNavbarThemeToggle, applySidebarThemeToggle } from "./theme_toggle"
     });
     panel.querySelectorAll("[data-create-doctype]").forEach((button) => {
       // frappe.new_doc honours the doctype's Quick Entry dialog and custom create routes.
-      button.addEventListener("click", () => window.frappe?.new_doc?.(button.dataset.createDoctype));
+      // A Quick Entry opens in place, without a route change, so the popup closes first.
+      button.addEventListener("click", () => {
+        closeMobilePanels();
+        window.frappe?.new_doc?.(button.dataset.createDoctype);
+      });
     });
     panel.querySelectorAll("[data-summary-kind]").forEach((button) => {
       button.addEventListener("click", () => openWorkItemsPopup(button.dataset.summaryKind));
@@ -387,6 +392,18 @@ import { applyNavbarThemeToggle, applySidebarThemeToggle } from "./theme_toggle"
     },
   };
 
+  // Search, Work and Alerts open over the page; going to another page closes them, so
+  // the page chosen from one of them is not left hidden underneath.
+  function closeMobilePanels() {
+    document.querySelectorAll(".ms-work-center-overlay").forEach((overlay) => overlay.remove());
+    const $ = window.jQuery;
+    if ($) {
+      $(".modal.show:has(.navbar-modal-wrapper)").modal("hide");
+      $(".desktop-notifications .dropdown-notifications.show > .nav-link").dropdown("hide");
+    }
+    document.querySelector(".body-sidebar .dropdown-notifications:not(.hidden)")?.classList.add("hidden");
+  }
+
   function updateMobileFooter(footer) {
     const home = footer.querySelector('[data-action="home"]');
     const onHome = isDeskHome();
@@ -471,10 +488,12 @@ import { applyNavbarThemeToggle, applySidebarThemeToggle } from "./theme_toggle"
     applyDesk();
     applyWorkspaceIcon();
     applySidebarThemeToggle();
+    applySidebarLanguageToggle();
     forgetLegacyVisitLog();
     bindBlockListFocus();
     applyMobileFooter();
     window.frappe?.router?.on?.("change", () => {
+      closeMobilePanels();
       applyMobileFooter();
       // A failed load gets one fresh attempt each time the user comes back to the desk home.
       if (myWorkCenterFailed && isDeskHome()) myWorkCenterFailed = false;
@@ -497,6 +516,7 @@ import { applyNavbarThemeToggle, applySidebarThemeToggle } from "./theme_toggle"
         updateQueued = false;
         applyWorkspaceIcon();
         applySidebarThemeToggle();
+        applySidebarLanguageToggle();
       });
     };
     const observer = new MutationObserver(() => {
