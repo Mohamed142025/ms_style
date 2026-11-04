@@ -291,3 +291,7 @@ msgstr "التبديل إلى الوضع الداكن"
 msgctxt "ms_style"
 msgid "Language"
 msgstr "اللغة"
+
+msgctxt "ms_style"
+msgid "HR App"
+msgstr "تطبيق الموارد البشرية"
