@@ -312,6 +312,43 @@
 
   // A row's edit form on a phone: the fields are a list, so each one gets the same gap.
   .grid-row-open .form-in-grid .frappe-control { margin-bottom: 10px; }
+
+  // Frappe fits a table of up to ten column units into the screen's width, which on a
+  // phone leaves 25 to 50px a column: codes cut to "ST…" and labels to a letter. Each
+  // column keeps a readable width instead, as in tables with more columns, and the table
+  // scrolls sideways. (Tables with more columns Frappe sizes itself: column-limit-reached.)
+  .form-grid-container:not(.column-limit-reached):not(:has(.grid-row-open)) > .form-grid {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .form-grid-container:not(.column-limit-reached) .form-grid {
+    .data-row.row { flex-wrap: nowrap; }
+    .grid-static-col.col-xs-1 { flex: 1 0 80px; max-width: none; }
+    .grid-static-col.col-xs-2 { flex: 1 0 180px; max-width: none; }
+    .grid-static-col.col-xs-3 { flex: 1 0 190px; max-width: none; }
+    .grid-static-col.col-xs-4 { flex: 1 0 220px; max-width: none; }
+    .grid-static-col:is(.col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10) { flex: 1 0 260px; max-width: none; }
+    // Every row's columns the same width as the heading's: a long value (a Link's title
+    // under its code) is cut in its column instead of widening it past the heading.
+    .grid-static-col { min-width: 0; }
+    .grid-body .grid-static-col .static-area > a {
+      display: block;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .row-check { flex: 0 0 40px; max-width: 40px; }
+    .row-index { flex: 0 0 44px; max-width: 44px; }
+  }
+
+  // Column labels on one line, cut with an ellipsis, not broken into two cut lines.
+  .form-grid .grid-heading-row .grid-static-col .static-area {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }
 
 // Link suggestions: fit the screen and wrap long titles instead of running off it.
@@ -325,12 +362,22 @@
 // opened it.
 .frappe-control[data-fieldtype="Table"].form-group:has(.awesomplete > ul:not([hidden])) { overflow-x: visible; }
 
+// Frappe moves the list of a Link cell out of the table, under the table field, and sets
+// it at the cell's left edge (grid_row.js), measured for left-to-right layouts: in Arabic
+// it ran off the screen's right. On phones it takes the table's width under the cell;
+// elsewhere ms_style.bundle.js sets it at the cell's right edge in Arabic.
 @media (max-width: 767px) {
-  .form-grid-container .awesomplete > ul {
-    left: auto !important;
-    inset-inline-end: 0;
-    width: min(100%, 320px);
-    max-width: calc(100vw - 32px);
+  .grid-field > .awesomplete {
+    left: 0 !important;
+    right: 0 !important;
+    width: auto !important;
+    min-width: 0 !important;
+    z-index: 1050;
+  }
+
+  .grid-field > .awesomplete > ul {
+    width: 100%;
+    max-width: none;
   }
 }
 

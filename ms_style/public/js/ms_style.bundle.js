@@ -2,6 +2,7 @@ import "./notification_counter";
 import "./document_views";
 import "./sidebar_icons";
 import "./workspace_cards";
+import "./grid_suggestions";
 import { getDeskIcon } from "./brand_icons";
 import { applyNavbarThemeToggle, applySidebarThemeToggle } from "./theme_toggle";
 import { applySidebarLanguageToggle } from "./language_toggle";
