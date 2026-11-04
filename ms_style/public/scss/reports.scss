@@ -42,6 +42,8 @@
     margin: 0;
     padding: 14px 18px 16px;
     overflow: hidden;
+    // The amount's size follows the card's width (below).
+    container-type: inline-size;
     border: 1px solid var(--ms-border);
     border-radius: var(--ms-radius-lg);
     background:
@@ -94,15 +96,21 @@
   // Aligned to the page's start edge: the amount's own direction (plaintext, below) would
   // otherwise turn "start" to the right for an Arabic currency on an English page. The
   // Arabic stylesheet (css-rtl) has it as "right".
+  // Frappe cuts the amount to one line with an ellipsis, which hid the millions: it
+  // shrinks to the card instead, and wraps if it still does not fit.
   .summary-value,
   .summary-value div {
+    overflow: visible !important;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: anywhere;
     text-align: left;
   }
 
   .summary-value {
     padding: 0;
     color: var(--ms-tone-text);
-    font-size: clamp(20px, 1.5vw + 8px, 26px);
+    font-size: clamp(14px, 9.5cqi, 26px);
     font-weight: 700;
     line-height: 1.2;
     letter-spacing: -.01em;
@@ -132,7 +140,7 @@
       font-size: var(--ms-font-xs);
       white-space: normal;
     }
-    .summary-value { margin-top: auto; font-size: 16px; }
+    .summary-value { margin-top: auto; font-size: clamp(13px, 10cqi, 18px); }
   }
 
   @media (prefers-reduced-motion: reduce) {
