@@ -132,7 +132,9 @@ function decorateSearch() {
 
 function decorateSearchModal(modal) {
   if (!modal) return;
-  modal.classList.add("ms-search-modal");
+  // Only when missing: classList.add rewrites the attribute even when the class is
+  // there, which the observer below saw as a change and answered again, in a loop.
+  if (!modal.classList.contains("ms-search-modal")) modal.classList.add("ms-search-modal");
   const body = modal.querySelector(".modal-body");
   if (body && !body.querySelector(".ms-search-head")) {
     const head = document.createElement("div");
@@ -164,10 +166,11 @@ function decorateSearchModal(modal) {
 }
 
 $(document).on("shown.bs.modal", () => window.setTimeout(decorateSearch, 0));
-let searchTimer = null;
+// Decorated in the observer itself: it runs before the browser paints, so the new
+// suggestions never show a frame without their icons (a timer let every keystroke paint
+// the bare list first, and the list jumped).
 new MutationObserver((mutations) => {
   if (window.innerWidth > PHONE) return;
   if (!mutations.some((m) => m.target.closest?.(".navbar-modal-wrapper") || m.target.classList?.contains("modal"))) return;
-  window.clearTimeout(searchTimer);
-  searchTimer = window.setTimeout(decorateSearch, 10);
+  decorateSearch();
 }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
