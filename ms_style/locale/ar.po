@@ -295,3 +295,47 @@ msgstr "اللغة"
 msgctxt "ms_style"
 msgid "HR App"
 msgstr "تطبيق الموارد البشرية"
+
+msgctxt "ms_style"
+msgid "Today"
+msgstr "اليوم"
+
+msgctxt "ms_style"
+msgid "Yesterday"
+msgstr "أمس"
+
+msgctxt "ms_style"
+msgid "Tomorrow"
+msgstr "غدًا"
+
+msgctxt "ms_style"
+msgid "{0} days late"
+msgstr "متأخر {0} يوم"
+
+msgctxt "ms_style"
+msgid "Due today"
+msgstr "مطلوب اليوم"
+
+msgctxt "ms_style"
+msgid "In {0} days"
+msgstr "بعد {0} أيام"
+
+msgctxt "ms_style"
+msgid "{0} due dates"
+msgstr "مواعيد {0}"
+
+msgctxt "ms_style"
+msgid "All"
+msgstr "الكل"
+
+msgctxt "ms_style"
+msgid "Filter & sort"
+msgstr "تصفية وترتيب"
+
+msgctxt "ms_style"
+msgid "Menu"
+msgstr "القائمة"
+
+msgctxt "ms_style"
+msgid "More"
+msgstr "المزيد"

@@ -1,0 +1,245 @@
+// List views on phones as an app screen (mobile_list.js): hero, week strip, status
+// chips, day groups, cards and the floating "new" button. Everything is scoped to
+// .ms-app-list, which the script sets only on phones, so other widths are untouched.
+
+@media (max-width: 767px) {
+  .ms-app-list {
+    --ms-hero-bg: linear-gradient(160deg, #15503f 0%, var(--ms-roots) 55%, #0a2b22 100%);
+    position: relative;
+    padding: 0 0 96px;
+    background: var(--ms-surface);
+  }
+
+  // The hero is the screen's header; Frappe's page head folds away (its menu, search
+  // and "new" live on the hero and the floating button). The head stays in the DOM for
+  // the actions it holds (selection "Actions", view switch), shown while rows are selected.
+  .page-container:has(.ms-app-list) .page-head { display: none; }
+  .page-container:has(.ms-app-list.ms-has-selection) .page-head { display: flex; }
+
+  // Hero --------------------------------------------------------------------------------
+  .ms-list-hero {
+    position: relative;
+    overflow: hidden;
+    margin: 0 0 12px;
+    padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 16px;
+    border-radius: 0 0 26px 26px;
+    background: var(--ms-hero-bg);
+    color: var(--ms-on-dark);
+    box-shadow: 0 14px 30px -18px rgba(var(--ms-roots-rgb), .6);
+  }
+
+  .ms-list-hero-art {
+    position: absolute;
+    bottom: 58px;
+    inset-inline-end: 12px;
+    width: 140px;
+    height: 56px;
+    color: var(--ms-mint);
+    opacity: .18;
+    pointer-events: none;
+  }
+
+  .ms-list-hero-row { position: relative; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+  .ms-list-hero-title { margin: 4px 0 2px; font-size: 26px; font-weight: 800; letter-spacing: -.02em; line-height: 1.15; }
+  .ms-list-hero-sub { margin: 0; color: var(--ms-on-dark-muted); font-size: 12px; }
+  .ms-list-hero-tools { display: flex; gap: 6px; flex: 0 0 auto; }
+
+  .ms-hero-btn {
+    display: inline-grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .1);
+    color: var(--ms-on-dark);
+  }
+
+  .ms-hero-btn .icon { --icon-stroke: currentColor; stroke: currentColor; }
+  .ms-hero-btn:active { background: rgba(255, 255, 255, .2); }
+
+  // Week strip
+  .ms-list-week { position: relative; margin-top: 18px; }
+  .ms-list-week-head { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: var(--ms-on-dark-muted); }
+  .ms-list-week-label { color: var(--ms-on-dark-text); font-weight: 600; }
+  .ms-list-week { position: relative; z-index: 1; }
+  .ms-list-week-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+
+  .ms-week-day {
+    display: grid;
+    justify-items: center;
+    gap: 2px;
+    padding: 6px 2px 5px;
+    border: 1.5px solid transparent;
+    border-radius: 14px;
+    background: transparent;
+    color: var(--ms-on-dark);
+  }
+
+  .ms-week-name { font-size: 11px; color: var(--ms-on-dark-muted); }
+  .ms-week-num { font-size: 17px; font-weight: 700; line-height: 1.1; }
+  .ms-week-dot { min-width: 6px; height: 6px; border-radius: 999px; background: transparent; font-size: 10px; line-height: 1; }
+  .ms-week-dot.has { background: var(--ms-gold, #f2d98a); }
+  .ms-week-dot.has[data-n]:not([data-n="1"]) { height: auto; padding: 1px 5px; color: var(--ms-roots); font-weight: 800; }
+  .ms-week-dot.has[data-n]:not([data-n="1"])::before { content: attr(data-n); }
+  .ms-week-day.is-today { border-color: var(--ms-mint); color: var(--ms-mint); }
+  .ms-week-day.is-today .ms-week-name { color: var(--ms-mint); }
+  .ms-week-day.is-active { background: rgba(var(--ms-mint-rgb), .18); }
+
+  // Chips -------------------------------------------------------------------------------
+  .ms-list-chips {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 10px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ms-list-chips::-webkit-scrollbar { display: none; }
+
+  .ms-chip {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--ms-border-strong);
+    border-radius: 999px;
+    background: var(--ms-surface-raised);
+    color: var(--ms-text);
+    font-size: var(--ms-font-sm);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .ms-chip .icon { width: 12px; height: 12px; --icon-stroke: currentColor; stroke: currentColor; opacity: .7; }
+  .ms-chip.is-active { background: var(--ms-roots); border-color: var(--ms-roots); color: var(--ms-on-dark); }
+  .ms-chip.is-active .icon { opacity: 1; color: var(--ms-mint); }
+  .ms-chip-count { padding: 0 6px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .08); font-size: 11px; }
+  .ms-chip.is-active .ms-chip-count { background: rgba(255, 255, 255, .16); }
+  .ms-chip-tools { width: 44px; padding: 0; justify-content: center; }
+  .ms-chip-tools .icon { width: 16px; height: 16px; opacity: 1; }
+
+  // The native filter strip and header row are tucked away unless asked for.
+  .ms-app-list .page-form { display: none !important; }
+  .ms-app-list.ms-filters-open .page-form { display: flex !important; flex-direction: column; gap: 8px; margin: 0 16px 10px; padding: 12px; border: 1px solid var(--ms-border); border-radius: 16px; background: var(--ms-surface-raised); }
+  .ms-app-list.ms-filters-open .standard-filter-section { display: flex !important; flex-wrap: wrap; gap: 8px; }
+  .ms-app-list.ms-filters-open .page-form .frappe-control { margin: 0; }
+  .ms-app-list.ms-filters-open .page-form .form-control { min-height: 42px; }
+  .ms-app-list.ms-filters-open .page-form .filter-section { flex-wrap: wrap; gap: 8px; }
+  .ms-app-list .list-row-container:has(.list-row-head) { display: none; }
+  .ms-app-list .frappe-list .result { background: transparent; }
+
+  // Day groups and cards ------------------------------------------------------------------
+  .ms-list-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 6px 16px 8px;
+    color: var(--ms-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .ms-list-group::after { content: ""; flex: 1; height: 1px; background: var(--ms-border); }
+
+  .ms-app-list .ms-card-row { padding: 0 16px; margin: 0 0 10px; background: transparent !important; }
+  .ms-app-list .ms-card-row > .list-row { display: none; }
+
+  .ms-card {
+    border: 1px solid var(--ms-border);
+    border-radius: 18px;
+    background: var(--ms-surface-raised);
+    box-shadow: var(--ms-shadow-sm);
+    padding: 12px 14px;
+  }
+
+  .ms-card:active { transform: scale(.99); }
+  .ms-card-head { display: flex; align-items: center; gap: 10px; }
+  .ms-card-check { display: inline-grid; width: 28px; height: 28px; place-items: center; flex: 0 0 auto; margin-inline-start: -6px; }
+  .ms-card-check .list-row-checkbox { width: 18px; height: 18px; margin: 0; }
+  // Checkboxes appear once a card is long-pressed (or any is checked).
+  .ms-app-list:not(.ms-has-selection) .ms-card-check { display: none; }
+
+  .ms-card-avatar {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    place-items: center;
+    overflow: hidden;
+    border-radius: 14px;
+    background: rgba(var(--ms-accent-rgb), .12);
+    color: var(--ms-accent);
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .ms-card-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .ms-card-text { min-width: 0; flex: 1 1 auto; }
+  .ms-card-title { overflow: hidden; color: var(--ms-text-strong); font-size: 15px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-card-name { margin-top: 2px; color: var(--ms-text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+
+  .ms-due {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(var(--ms-tint-rgb), .06);
+    color: var(--ms-text-muted);
+  }
+
+  .ms-due bdi { unicode-bidi: isolate; }
+  .ms-due .icon { width: 12px; height: 12px; --icon-stroke: currentColor; stroke: currentColor; }
+  .ms-due-today { background: var(--ms-roots); color: var(--ms-mint); }
+  .ms-due-late { background: var(--ms-danger-bg); color: var(--ms-danger-text); }
+  .ms-due-soon { background: var(--ms-primary-soft); color: var(--ms-success-text); }
+
+  .ms-card-progress { display: flex; align-items: center; gap: 10px; margin: 12px 0 2px; }
+  .ms-card-date { flex: 0 0 auto; color: var(--ms-text-muted); font-size: 11px; font-weight: 600; }
+  .ms-bar { position: relative; flex: 1 1 auto; height: 6px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .1); }
+  .ms-bar-fill { position: relative; height: 100%; border-radius: inherit; background: var(--ms-accent); }
+  .ms-bar-fill::after { content: ""; position: absolute; top: 50%; inset-inline-end: -7px; width: 14px; height: 14px; border: 3px solid var(--ms-surface-raised); border-radius: 50%; background: var(--ms-accent); transform: translateY(-50%); box-shadow: 0 1px 4px rgba(var(--ms-roots-rgb), .3); }
+
+  .ms-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; }
+  .ms-card-status .indicator-pill { padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+  .ms-card-action { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 1.5px solid var(--ms-accent); border-radius: 12px; background: var(--ms-surface-raised); color: var(--ms-accent); font-weight: 700; }
+  .ms-card-action .icon { --icon-stroke: currentColor; stroke: currentColor; }
+  .ms-card-action:active { background: var(--ms-primary-soft); }
+
+  // Paging under the cards
+  .ms-app-list .list-paging-area { margin: 0 16px; border: 0; background: transparent; }
+
+  // Floating "new" button, above the tab bar on the start side.
+  .ms-fab {
+    position: fixed;
+    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    inset-inline-start: 16px;
+    z-index: 1015;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 0 20px 0 16px;
+    border: 0;
+    border-radius: 18px;
+    background: var(--ms-mint);
+    color: var(--ms-roots);
+    font-size: 15px;
+    font-weight: 800;
+    box-shadow: 0 14px 28px -10px rgba(var(--ms-mint-rgb), .7), 0 4px 10px rgba(var(--ms-roots-rgb), .18);
+  }
+
+  .ms-fab .icon { width: 18px; height: 18px; --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.4; }
+  .ms-fab:active { transform: scale(.97); }
+
+  // Dark theme: the hero keeps its depth, cards sit on the ink surface.
+  [data-theme="dark"] .ms-app-list { --ms-hero-bg: linear-gradient(160deg, #123d31 0%, #0b2a22 55%, #071f19 100%); }
+  [data-theme="dark"] .ms-card { border-color: rgba(var(--ms-sand-rgb), .1); }
+}

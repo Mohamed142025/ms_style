@@ -1,5 +1,6 @@
 import "./brand_theme_color";
 import "./notification_counter";
+import "./mobile_list";
 import "./document_views";
 import "./sidebar_icons";
 import "./workspace_cards";
