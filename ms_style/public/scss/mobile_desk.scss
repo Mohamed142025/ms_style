@@ -5,6 +5,10 @@
 .desktop-modal .modal-content { background: var(--ms-surface-raised); color: var(--ms-text); }
 .desktop-modal .desktop-icon .icon-title { color: var(--ms-text-strong); }
 
+// A user's photo fills its avatar wherever it is drawn (Frappe sets it as an inline
+// background image).
+.avatar .avatar-frame[style*="background-image"] { background-size: cover !important; background-position: center !important; background-repeat: no-repeat !important; }
+
 // Phones: the desk home's hero (mobile_desk.js) and the floating tab bar (ms_style.bundle.js).
 
 @media (max-width: 767px) {
@@ -92,7 +96,9 @@
   .desktop-navbar.ms-desk-hero .desktop-avatar .avatar { width: 36px; height: 36px; }
   .desktop-navbar.ms-desk-hero .desktop-avatar .avatar-frame {
     border: 0;
-    background: var(--ms-mint);
+    // The colour only: the shorthand reset Frappe's photo to its natural size, so a
+    // 2K picture showed its (white) top-left corner.
+    background-color: var(--ms-mint);
     color: var(--ms-roots);
     font-size: 14px;
     font-weight: 800;
