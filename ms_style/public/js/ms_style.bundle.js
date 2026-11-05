@@ -391,7 +391,8 @@ import { applySidebarLanguageToggle } from "./language_toggle";
     // as a sheet above this bar.
     notifications() {
       const bell = document.querySelector(".desktop-notifications .dropdown-notifications > .nav-link");
-      if (bell?.offsetParent) bell.click();
+      // On the desk home the bell is hidden in the phone hero (mobile_desk.scss) but still works.
+      if (bell && (bell.offsetParent || isDeskHome())) bell.click();
       else document.querySelector(".body-sidebar .dropdown-notifications")?.classList.toggle("hidden");
     },
     back() {

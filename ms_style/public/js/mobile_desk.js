@@ -55,3 +55,45 @@ $(() => {
   // The greeting follows the clock when the app stays open.
   window.setInterval(apply, 5 * 60 * 1000);
 });
+
+// Notifications on phones: Frappe's panel (the sidebar's, or the desk home bell's) is a
+// bottom sheet (responsive.scss, mobile_desk.scss). This adds the title and the overlay,
+// and closes it on a tap outside, as the other sheets do.
+function openNotificationPanel() {
+  return document.querySelector(".body-sidebar .dropdown-notifications:not(.hidden) .notifications-list, .desktop-notifications .dropdown-notifications .notifications-list.show");
+}
+
+function closeNotificationPanel() {
+  document.querySelector(".body-sidebar .dropdown-notifications:not(.hidden)")?.classList.add("hidden");
+  const bell = document.querySelector(".desktop-notifications .dropdown-notifications.show > .nav-link");
+  if (bell) window.jQuery?.(bell).dropdown("hide");
+  document.querySelectorAll(".desktop-notifications .notifications-list.show").forEach((list) => list.classList.remove("show"));
+}
+
+function syncNotificationSheet() {
+  const panel = window.innerWidth <= PHONE ? openNotificationPanel() : null;
+  document.body.classList.toggle("ms-notif-open", !!panel);
+  let overlay = document.querySelector(".ms-notif-overlay");
+  if (!panel) { overlay?.remove(); return; }
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "ms-notif-overlay";
+    overlay.addEventListener("click", (event) => { event.stopPropagation(); closeNotificationPanel(); syncNotificationSheet(); });
+  }
+  // Beside the panel, in the same stacking context (the sidebar or the navbar), under it.
+  if (overlay.nextElementSibling !== panel) panel.before(overlay);
+  const header = panel.querySelector(".notification-list-header");
+  if (header && !header.querySelector(".ms-notif-title")) {
+    const title = document.createElement("h2");
+    title.className = "ms-notif-title";
+    title.textContent = __("Notifications");
+    header.prepend(title);
+  }
+}
+
+let notifTimer = null;
+new MutationObserver((mutations) => {
+  if (!mutations.some((m) => m.target.classList?.contains("dropdown-notifications") || m.target.classList?.contains("notifications-list"))) return;
+  window.clearTimeout(notifTimer);
+  notifTimer = window.setTimeout(syncNotificationSheet, 20);
+}).observe(document.documentElement, { attributes: true, attributeFilter: ["class"], subtree: true });

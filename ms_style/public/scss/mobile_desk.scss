@@ -45,7 +45,9 @@
   html[dir="rtl"] .desktop-navbar.ms-desk-hero .navbar-home { background-position: right center; }
   .desktop-navbar.ms-desk-hero .ms-user-tools { gap: 8px !important; }
   // The tab bar has the bell; the hero keeps the theme, the language and the user.
-  .desktop-navbar.ms-desk-hero .ms-user-tools .desktop-notifications { display: none !important; }
+  // (Only the bell: its panel lives in the same container and opens from the tab bar.)
+  .desktop-navbar.ms-desk-hero .ms-user-tools .desktop-notifications { width: 0; margin: 0; padding: 0 !important; border: 0 !important; overflow: visible; }
+  .desktop-navbar.ms-desk-hero .ms-user-tools .desktop-notifications .dropdown-notifications > .nav-link { display: none !important; }
 
   .desktop-navbar.ms-desk-hero .ms-theme-toggle,
   .desktop-navbar.ms-desk-hero .ms-language-button {
@@ -309,4 +311,112 @@
   .ms-work-ghost > * { display: block; height: 74px; border-radius: 18px; background: linear-gradient(100deg, rgba(var(--ms-tint-rgb), .05) 30%, rgba(var(--ms-tint-rgb), .11) 50%, rgba(var(--ms-tint-rgb), .05) 70%) 0 0 / 300% 100%; animation: ms-work-shimmer 1.3s linear infinite; }
   .ms-work-ghost > b { grid-column: 1 / -1; height: 120px; }
   @keyframes ms-work-shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
+
+  // Notifications sheet ----------------------------------------------------------------------
+  .ms-notif-overlay { position: fixed; inset: 0; z-index: 1099; background: rgba(var(--ms-roots-rgb), .6); backdrop-filter: blur(3px); }
+  body.ms-notif-open .ms-mobile-footer { visibility: hidden; }
+
+  body.ms-notif-open .notifications-list .notification-list-header {
+    position: relative;
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 8px;
+    margin: 0;
+    padding: 24px 16px 14px;
+    border: 0;
+    border-radius: 26px 26px 22px 22px;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(var(--ms-mint-rgb), .22), transparent 55%),
+      linear-gradient(165deg, #15503f 0%, var(--ms-roots) 60%, #0a2b22 100%);
+  }
+
+  body.ms-notif-open .notifications-list .notification-list-header::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 999px; background: rgba(255, 255, 255, .28); }
+  .ms-notif-title { flex: 1 1 auto; order: 1; margin: 0; color: var(--ms-on-dark); font-size: 21px; font-weight: 800; }
+
+  body.ms-notif-open .notifications-list .header-actions { display: flex; order: 2; gap: 8px; }
+
+  body.ms-notif-open .notifications-list .header-actions > span {
+    display: inline-grid;
+    width: 38px;
+    height: 38px;
+    margin: 0;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .12);
+    color: var(--ms-on-dark);
+    cursor: pointer;
+  }
+
+  body.ms-notif-open .notifications-list .header-actions .icon { width: 17px; height: 17px; color: var(--ms-on-dark); --icon-stroke: currentColor; stroke: currentColor; }
+  body.ms-notif-open .notifications-list .header-actions > span:active { background: rgba(255, 255, 255, .22); }
+
+  // The tabs as a segmented control.
+  body.ms-notif-open .notifications-list .header-items { order: 3; flex: 1 0 100%; min-width: 0; }
+
+  body.ms-notif-open .notifications-list .notification-item-tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    margin: 0;
+    padding: 4px;
+    border: 0;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .1);
+  }
+
+  body.ms-notif-open .notifications-list .notification-item-tabs .notifications-category {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    padding: 9px 6px;
+    border: 0 !important;
+    border-radius: 12px;
+    color: var(--ms-on-dark-muted);
+    font-size: 13.5px;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body.ms-notif-open .notifications-list .notification-item-tabs .notifications-category.active { background: var(--ms-mint); color: var(--ms-roots); box-shadow: 0 6px 16px -8px rgba(var(--ms-mint-rgb), .9); }
+
+  // Items as cards.
+  body.ms-notif-open .notifications-list .notification-list-body { padding: 10px 12px calc(16px + env(safe-area-inset-bottom, 0px)); overscroll-behavior: contain; }
+
+  body.ms-notif-open .notifications-list .recent-item.notification-item {
+    position: relative;
+    display: flex;
+    max-width: none;
+    margin: 0 0 8px;
+    padding: 12px 14px;
+    border: 1px solid var(--ms-border);
+    border-radius: 16px;
+    background: var(--ms-surface-raised);
+    color: var(--ms-text);
+    box-shadow: var(--ms-shadow-sm);
+  }
+
+  body.ms-notif-open .notifications-list .recent-item.notification-item.unread { border-color: rgba(var(--ms-mint-rgb), .35); border-left-width: 1px; background: var(--ms-primary-soft); }
+  body.ms-notif-open .notifications-list .recent-item.notification-item:active { transform: scale(.99); }
+  body.ms-notif-open .notifications-list .notification-body::before { display: none; }
+  body.ms-notif-open .notifications-list .notification-body { display: flex; flex: 1 1 auto; min-width: 0; align-items: flex-start; gap: 12px; }
+  body.ms-notif-open .notifications-list .notification-body .avatar { width: 40px; height: 40px; flex: 0 0 40px; margin: 0; }
+  body.ms-notif-open .notifications-list .notification-body .avatar-frame { font-size: 15px; font-weight: 800; }
+  body.ms-notif-open .notifications-list .notification-body .message { min-width: 0; color: var(--ms-text); font-size: 14px; line-height: 1.5; }
+  body.ms-notif-open .notifications-list .notification-body .message b, body.ms-notif-open .notifications-list .notification-body .message strong { color: var(--ms-text-strong); font-weight: 800; }
+  body.ms-notif-open .notifications-list .notification-timestamp { margin-top: 3px; color: var(--ms-text-muted); font-size: 12px; }
+
+  // The unread dot, also the "mark as read" button (Frappe).
+  body.ms-notif-open .notifications-list .notification-item .mark-as-read { flex: 0 0 auto; align-self: center; width: 10px; height: 10px; margin: 0; margin-inline-start: 10px; padding: 0; border-radius: 50%; background: transparent; }
+  body.ms-notif-open .notifications-list .notification-item.unread .mark-as-read { background: var(--ms-mint); box-shadow: 0 0 0 4px rgba(var(--ms-mint-rgb), .18); }
+
+  // Events and What's New in the same cards.
+  body.ms-notif-open .notifications-list .recent-item:not(.notification-item) { max-width: none; margin: 0 0 8px; padding: 12px 14px; border: 1px solid var(--ms-border); border-radius: 16px; background: var(--ms-surface-raised); }
+  body.ms-notif-open .notifications-list .list-footer, body.ms-notif-open .notifications-list a.recent-item.text-center { display: flex; justify-content: center; margin: 4px 0 0; padding: 12px; border: 1.5px dashed rgba(var(--ms-accent-rgb), .4); border-radius: 16px; background: transparent; color: var(--ms-accent); font-weight: 800; }
+  body.ms-notif-open .notifications-list .notification-null-state { min-height: 260px; }
+  body.ms-notif-open .notifications-list .notification-null-state .null-state { width: 120px; opacity: .85; }
 }
