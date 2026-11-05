@@ -354,6 +354,19 @@ if (ListView && !ListView.prototype.render_list.msAppList) {
     return result;
   };
 
+  // The screen takes its shape before the first rows arrive, so the loading state is
+  // already the app list (ghost cards instead of the desktop placeholder).
+  const renderSkeleton = ListView.prototype.render_skeleton;
+  ListView.prototype.render_skeleton = function (...args) {
+    const result = renderSkeleton.apply(this, args);
+    if (isPhone() && this.view_name === "List") {
+      this.$page?.[0]?.querySelector(".layout-main-section")?.classList.add("ms-app-list");
+      for (let i = 0; i < 3; i++) this.$result.append(this.get_list_row_html_skeleton('<div><input type="checkbox" class="render-list-checkbox"/></div>'));
+      try { heroFor(this); renderHero(this, configFor(this)); } catch (error) { /* meta not ready yet */ }
+    }
+    return result;
+  };
+
   const renderList = ListView.prototype.render_list;
   ListView.prototype.render_list = function (...args) {
     const result = renderList.apply(this, args);

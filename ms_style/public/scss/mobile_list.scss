@@ -243,3 +243,29 @@
   [data-theme="dark"] .ms-app-list { --ms-hero-bg: linear-gradient(160deg, #123d31 0%, #0b2a22 55%, #071f19 100%); }
   [data-theme="dark"] .ms-card { border-color: rgba(var(--ms-sand-rgb), .1); }
 }
+
+// While the list loads, the placeholder Frappe draws is shown as ghost cards, so the
+// screen never flashes the desktop row before the cards arrive.
+@media (max-width: 767px) {
+  .ms-app-list .list-row-container:has(.render-list-checkbox) {
+    width: auto;
+    margin: 0 16px 10px;
+    padding: 0;
+    border: 0;
+    background: transparent !important;
+  }
+
+  .ms-app-list .list-row-container:has(.render-list-checkbox) .list-row {
+    display: block;
+    height: 104px;
+    border-radius: 18px;
+    background: linear-gradient(90deg, rgba(var(--ms-tint-rgb), .06) 25%, rgba(var(--ms-tint-rgb), .1) 50%, rgba(var(--ms-tint-rgb), .06) 75%);
+    background-size: 200% 100%;
+    animation: ms-shimmer 1.2s linear infinite;
+  }
+
+  .ms-app-list .list-row-container:has(.render-list-checkbox) .list-row > *,
+  .ms-app-list .list-row-container:has(.render-list-checkbox) .render-list-checkbox { display: none; }
+
+  @keyframes ms-shimmer { to { background-position: -200% 0; } }
+}
