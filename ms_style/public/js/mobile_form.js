@@ -222,8 +222,8 @@ function renderGrid(grid) {
       <div class="ms-grid-card-text">
         <div class="ms-grid-card-title">${frappe.utils.escape_html(String(titleText))}</div>
         ${subText && String(subText) !== String(titleText) ? `<div class="ms-grid-card-sub">${frappe.utils.escape_html(String(subText).replace(/<[^>]+>/g, ""))}</div>` : ""}
-        ${qtyText ? `<span class="ms-grid-card-chip">${qtyText}</span>` : ""}
       </div>
+      ${qtyText ? `<span class="ms-grid-card-chip">${qtyText}</span>` : ""}
       <svg class="icon icon-sm ms-grid-card-chevron" aria-hidden="true"><use href="#icon-chevron-right"></use></svg>`;
   });
   // The "Add row" button as a dashed full-width row.
@@ -242,30 +242,72 @@ function renderGrids(frm) {
   Object.values(frm.fields_dict || {}).forEach((field) => { if (field.df?.fieldtype === "Table" && field.grid && field.grid.wrapper) renderGrid(field.grid); });
 }
 
-// An open row: Frappe's editor, shown as a sheet with its own title, delete and done.
+// An open row: Frappe's editor, shown as a sheet with its own title, a close button, and
+// Delete / Done at the bottom. A tap on the dark overlay or Escape closes it.
+function closeOpenRow(rowEl) {
+  rowEl?.querySelector(".grid-collapse-row")?.click();
+}
+
+function rowOverlay() {
+  let overlay = document.querySelector(".ms-row-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "ms-row-overlay";
+    overlay.addEventListener("click", () => closeOpenRow(document.querySelector(".grid-row.grid-row-open")));
+    document.body.appendChild(overlay);
+  }
+  return overlay;
+}
+
+function syncRowOverlay() {
+  const open = isPhone() && document.querySelector(".ms-app-form .grid-row.grid-row-open");
+  const overlay = document.querySelector(".ms-row-overlay");
+  if (open) rowOverlay().classList.add("is-on");
+  else overlay?.classList.remove("is-on");
+  document.body.classList.toggle("ms-row-sheet-open", !!open);
+}
+
 function decorateOpenRow(rowEl) {
   const form = rowEl.querySelector(".form-in-grid");
   if (!form || form.querySelector(":scope > .ms-row-sheet-foot")) return;
   const heading = form.querySelector(".grid-form-heading .panel-title");
   const index = heading?.querySelector(".grid-form-row-index")?.textContent || "";
-  const name = heading?.closest(".form-in-grid")?.closest(".frappe-control")?.dataset.fieldname;
   if (heading) heading.innerHTML = `<span class="ms-row-sheet-title">${t("Edit row #{0}", [index])}</span>`;
+  // The heading's own click collapses the row (Frappe); the sheet keeps that for the X only.
+  const toolbar = form.querySelector(".grid-form-heading .toolbar");
+  if (toolbar && !toolbar.querySelector(".ms-row-close")) {
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "ms-row-close";
+    close.setAttribute("aria-label", __("Close"));
+    close.innerHTML = `<svg class="icon icon-sm"><use href="#icon-close"></use></svg>`;
+    close.addEventListener("click", (event) => { event.stopPropagation(); closeOpenRow(rowEl); });
+    toolbar.appendChild(close);
+  }
   // Number fields get − / + beside them.
   form.querySelectorAll('.frappe-control[data-fieldtype="Float"], .frappe-control[data-fieldtype="Int"]').forEach((control) => {
     const input = control.querySelector("input.form-control");
     if (!input || input.readOnly || control.querySelector(".ms-stepper")) return;
     const wrap = document.createElement("div");
     wrap.className = "ms-stepper";
-    const make = (sign) => { const b = document.createElement("button"); b.type = "button"; b.className = "ms-stepper-btn"; b.textContent = sign > 0 ? "+" : "−"; b.addEventListener("click", () => { const v = (parseFloat(input.value) || 0) + sign; input.value = Math.max(0, v); input.dispatchEvent(new Event("change", { bubbles: true })); }); return b; };
+    const make = (sign) => { const b = document.createElement("button"); b.type = "button"; b.className = "ms-stepper-btn"; b.setAttribute("aria-label", sign > 0 ? "+1" : "-1"); b.textContent = sign > 0 ? "+" : "−"; b.addEventListener("click", () => { const v = (parseFloat(input.value) || 0) + sign; input.value = Math.max(0, v); input.dispatchEvent(new Event("change", { bubbles: true })); }); return b; };
     input.parentElement.insertBefore(wrap, input);
     wrap.append(make(-1), input, make(1));
   });
+  const canDelete = !!form.querySelector(".grid-delete-row");
   const foot = document.createElement("div");
   foot.className = "ms-row-sheet-foot";
-  foot.innerHTML = `<button type="button" class="ms-row-done"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-check"></use></svg>${__("Done")}</button>`;
-  foot.querySelector(".ms-row-done").addEventListener("click", () => rowEl.querySelector(".grid-collapse-row")?.click());
+  foot.innerHTML = `${canDelete ? `<button type="button" class="ms-row-delete"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-delete"></use></svg>${__("Delete")}</button>` : ""}<button type="button" class="ms-row-done"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-check"></use></svg>${__("Done")}</button>`;
+  foot.querySelector(".ms-row-done").addEventListener("click", () => closeOpenRow(rowEl));
+  foot.querySelector(".ms-row-delete")?.addEventListener("click", () => form.querySelector(".grid-delete-row")?.click());
   form.appendChild(foot);
+  // Stops Frappe's heading click (which toggles the row) from firing on the title area.
+  form.querySelector(".grid-form-heading")?.addEventListener("click", (event) => { if (!event.target.closest(".ms-row-close, .row-actions")) event.stopImmediatePropagation(); }, true);
 }
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && isPhone()) closeOpenRow(document.querySelector(".ms-app-form .grid-row.grid-row-open"));
+});
 
 // Wiring -------------------------------------------------------------------------------------
 function decorate(frm) {
@@ -275,8 +317,8 @@ function decorate(frm) {
   wrapper.classList.toggle("ms-app-form", on);
   if (!on) {
     wrapper.querySelectorAll(":scope > .ms-form-hero, :scope > .ms-form-bar").forEach((e) => e.remove());
-    const tabs = wrapper.querySelector(".ms-form-hero .form-tabs-list");
     document.body.classList.remove("ms-form-bar-active");
+    syncRowOverlay();
     return;
   }
   try { renderHero(frm); renderActionBar(frm); renderLinks(frm); renderSections(frm); renderGrids(frm); } catch (error) { console.error("ms_style mobile form", error); }
@@ -284,13 +326,14 @@ function decorate(frm) {
 
 $(document).on("form-refresh", (event, frm) => { window.setTimeout(() => decorate(frm), 60); window.setTimeout(() => decorate(frm), 700); });
 // The primary action changes with the document's state and after saves.
-$(document).on("page-change", () => window.setTimeout(() => window.cur_frm && decorate(window.cur_frm), 300));
+$(document).on("page-change", () => { syncRowOverlay(); window.setTimeout(() => window.cur_frm && decorate(window.cur_frm), 300); });
 
 const observer = new MutationObserver((mutations) => {
   if (!isPhone()) return;
   for (const m of mutations) {
     if (m.type === "attributes" && m.target.classList?.contains("grid-row")) {
       if (m.target.classList.contains("grid-row-open")) decorateOpenRow(m.target);
+      syncRowOverlay();
     }
   }
   if (window.cur_frm && mutations.some((m) => m.type === "childList" && m.target.closest?.(".grid-body"))) {

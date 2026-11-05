@@ -2,6 +2,7 @@ import "./brand_theme_color";
 import "./notification_counter";
 import "./mobile_list";
 import "./mobile_form";
+import "./mobile_menu";
 import "./document_views";
 import "./sidebar_icons";
 import "./workspace_cards";
@@ -409,12 +410,26 @@ import { applySidebarLanguageToggle } from "./language_toggle";
     document.querySelector(".body-sidebar .dropdown-notifications:not(.hidden)")?.classList.add("hidden");
   }
 
+  // One tab is always the current one: Home on the desk home and in workspaces, Work on
+  // a document, list or report, and Search or Alerts while their panel is open.
+  function currentFooterTab() {
+    if (document.querySelector(".modal.show .navbar-modal-wrapper, .modal.show .search-dialog")) return "search";
+    if (document.querySelector(".ms-work-center-overlay")) return "work";
+    if (document.querySelector(".body-sidebar .dropdown-notifications:not(.hidden), .desktop-notifications .dropdown-notifications.show")) return "notifications";
+    if (isDeskHome()) return "home";
+    const route = window.frappe?.get_route?.() || [];
+    if (["Form", "List", "Tree", "query-report", "print", "dashboard-view"].includes(route[0])) return "work";
+    return "home";
+  }
+
   function updateMobileFooter(footer) {
-    const home = footer.querySelector('[data-action="home"]');
-    const onHome = isDeskHome();
-    home.classList.toggle("is-active", onHome);
-    if (onHome) home.setAttribute("aria-current", "page");
-    else home.removeAttribute("aria-current");
+    const current = currentFooterTab();
+    footer.querySelectorAll(".ms-mobile-footer-button").forEach((button) => {
+      const on = button.dataset.action === current;
+      button.classList.toggle("is-active", on);
+      if (on) button.setAttribute("aria-current", "page");
+      else button.removeAttribute("aria-current");
+    });
   }
 
   function applyMobileFooter() {
@@ -449,7 +464,10 @@ import { applySidebarLanguageToggle } from "./language_toggle";
       // click opens one, so it stops here.
       event.stopPropagation();
       footerActions[button.dataset.action]?.();
+      window.setTimeout(() => updateMobileFooter(mobileFooter), 350);
     });
+    // Panels closed by a tap elsewhere: the bar follows.
+    document.addEventListener("click", () => window.setTimeout(() => { const f = document.querySelector(".ms-mobile-footer"); f && updateMobileFooter(f); }, 350), true);
 
     document.body.appendChild(mobileFooter);
     document.body.classList.add("ms-mobile-footer-active");

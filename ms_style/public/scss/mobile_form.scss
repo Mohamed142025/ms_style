@@ -109,9 +109,13 @@
   .ms-link-count { padding: 1px 7px; border-radius: 999px; background: var(--ms-primary-soft); color: var(--ms-accent); font-size: 12px; }
   .ms-link-open { padding: 1px 7px; border-radius: 999px; background: var(--ms-warning-bg); color: var(--ms-warning-text); font-size: 12px; }
 
-  // Child tables as cards.
+  // Child tables as cards: the table takes the screen's width (forms.scss widens it for
+  // sideways scrolling, which cards do not need) and loses the scroll fade.
   .ms-app-form .frappe-control[data-fieldtype="Table"] .form-grid-container { overflow: visible; }
+  .ms-app-form .frappe-control[data-fieldtype="Table"] .form-grid-container::after { display: none; }
+  .ms-app-form .form-grid-container > .form-grid, .ms-app-form .form-grid-container:not(.column-limit-reached):not(:has(.grid-row-open)) > .form-grid { width: 100% !important; min-width: 0 !important; }
   .ms-app-form .form-grid { border: 0; background: transparent; }
+  .ms-app-form .form-grid .grid-body .rows, .ms-app-form .form-grid .grid-body .grid-row { width: 100%; }
   .ms-app-form .form-grid .grid-heading-row { display: none; }
   .ms-app-form .form-grid .grid-body { border: 0; background: transparent; }
   .ms-app-form .form-grid .grid-body .grid-row:not(.grid-row-open) > .data-row { display: none; }
@@ -120,9 +124,10 @@
 
   .ms-grid-card {
     display: flex;
+    width: 100%;
     align-items: center;
-    gap: 12px;
-    padding: 12px 12px 12px 14px;
+    gap: 10px;
+    padding: 12px 10px 12px 12px;
     border: 1px solid var(--ms-border);
     border-radius: 16px;
     background: var(--ms-surface-raised);
@@ -133,15 +138,15 @@
   .ms-grid-card-idx { display: inline-grid; width: 30px; height: 30px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: rgba(var(--ms-tint-rgb), .08); color: var(--ms-text-muted); font-size: 13px; font-weight: 800; }
   .ms-grid-card-text { flex: 1 1 auto; min-width: 0; }
   .ms-grid-card-title { color: var(--ms-accent); font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ms-grid-card-sub { margin-top: 2px; color: var(--ms-text-strong); font-size: 15px; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .ms-grid-card-chip { display: inline-block; margin-top: 8px; padding: 3px 9px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .06); color: var(--ms-text-muted); font-size: 12px; }
+  .ms-grid-card-sub { margin-top: 2px; color: var(--ms-text-strong); font-size: 14.5px; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ms-grid-card-chip { flex: 0 0 auto; max-width: 38%; padding: 5px 10px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .07); color: var(--ms-text-muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .ms-grid-card-chip b { color: var(--ms-text-strong); }
   .ms-grid-card-chevron { flex: 0 0 auto; color: var(--ms-text-muted); }
   html[dir="rtl"] .ms-grid-card-chevron { transform: scaleX(-1); }
 
-  .ms-app-form .grid-footer { margin-top: 2px; padding: 0; background: transparent; }
-  .ms-app-form .grid-footer > .flex { flex-direction: column; }
-  .ms-app-form .grid-footer .grid-buttons { width: 100%; }
+  .ms-app-form .grid-footer { display: block; margin-top: 2px; padding: 0; background: transparent; }
+  .ms-app-form .grid-footer > .flex { flex-direction: column; width: 100%; }
+  .ms-app-form .grid-footer .grid-buttons { display: flex; width: 100%; }
   .ms-app-form .frappe-control[data-fieldtype="Table"] > .form-group > .control-label,
   .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label { font-size: 17px; font-weight: 800; color: var(--ms-text-strong); margin-bottom: 8px; }
   .ms-app-form .grid-footer .grid-add-row.ms-grid-add {
@@ -149,7 +154,7 @@
     width: 100% !important;
     min-height: 54px;
     align-items: center;
-    justify-content: center;
+    justify-content: center !important;
     gap: 8px;
     border: 1.5px dashed rgba(var(--ms-accent-rgb), .5);
     border-radius: 16px;
@@ -159,11 +164,16 @@
     font-weight: 800;
   }
 
-  .ms-app-form .grid-footer .grid-add-row.ms-grid-add .icon { --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.4; }
+  .ms-app-form .grid-footer .grid-add-row.ms-grid-add .icon, .ms-row-done .icon, .ms-row-delete .icon, .ms-form-bar-primary .icon { --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.4; margin: 0 !important; flex: 0 0 auto; }
   .ms-app-form .grid-footer .grid-add-multiple-row, .ms-app-form .grid-footer .grid-download, .ms-app-form .grid-footer .grid-upload { display: none; }
   .ms-app-form .grid-footer .grid-remove-rows:not(.hidden) { width: 100%; min-height: 44px; margin-bottom: 8px; border-radius: 14px; }
 
-  // An open row as a sheet.
+  // An open row as a sheet over a dark overlay (mobile_form.js adds the overlay, the close
+  // button, the − / + steppers and the Delete / Done bar).
+  .ms-row-overlay { position: fixed; inset: 0; z-index: 1055; display: none; background: rgba(var(--ms-roots-rgb), .6); backdrop-filter: blur(2px); }
+  .ms-row-overlay.is-on { display: block; }
+  body.ms-row-sheet-open { overflow: hidden; }
+
   .ms-app-form .grid-row.grid-row-open .form-in-grid {
     position: fixed !important;
     inset: auto 0 0 0 !important;
@@ -172,35 +182,78 @@
     margin: 0 !important;
     transform: none !important;
     z-index: 1060;
-    max-height: calc(100vh - 40px - env(safe-area-inset-top, 0px));
-    display: flex;
+    max-height: calc(100vh - 48px - env(safe-area-inset-top, 0px));
+    display: flex !important;
     flex-direction: column;
+    border: 0;
     border-radius: 26px 26px 0 0;
     background: var(--ms-surface);
     box-shadow: 0 -12px 40px rgba(0, 0, 0, .3);
+    animation: ms-sheet-up .26s var(--ms-ease);
   }
 
-  .ms-app-form .grid-row.grid-row-open::before { content: ""; position: fixed; inset: 0; z-index: 1055; background: rgba(var(--ms-roots-rgb), .55); }
-  .ms-app-form .grid-row.grid-row-open .form-in-grid::before { content: ""; display: block; width: 44px; height: 5px; margin: 10px auto 0; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .2); }
-  .ms-app-form .grid-form-heading { padding: 8px 20px 4px; border: 0; background: transparent; }
-  .ms-app-form .grid-form-heading .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0; }
-  .ms-row-sheet-title { font-size: 22px; font-weight: 800; color: var(--ms-text-strong); }
-  .ms-app-form .grid-form-heading .row-actions { display: flex; gap: 6px; }
-  .ms-app-form .grid-form-heading .row-actions .btn { float: none; min-height: 40px; border-radius: 13px; font-weight: 700; }
-  .ms-app-form .grid-form-heading .row-actions .grid-delete-row { background: var(--ms-danger-bg); color: var(--ms-danger-text); border-color: transparent; }
-  .ms-app-form .grid-form-heading .row-actions .grid-collapse-row { width: 40px; padding: 0; }
-  .ms-app-form .grid-form-body { overflow-y: auto; padding: 4px 20px 12px; -webkit-overflow-scrolling: touch; }
+  .ms-app-form .grid-row.grid-row-open .form-in-grid::before { content: ""; display: block; flex: 0 0 auto; width: 44px; height: 5px; margin: 10px auto 0; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .22); }
+  .ms-app-form .grid-form-heading { flex: 0 0 auto; padding: 10px 16px 8px 20px; border: 0; border-bottom: 1px solid var(--ms-border); background: transparent; cursor: default; }
+  .ms-app-form .grid-form-heading .toolbar { display: flex; align-items: center; gap: 8px; padding: 0; }
+  .ms-app-form .grid-form-heading .panel-title { flex: 1 1 auto; min-width: 0; }
+  .ms-row-sheet-title { font-size: 21px; font-weight: 800; color: var(--ms-text-strong); }
+  .ms-app-form .grid-form-heading .row-actions { display: none !important; }
+  .ms-row-close { display: inline-grid; width: 40px; height: 40px; flex: 0 0 auto; place-items: center; border: 0; border-radius: 13px; background: rgba(var(--ms-tint-rgb), .08); color: var(--ms-text); }
+  .ms-row-close .icon { --icon-stroke: currentColor; stroke: currentColor; }
+  .ms-app-form .grid-form-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 12px 20px 16px; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
   .ms-app-form .grid-form-body .form-section { padding: 0; margin: 0 0 6px; border: 0; background: transparent; box-shadow: none; }
   .ms-app-form .grid-form-body .form-section .section-head { font-size: 15px; margin: 12px 0 8px; padding-top: 12px; border-top: 1px solid var(--ms-border); }
-  .ms-app-form .grid-form-body .frappe-control { margin-bottom: 10px; }
+  .ms-app-form .grid-form-body .frappe-control { margin-bottom: 12px; }
+  .ms-app-form .grid-form-body .frappe-control .control-label { display: block; margin-bottom: 5px; color: var(--ms-text-muted); font-size: 12.5px; font-weight: 700; }
+  .ms-app-form .grid-form-body .frappe-control .control-input .form-control, .ms-app-form .grid-form-body .frappe-control .control-input .like-disabled-input { min-height: 46px; border-radius: 14px; background: var(--ms-surface-raised); }
+  .ms-app-form .grid-form-body .frappe-control[data-fieldtype="Text Editor"] .ql-container { border-radius: 0 0 14px 14px; }
+  .ms-app-form .grid-form-body .frappe-control[data-fieldtype="Text Editor"] .ql-toolbar { border-radius: 14px 14px 0 0; }
   .ms-app-form .grid-form-body .grid-footer-toolbar { display: none !important; }
-  .ms-stepper { display: flex; align-items: stretch; gap: 6px; }
+  .ms-stepper { display: flex; align-items: stretch; gap: 8px; }
   .ms-stepper .form-control { flex: 1 1 auto; text-align: center; font-size: 18px; font-weight: 800; }
-  .ms-stepper-btn { flex: 0 0 48px; border: 1px solid var(--ms-border-strong); border-radius: 14px; background: var(--ms-surface-raised); color: var(--ms-text-strong); font-size: 22px; font-weight: 700; }
+  .ms-stepper-btn { flex: 0 0 50px; border: 1px solid var(--ms-border-strong); border-radius: 14px; background: var(--ms-surface-raised); color: var(--ms-text-strong); font-size: 24px; font-weight: 600; line-height: 1; }
   .ms-stepper-btn:last-child { background: var(--ms-mint); border-color: transparent; color: var(--ms-roots); }
-  .ms-row-sheet-foot { padding: 10px 20px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--ms-border); }
-  .ms-row-done { display: inline-flex; width: 100%; min-height: 52px; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 16px; background: var(--ms-mint); color: var(--ms-roots); font-size: 16px; font-weight: 800; }
-  .ms-row-done .icon { --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.4; }
+  .ms-stepper-btn:active { transform: scale(.94); }
+  .ms-row-sheet-foot { display: flex; flex: 0 0 auto; gap: 10px; padding: 10px 16px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--ms-border); background: var(--ms-surface); }
+  .ms-row-done, .ms-row-delete { display: inline-flex; min-height: 52px; align-items: center; justify-content: center !important; gap: 8px; border: 0; border-radius: 16px; font-size: 16px; font-weight: 800; }
+  .ms-row-done { flex: 1 1 auto; background: var(--ms-mint); color: var(--ms-roots); box-shadow: 0 10px 22px -10px rgba(var(--ms-mint-rgb), .8); }
+  .ms-row-delete { flex: 0 0 auto; padding: 0 16px; border: 1px solid rgba(220, 38, 38, .35); background: var(--ms-danger-bg); color: var(--ms-danger-text); }
+  .ms-row-done .icon, .ms-row-delete .icon { --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.4; }
+
+  // Check fields as switches: label at the start, switch at the end.
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox { margin: 0; }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox > label { display: flex; align-items: center; min-height: 46px; margin: 0; padding: 0 2px; cursor: pointer; }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox .label-area { flex: 1 1 auto; order: 1; margin: 0; font-size: 15px; font-weight: 600; color: var(--ms-text-strong); }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox .help { order: 2; }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox .input-area, .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox .disp-area { order: 3; flex: 0 0 auto; line-height: 0; }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    width: 48px;
+    height: 28px;
+    margin: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(var(--ms-tint-rgb), .22);
+    transition: background-color .2s var(--ms-ease);
+    cursor: pointer;
+  }
+
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]::before { display: none; }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]::after { content: ""; position: absolute; top: 3px; inset-inline-start: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .25); transition: transform .2s var(--ms-ease); }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:checked { background: var(--ms-mint); }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:checked::after { transform: translateX(20px); }
+  html[dir="rtl"] .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:checked::after { transform: translateX(-20px); }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:disabled { opacity: .55; }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:focus-visible { outline: 2px solid var(--ms-focus); outline-offset: 2px; }
+  // A read-only check: Frappe hides the input and prints a tick or nothing; a switch stands in.
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox .input-area.hide + .disp-area { position: relative; width: 48px; height: 28px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .18); opacity: .7; overflow: hidden; }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox .input-area.hide + .disp-area > * { display: none; }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox .input-area.hide + .disp-area::after { content: ""; position: absolute; top: 3px; inset-inline-start: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .25); }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox .input-area.hide + .disp-area:not(:empty) { background: var(--ms-mint); }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox .input-area.hide + .disp-area:not(:empty)::after { transform: translateX(20px); }
+  html[dir="rtl"] .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox .input-area.hide + .disp-area:not(:empty)::after { transform: translateX(-20px); }
 
   // Menu / Actions sheet.
   .ms-action-sheet { position: fixed; inset: 0; z-index: 1060; display: flex; align-items: flex-end; background: rgba(var(--ms-roots-rgb), .55); backdrop-filter: blur(3px); }
@@ -224,10 +277,10 @@
     background: linear-gradient(to top, var(--ms-surface) 70%, transparent);
   }
 
-  .ms-form-bar-primary { display: inline-flex; width: 100%; min-height: 54px; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 18px; background: var(--ms-mint); color: var(--ms-roots); font-size: 16px; font-weight: 800; box-shadow: 0 12px 26px -10px rgba(var(--ms-mint-rgb), .8); }
+  .ms-form-bar-primary { display: inline-flex; width: 100%; min-height: 54px; align-items: center; justify-content: center !important; gap: 8px; border: 0; border-radius: 18px; background: var(--ms-mint); color: var(--ms-roots); font-size: 16px; font-weight: 800; box-shadow: 0 12px 26px -10px rgba(var(--ms-mint-rgb), .8); }
   .ms-form-bar-primary .icon { --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.6; }
   body.ms-form-bar-active .ms-app-form .layout-main-section { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
-  body.ms-sheet-open .ms-form-bar, .ms-app-form:has(.grid-row-open) .ms-form-bar { visibility: hidden; }
+  body.ms-sheet-open .ms-form-bar, body.ms-row-sheet-open .ms-form-bar, body.ms-row-sheet-open .ms-mobile-footer { visibility: hidden; }
 
   // Comments and activity.
   .ms-app-form .form-footer { margin-top: 6px; padding: 0 2px; }
@@ -245,12 +298,26 @@
   .body-sidebar .standard-sidebar-item.active-sidebar { background: rgba(var(--ms-mint-rgb), .14); border-radius: 12px; }
   .body-sidebar .section-break { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
 
-  // Tab bar: the active tab as a Mint pill with its label.
+  // Drawer menus (mobile_menu.js): full width, scrolling, submenu inline under its item.
+  .frappe-menu.ms-menu-phone { padding: 8px; border-radius: 20px; box-shadow: 0 18px 44px rgba(0, 0, 0, .35); }
+  .frappe-menu.ms-menu-phone .dropdown-menu-item a { min-height: 46px; height: auto; min-width: 0; padding: 8px 10px; border-radius: 12px; font-size: 15px; font-weight: 600; }
+  .frappe-menu.ms-menu-phone .dropdown-menu-item a .menu-item-shortcut { display: none; }
+  .frappe-menu.ms-menu-phone .dropdown-menu-item.ms-menu-item-open > a { background: var(--ms-primary-soft); color: var(--ms-text-strong); }
+  .frappe-menu.ms-menu-phone .dropdown-menu-item.ms-menu-item-open > a > .frappe-menu-item-icon:last-child .icon { transform: rotate(90deg); }
+  html[dir="rtl"] .frappe-menu.ms-menu-phone .dropdown-menu-item.ms-menu-item-open > a > .frappe-menu-item-icon:last-child .icon { transform: rotate(-90deg); }
+  .frappe-menu.ms-menu-inline { display: block; position: static !important; width: 100% !important; max-width: none !important; min-width: 0; margin: 2px 0 6px; padding: 4px 0 4px 12px; border-radius: 0; background: transparent; box-shadow: none; border-inline-start: 2px solid rgba(var(--ms-accent-rgb), .35); }
+  html[dir="rtl"] .frappe-menu.ms-menu-inline { padding: 4px 12px 4px 0; }
+  .frappe-menu.ms-menu-inline .dropdown-menu-item a { min-height: 42px; }
+  .frappe-menu.ms-menu-inline .dropdown-menu-item a:hover { transform: none; }
+
+  // Tab bar: the current tab as a Mint pill with its label, the others as icons.
   .ms-mobile-footer { padding-inline: 8px; }
-  .ms-mobile-footer-button { flex-direction: column; border-radius: 16px; }
-  .ms-mobile-footer-button.is-active { flex-direction: row; gap: 7px; padding: 0 16px; background: var(--ms-mint); color: var(--ms-roots); }
-  .ms-mobile-footer-button.is-active .icon { color: var(--ms-roots); --icon-stroke: var(--ms-roots); stroke: var(--ms-roots); }
-  .ms-mobile-footer-button.is-active span { display: inline; font-size: 13px; font-weight: 800; color: var(--ms-roots); }
+  .ms-mobile-footer-button { flex: 0 0 auto; width: 52px; flex-direction: column; border-radius: 999px; margin: 0; transition: background-color .2s var(--ms-ease), color .2s var(--ms-ease), width .2s var(--ms-ease); }
+  .ms-mobile-footer { justify-content: space-between; }
+  .ms-mobile-footer-button.is-active { width: auto; flex: 0 1 auto; flex-direction: row; gap: 8px; padding: 0 18px; background: var(--ms-mint); color: var(--ms-roots); box-shadow: 0 8px 20px -8px rgba(var(--ms-mint-rgb), .8); }
+  .ms-mobile-footer .ms-mobile-footer-button.is-active .icon { color: var(--ms-roots); --icon-stroke: var(--ms-roots); stroke: var(--ms-roots); }
+  .ms-mobile-footer-button.is-active span { display: inline; font-size: 14px; font-weight: 800; color: var(--ms-roots); }
   .ms-mobile-footer-button:not(.is-active) span { display: none; }
-  .ms-mobile-footer-button:not(.is-active) .icon { width: 22px; height: 22px; }
+  .ms-mobile-footer .ms-mobile-footer-button:not(.is-active) .icon { width: 24px; height: 24px; }
+  .ms-mobile-footer-button:not(.is-active):active { background: var(--ms-primary-soft); }
 }
