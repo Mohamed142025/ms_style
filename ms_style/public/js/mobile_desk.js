@@ -136,6 +136,18 @@ function decorateSearch() {
     head.querySelector("button").addEventListener("click", () => window.jQuery?.(modal).modal("hide"));
     body.prepend(head);
   }
+  // A back button inside the field: when the keyboard opens, the browser can scroll the
+  // head (and its close button) off the screen, but never the field being typed in.
+  const row = modal.querySelector(".awesomebar-input-row");
+  if (row && !row.querySelector(".ms-search-back")) {
+    const back = document.createElement("button");
+    back.type = "button";
+    back.className = "ms-search-back";
+    back.setAttribute("aria-label", __("Back"));
+    back.innerHTML = `<svg class="icon icon-sm"><use href="#icon-arrow-left"></use></svg>`;
+    back.addEventListener("click", (event) => { event.preventDefault(); event.stopPropagation(); window.jQuery?.(modal).modal("hide"); });
+    row.prepend(back);
+  }
   modal.querySelectorAll(".awesomplete li").forEach((li) => {
     const a = li.querySelector("a");
     if (!a || a.querySelector(".ms-sr-ico")) return;
@@ -146,6 +158,7 @@ function decorateSearch() {
   });
 }
 
+$(document).on("shown.bs.modal", () => window.setTimeout(decorateSearch, 0));
 let searchTimer = null;
 new MutationObserver((mutations) => {
   if (window.innerWidth > PHONE) return;

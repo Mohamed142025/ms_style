@@ -486,7 +486,12 @@
     box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .5);
   }
 
-  .modal.show:has(.navbar-modal-wrapper) .awesomebar-search-icon { display: inline-grid; width: 44px; place-items: center; padding: 0; color: var(--ms-accent); }
+  .modal.show:has(.navbar-modal-wrapper) .awesomebar-search-icon { display: none !important; }
+  .ms-search-back { display: inline-grid; width: 44px; height: 50px; flex: 0 0 44px; place-items: center; padding: 0; border: 0; border-radius: 16px 0 0 16px; background: transparent; color: var(--ms-accent); }
+  html[dir="rtl"] .ms-search-back { border-radius: 0 16px 16px 0; }
+  html[dir="rtl"] .ms-search-back .icon { transform: scaleX(-1); }
+  .ms-search-back .icon { width: 20px; height: 20px; --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.2; }
+  .ms-search-back:active { background: var(--ms-primary-soft); }
   .modal.show:has(.navbar-modal-wrapper) .awesomebar-search-icon .icon { width: 18px; height: 18px; }
 
   .modal.show:has(.navbar-modal-wrapper) .awesomebar-input-row input {
