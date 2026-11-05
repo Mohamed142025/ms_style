@@ -4,6 +4,7 @@ import "./mobile_list";
 import "./mobile_form";
 import "./mobile_menu";
 import "./mobile_desk";
+import "./mobile_workspace";
 import "./document_views";
 import "./sidebar_icons";
 import "./workspace_cards";

@@ -1,0 +1,82 @@
+// Workspace pages on phones as an app screen (mobile_workspace.js).
+
+@media (max-width: 767px) {
+  .ms-app-ws .page-head { display: none; }
+
+  // Hero -----------------------------------------------------------------------------------
+  .ms-ws-hero {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 16px;
+    border-radius: 0 0 24px 24px;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(var(--ms-mint-rgb), .22), transparent 55%),
+      linear-gradient(165deg, #15503f 0%, var(--ms-roots) 60%, #0a2b22 100%);
+    color: var(--ms-on-dark);
+    box-shadow: 0 14px 30px -20px rgba(var(--ms-roots-rgb), .9);
+  }
+
+  .ms-ws-hero-row { display: flex; align-items: center; gap: 12px; }
+  .ms-ws-hero .ms-hero-btn { display: inline-grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border: 1px solid rgba(255, 255, 255, .14); border-radius: 12px; background: rgba(255, 255, 255, .1); color: var(--ms-on-dark); }
+  .ms-ws-hero .ms-hero-btn .icon { --icon-stroke: currentColor; stroke: currentColor; }
+  .ms-ws-hero-art { display: block; width: 52px; height: 52px; flex: 0 0 52px; overflow: hidden; border: 1px solid rgba(var(--ms-mint-rgb), .3); border-radius: 16px; background: rgba(0, 0, 0, .2); box-shadow: 0 10px 22px -12px rgba(0, 0, 0, .7); }
+  .ms-ws-hero-art img { width: 100%; height: 100%; object-fit: cover; }
+  .ms-ws-hero-text { flex: 1 1 auto; min-width: 0; text-align: start; }
+  .ms-ws-hero-text [dir="auto"] { text-align: start; }
+  .ms-ws-hero-title { margin: 0; color: var(--ms-on-dark) !important; font-size: 20px; font-weight: 800; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-ws-hero-desc { margin: 3px 0 0; color: var(--ms-on-dark-muted); font-size: 12px; line-height: 1.45; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  // Body -----------------------------------------------------------------------------------
+  .ms-app-ws .layout-main-section-wrapper, .ms-app-ws .layout-main-section { margin: 0; padding: 0; background: transparent; border: 0; box-shadow: none; }
+  .ms-app-ws .workspace-container, .ms-app-ws .editor-js-container, .ms-app-ws .codex-editor { padding: 0; margin: 0; }
+  .ms-app-ws .codex-editor__redactor { display: flex; flex-wrap: wrap; align-items: stretch; padding: 6px 7px calc(24px + env(safe-area-inset-bottom, 0px)) !important; margin: 0 !important; }
+  .ms-app-ws .codex-editor__redactor > .ce-block { padding: 5px !important; margin: 0 !important; }
+  .ms-app-ws .ce-block.ms-ws-moved { display: none !important; }
+
+  // Section titles: bold with a Mint bar.
+  .ms-app-ws .ce-block.ms-ws-section { flex: 0 0 100%; max-width: 100%; padding: 16px 7px 4px !important; }
+  .ms-app-ws .ce-block.ms-ws-section .ce-header { display: flex; align-items: center; gap: 10px; margin: 0; padding: 0; color: var(--ms-text-strong) !important; font-size: 17px !important; font-weight: 800 !important; letter-spacing: 0; text-transform: none; }
+  .ms-app-ws .ce-block.ms-ws-section .ce-header::before { content: ""; position: static; display: block; width: 4px; height: 18px; flex: 0 0 4px; margin: 0; border-radius: 4px; background: var(--ms-mint); box-shadow: none; }
+  .ms-app-ws .ce-block.ms-ws-section .ce-header::after { content: ""; flex: 1 1 auto; height: 1px; background: var(--ms-border); }
+  .ms-app-ws .codex-editor .ce-block.ms-ws-section .ce-header :is(.h3, .h4, .h5, .h6) { display: inline; padding: 0 !important; margin: 0; color: var(--ms-text-strong) !important; font-size: 17px !important; font-weight: 800 !important; letter-spacing: 0; }
+  .ms-app-ws .codex-editor .ce-block.ms-ws-section .ce-header :is(.h3, .h4, .h5, .h6)::before, .ms-app-ws .codex-editor .ce-block.ms-ws-section .ce-header :is(.h3, .h4, .h5, .h6)::after { display: none !important; }
+
+  // Number cards: two per row, compact.
+  .ms-app-ws .ce-block.ms-ws-number { flex: 0 0 50%; max-width: 50%; }
+  .ms-app-ws .ms-ws-number .number-widget-box { height: 100%; min-height: 98px; margin: 0; padding: 12px 12px 10px !important; border-radius: 18px; }
+  .ms-app-ws .ms-ws-number .number-widget-box .widget-head { align-items: flex-start; min-height: 0; margin: 0; padding: 0; }
+  .ms-app-ws .ms-ws-number .number-widget-box .widget-title { font-size: 11.5px !important; font-weight: 700; line-height: 1.3; white-space: normal; }
+  .ms-app-ws .ms-ws-number .number-widget-box .widget-title .ellipsis { display: -webkit-box; white-space: normal; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ms-app-ws .ms-ws-number .number-widget-box .widget-control { margin-inline-start: 4px; }
+  .ms-app-ws .ms-ws-number .number-widget-box .widget-control .card-actions > a { display: inline-grid; width: 26px; height: 26px; place-items: center; border-radius: 8px; }
+  .ms-app-ws .ms-ws-number .number-widget-box .widget-body { margin-top: 6px; padding: 0; }
+  .ms-app-ws .ms-ws-number .number-widget-box .number { font-size: 19px !important; font-weight: 800; line-height: 1.25; overflow-wrap: anywhere; }
+  .ms-app-ws .ms-ws-number .number-widget-box .card-stats { font-size: 11px; }
+
+  // Shortcuts: two per row, a tile with the icon, the name and the count.
+  .ms-app-ws .ce-block.ms-ws-shortcut { flex: 0 0 50%; max-width: 50%; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box { position: relative; display: flex; height: 100%; min-height: 92px; flex-direction: column; justify-content: space-between; margin: 0; padding: 12px !important; border-radius: 18px; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .widget-head { display: block; margin: 0; padding: 0; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .widget-title { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; font-size: 13.5px !important; font-weight: 800; line-height: 1.3; white-space: normal; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .widget-title .ellipsis { display: -webkit-box; white-space: normal; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .ms-card-icon { width: 36px; height: 36px; border-radius: 12px; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .widget-control { position: absolute; top: 12px; inset-inline-end: 12px; margin: 0; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .widget-control .es-icon { margin: 0 !important; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .widget-body, .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .widget-footer { margin: 0; padding: 0; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .widget-control { display: flex; align-items: center; gap: 6px; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .indicator-pill { position: static; max-width: none; width: auto; overflow: visible; text-overflow: clip; padding: 2px 8px; font-size: 11.5px; font-weight: 800; }
+  .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .indicator-pill::before { display: none; }
+
+  // Charts and link cards: full width, tighter.
+  .ms-app-ws .ce-block:has(.dashboard-widget-box), .ms-app-ws .ce-block:has(.links-widget-box), .ms-app-ws .ce-block:has(.onboarding-widget-box), .ms-app-ws .ce-block:has(.quick-list-widget-box) { flex: 0 0 100%; max-width: 100%; }
+  .ms-app-ws .dashboard-widget-box { margin: 0; padding: 14px 12px 8px !important; border-radius: 18px; }
+  .ms-app-ws .dashboard-widget-box .widget-head { flex-wrap: wrap; gap: 8px; }
+  .ms-app-ws .dashboard-widget-box .widget-title { font-size: 15px !important; font-weight: 800; }
+  .ms-app-ws .dashboard-widget-box .widget-control { width: 100%; justify-content: flex-start; gap: 6px; }
+  .ms-app-ws .dashboard-widget-box .widget-control .btn, .ms-app-ws .dashboard-widget-box .widget-control .dropdown > button { min-height: 32px; border-radius: 10px; }
+  .ms-app-ws .links-widget-box { margin: 0; padding: 14px !important; border-radius: 18px; }
+  .ms-app-ws .links-widget-box .widget-title { font-size: 15px !important; font-weight: 800; }
+  .ms-app-ws .links-widget-box .link-item { min-height: 42px; display: flex; align-items: center; border-radius: 10px; font-size: 14px; }
+  .ms-app-ws .ce-block .ce-paragraph { padding: 0 4px; color: var(--ms-text-muted); font-size: 13px; }
+}
