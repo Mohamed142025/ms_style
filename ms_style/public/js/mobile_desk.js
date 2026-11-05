@@ -125,8 +125,13 @@ function searchKind(li) {
 }
 
 function decorateSearch() {
-  const modal = document.querySelector(".modal.show .navbar-modal-wrapper")?.closest(".modal");
-  if (!modal || window.innerWidth > PHONE) return;
+  if (window.innerWidth > PHONE) return;
+  // Every open search: the desk home's and a page's can both exist.
+  document.querySelectorAll(".modal.show .navbar-modal-wrapper").forEach((wrapper) => decorateSearchModal(wrapper.closest(".modal")));
+}
+
+function decorateSearchModal(modal) {
+  if (!modal) return;
   modal.classList.add("ms-search-modal");
   const body = modal.querySelector(".modal-body");
   if (body && !body.querySelector(".ms-search-head")) {

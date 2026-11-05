@@ -381,10 +381,15 @@ import { applySidebarLanguageToggle } from "./language_toggle";
       if (window.frappe?.set_route) window.frappe.set_route("");
       else window.location.assign("/desk");
     },
+    // The search of the page on screen: the desk home's own, else the current page's.
+    // The first match in the document could be a hidden page's, which opened a second
+    // search under the right one.
     search() {
-      const searchTrigger =
-        document.querySelector(".page-head .search-bar .search-icon") ||
-        document.querySelector("#desktop-navbar-modal-search");
+      if (document.querySelector(".modal.show .navbar-modal-wrapper")) return;
+      const page = [...document.querySelectorAll(".page-container")].find((p) => p.offsetParent && p.style.display !== "none");
+      const searchTrigger = isDeskHome()
+        ? document.querySelector("#desktop-navbar-modal-search")
+        : page?.querySelector(".page-head .search-bar .search-icon") || document.querySelector("#desktop-navbar-modal-search");
       searchTrigger?.click();
     },
     work: openMyWorkCenterPopup,
