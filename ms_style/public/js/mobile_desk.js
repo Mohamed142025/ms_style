@@ -6,8 +6,10 @@ function t(message, args) {
   return typeof window.__ === "function" ? window.__(message, args, "ms_style") : message;
 }
 
+// The desk home: /desk, /desk/desktop, and the site root when the site's home page is
+// the desk (Frappe shows the desktop at "/" without changing the URL; the TWA opens there).
 function isDeskHome() {
-  return /^\/desk(\/desktop)?\/?$/.test(window.location.pathname);
+  return /^\/(desk(\/desktop)?\/?)?$/.test(window.location.pathname);
 }
 
 function greetingFor(hour) {

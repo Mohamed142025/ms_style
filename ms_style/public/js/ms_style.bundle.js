@@ -291,9 +291,10 @@ import { applySidebarLanguageToggle } from "./language_toggle";
     });
   }
 
-  // The desk home is /desk; Frappe also serves its desktop page at /desk/desktop.
+  // The desk home is /desk; Frappe also serves its desktop page at /desk/desktop, and at
+  // the site root "/" when the site's home page is the desk (the URL stays "/").
   function isDeskHome() {
-    return /^\/desk(\/desktop)?\/?$/.test(window.location.pathname);
+    return /^\/(desk(\/desktop)?\/?)?$/.test(window.location.pathname);
   }
 
   function applyMyWorkCenter() {
