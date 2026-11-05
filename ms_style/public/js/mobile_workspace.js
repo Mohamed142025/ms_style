@@ -26,7 +26,11 @@ function decorate() {
   let hero = page.querySelector(":scope > .ms-ws-hero");
   if (!on) { hero?.remove(); return; }
 
-  const title = page.querySelector(".page-head .title-area")?.textContent.replace(/\s+/g, " ").trim() || window.frappe?.app?.sidebar?.sidebar_title || "";
+  // The workspace's label from the boot (known at once, while the page head may still
+  // show the previous workspace), else the page head.
+  const routeName = (window.frappe?.get_route?.() || [])[1];
+  const known = (window.frappe?.boot?.allowed_workspaces || []).find((w) => w.name === routeName || w.title === routeName);
+  const title = known?.label || known?.title || page.querySelector(".page-head .title-area")?.textContent.replace(/\s+/g, " ").trim() || window.frappe?.app?.sidebar?.sidebar_title || "";
   const blocks = [...page.querySelectorAll(".codex-editor__redactor > .ce-block")];
   // The opening header (the workspace's own name) and the paragraph under it.
   let description = "";
@@ -99,12 +103,16 @@ function schedule(delay = 60) {
 
 $(() => {
   patchNumberCard();
-  window.frappe?.router?.on?.("change", () => { patchNumberCard(); schedule(80); schedule(700); });
+  // On the way into a workspace, the hero goes up at once (no flash of Frappe's head),
+  // then again once the blocks are drawn.
+  window.frappe?.router?.on?.("change", () => { patchNumberCard(); decorate(); window.requestAnimationFrame(decorate); schedule(80); schedule(700); });
   window.addEventListener("resize", () => schedule(150), { passive: true });
   // Workspaces render their blocks after the route change, and again after editing.
   new MutationObserver((mutations) => {
     if (!isPhone()) return;
     if (mutations.some((m) => m.target.closest?.(".codex-editor__redactor") && [...m.addedNodes].some((n) => n.classList?.contains("ce-block")))) schedule(60);
+    // Frappe's loading skeleton, or the workspace page itself, appearing.
+    if (mutations.some((m) => [...m.addedNodes].some((n) => n.classList?.contains("workspace-skeleton") || (n.classList?.contains("page-container") && n.dataset.pageRoute === "Workspaces")))) decorate();
   }).observe(document.body, { childList: true, subtree: true });
   schedule(300);
 });

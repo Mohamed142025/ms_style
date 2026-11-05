@@ -387,3 +387,11 @@ msgstr "تحديد الكل"
 msgctxt "ms_style"
 msgid "Deselect all"
 msgstr "إلغاء تحديد الكل"
+
+msgctxt "ms_style"
+msgid "Previous field"
+msgstr "الحقل السابق"
+
+msgctxt "ms_style"
+msgid "Next field"
+msgstr "الحقل التالي"

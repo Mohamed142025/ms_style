@@ -80,4 +80,20 @@
   .ms-app-ws .links-widget-box .widget-title { font-size: 15px !important; font-weight: 800; }
   .ms-app-ws .links-widget-box .link-item { min-height: 42px; display: flex; align-items: center; border-radius: 10px; font-size: 14px; }
   .ms-app-ws .ce-block .ce-paragraph { padding: 0 4px; color: var(--ms-text-muted); font-size: 13px; }
+
+  // Frappe's loading skeleton in the screen's shape: tiles two per row, cards full width,
+  // all shimmering, under the hero.
+  .ms-app-ws .workspace-skeleton { margin: 0 !important; padding: 12px; }
+  .ms-app-ws .workspace-skeleton .widget-group { margin: 0 0 14px; }
+  .ms-app-ws .workspace-skeleton .widget-group-head { margin: 4px 2px 10px; }
+  .ms-app-ws .workspace-skeleton .widget-group-title.skeleton-card { width: 38%; height: 14px; border-radius: 7px; }
+  .ms-app-ws .workspace-skeleton .widget-group-body { display: grid !important; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .ms-app-ws .workspace-skeleton .widget.skeleton-card { height: 92px; min-height: 0; margin: 0; border: 1px solid var(--ms-border); border-radius: 18px; box-shadow: none; }
+  .ms-app-ws .workspace-skeleton .widget.links-widget-box.skeleton-card { grid-column: 1 / -1; height: 132px; }
+  .ms-app-ws .workspace-skeleton .skeleton-card {
+    background-color: var(--ms-surface-raised) !important;
+    background-image: linear-gradient(100deg, rgba(var(--ms-tint-rgb), .04) 30%, rgba(var(--ms-tint-rgb), .1) 50%, rgba(var(--ms-tint-rgb), .04) 70%) !important;
+    background-size: 300% 100% !important;
+    animation: ms-work-shimmer 1.3s linear infinite;
+  }
 }

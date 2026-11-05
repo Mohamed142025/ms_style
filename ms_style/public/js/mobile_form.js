@@ -244,19 +244,6 @@ function renderGrid(grid) {
     const unit = doc.uom || doc.stock_uom || "";
     const qtyValue = qty ? frappe.format(doc[qty.fieldname], qty, { inline: true }, doc) : "";
     const qtyText = qty ? `<b>${qtyValue}</b>${unit && !String(qtyValue).includes(unit) ? ` ${frappe.utils.escape_html(unit)}` : ""}` : "";
-    // The other columns as cells in a strip that scrolls sideways within the row.
-    const cellValue = (df) => {
-      const v = doc[df.fieldname];
-      if (df.fieldtype === "Check") return v ? `<span class="ms-cell-yes">✓</span>` : `<span class="ms-cell-no">—</span>`;
-      if (v === undefined || v === null || v === "") return `<span class="ms-cell-no">—</span>`;
-      const html = frappe.format(v, df, { inline: true }, doc);
-      const text = String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
-      return frappe.utils.escape_html(text.length > 60 ? `${text.slice(0, 60)}…` : text) || `<span class="ms-cell-no">—</span>`;
-    };
-    const cells = columns.filter((df) => df.fieldname !== title && df !== qty).map((df) => {
-      const unitSuffix = df === qty && unit && !String(doc[df.fieldname]).includes(unit) ? ` <small>${frappe.utils.escape_html(unit)}</small>` : "";
-      return `<div class="ms-cell" data-fieldtype="${df.fieldtype}"><span class="ms-cell-label">${frappe.utils.escape_html(__(df.label || df.fieldname))}</span><span class="ms-cell-value">${cellValue(df)}${unitSuffix}</span></div>`;
-    }).join("");
     const html = `
       <div class="ms-grid-card-main">
         <span class="ms-grid-card-idx">${doc.idx}</span>
@@ -267,9 +254,21 @@ function renderGrid(grid) {
         ${qtyText ? `<span class="ms-grid-card-chip">${qtyText}</span>` : ""}
         <svg class="icon icon-sm ms-grid-card-chevron" aria-hidden="true"><use href="#icon-chevron-right"></use></svg>
       </div>
-      ${cells ? `<div class="ms-grid-card-cols">${cells}</div>` : ""}`;
-    // Rewritten only when the row changed, so the strip keeps its sideways scroll.
+`;
     if (card.msHtml !== html) { card.msHtml = html; card.innerHTML = html; }
+    // Frappe's own row is the strip under the card: it scrolls sideways and a tap on a
+    // cell edits it in place (Frappe's editable grid: links keep their queries, scripts
+    // and totals run). Each cell gets its column's label.
+    const strip = rowEl.querySelector(":scope > .data-row");
+    if (strip) {
+      strip.classList.add("ms-grid-strip");
+      rowEl.classList.add("ms-has-strip");
+      strip.querySelectorAll(":scope > .grid-static-col[data-fieldname]").forEach((col) => {
+        const df = columns.find((c) => c.fieldname === col.dataset.fieldname);
+        const label = df ? __(df.label || df.fieldname) : "";
+        if (col.dataset.label !== label) col.dataset.label = label;
+      });
+    }
   });
   // The "Add row" button as a dashed full-width row.
   const add = wrapper.querySelector(".grid-footer .grid-add-row");
@@ -282,6 +281,16 @@ function renderGrid(grid) {
   wrapper.querySelector(":scope > .ms-grid-count")?.remove();
   const label = wrapper.querySelector(".control-label") || wrapper.closest(".frappe-control")?.querySelector(".control-label");
   wrapper.classList.toggle("ms-grid-empty", !count);
+  // Frappe's "Configure Columns" (which columns the strip shows), as a gear.
+  if (label && grid.header_row?.configure_columns && grid.frm && !label.querySelector(".ms-grid-gear")) {
+    const gear = document.createElement("button");
+    gear.type = "button";
+    gear.className = "ms-grid-gear";
+    gear.setAttribute("aria-label", __("Configure Columns"));
+    gear.innerHTML = `<svg class="icon icon-sm" aria-hidden="true"><use href="#icon-settings"></use></svg>`;
+    gear.addEventListener("click", (event) => { event.preventDefault(); event.stopPropagation(); grid.header_row.configure_dialog_for_columns_selector(); });
+    label.appendChild(gear);
+  }
   if (label) {
     let countEl = label.querySelector(".ms-grid-count");
     if (!countEl) { countEl = document.createElement("span"); countEl.className = "ms-grid-count"; label.appendChild(countEl); }

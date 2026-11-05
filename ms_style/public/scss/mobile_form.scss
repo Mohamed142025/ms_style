@@ -129,7 +129,7 @@
   .ms-app-form .form-grid .grid-body .rows, .ms-app-form .form-grid .grid-body .grid-row { width: 100%; }
   .ms-app-form .form-grid .grid-heading-row { display: none; }
   .ms-app-form .form-grid .grid-body { border: 0; background: transparent; }
-  .ms-app-form .form-grid .grid-body .grid-row:not(.grid-row-open) > .data-row { display: none; }
+  .ms-app-form .form-grid .grid-body .grid-row:not(.grid-row-open):not(.ms-has-strip) > .data-row { display: none; }
   .ms-app-form .form-grid .grid-body .grid-row { border: 0; background: transparent; margin-bottom: 10px; }
   .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label:has(.ms-grid-count) { display: flex !important; align-items: center; justify-content: space-between; gap: 8px; }
   .ms-grid-count { flex: 0 0 auto; padding: 3px 10px; border-radius: 999px; background: var(--ms-primary-soft); color: var(--ms-accent); font-size: 12px; font-weight: 700; }
@@ -151,47 +151,6 @@
   .ms-app-form .grid-row.grid-row-open > .ms-grid-card { display: none; }
   .ms-grid-card-main { display: flex; align-items: center; gap: 10px; }
 
-  // The row's other columns: cells in a strip that scrolls sideways, snapping per cell,
-  // fading at its far edge.
-  .ms-grid-card-cols {
-    display: flex;
-    gap: 8px;
-    margin: 10px -10px 0 -12px;
-    padding: 2px 12px 2px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scroll-padding-inline: 12px;
-    scrollbar-width: none;
-    -webkit-overflow-scrolling: touch;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 28px), transparent);
-            mask-image: linear-gradient(90deg, transparent 0, #000 12px, #000 calc(100% - 28px), transparent);
-    touch-action: pan-x pan-y;
-  }
-
-  html[dir="rtl"] .ms-grid-card-cols { margin: 10px -12px 0 -10px; -webkit-mask-image: linear-gradient(270deg, transparent 0, #000 12px, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(270deg, transparent 0, #000 12px, #000 calc(100% - 28px), transparent); }
-  .ms-grid-card-cols::-webkit-scrollbar { display: none; }
-  .ms-grid-card-cols::after { content: ""; flex: 0 0 16px; }
-
-  .ms-cell {
-    display: flex;
-    flex: 0 0 auto;
-    min-width: 92px;
-    max-width: 220px;
-    flex-direction: column;
-    gap: 2px;
-    padding: 7px 11px;
-    border: 1px solid var(--ms-border);
-    border-radius: 12px;
-    background: rgba(var(--ms-tint-rgb), .04);
-    scroll-snap-align: start;
-  }
-
-  .ms-cell-label { overflow: hidden; color: var(--ms-text-muted); font-size: 11px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
-  .ms-cell-value { overflow: hidden; color: var(--ms-text-strong); font-size: 13.5px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .ms-cell-value small { color: var(--ms-text-muted); font-weight: 600; }
-  .ms-cell-yes { color: var(--ms-accent); font-weight: 900; }
-  .ms-cell-no { color: var(--ms-text-muted); font-weight: 500; }
   .ms-grid-card-idx { display: inline-grid; width: 30px; height: 30px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: rgba(var(--ms-tint-rgb), .08); color: var(--ms-text-muted); font-size: 13px; font-weight: 800; }
   .ms-grid-card-text { flex: 1 1 auto; min-width: 0; }
   .ms-grid-card-title { color: var(--ms-accent); font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -554,4 +513,96 @@
   // The hero before its first fill: ghost title and status.
   .ms-form-hero-title:empty { width: 55%; height: 18px; border-radius: 6px; background: rgba(255, 255, 255, .16); }
   .ms-form-hero-doctype:empty { display: inline-block; width: 60px; height: 10px; border-radius: 5px; background: rgba(255, 255, 255, .1); }
+
+  // Row strip: Frappe's own row under the card ----------------------------------------------
+  // It scrolls sideways; each cell shows its column's label over its value, and a tap
+  // edits the value in place (Frappe's editable grid).
+  .ms-app-form .grid-row.ms-has-strip:not(.grid-row-open) > .ms-grid-card { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom-color: transparent; }
+  .ms-app-form .form-grid .grid-body .grid-row.ms-has-strip:not(.grid-row-open) > .data-row.ms-grid-strip {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 8px;
+    width: auto !important;
+    min-width: 0;
+    margin: -1px 0 0 !important;
+    padding: 2px 12px 12px !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid var(--ms-border);
+    border-top: 0;
+    border-radius: 0 0 16px 16px;
+    background: var(--ms-surface-raised);
+    box-shadow: var(--ms-shadow-sm);
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 12px;
+    scrollbar-width: none;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ms-app-form .data-row.ms-grid-strip::-webkit-scrollbar { display: none; }
+  // Only the strip scrolls sideways: focusing a cell's input must not scroll the row or
+  // the table around it (overflow: clip cannot be scrolled, even by the browser).
+  .ms-app-form .form-grid .grid-body .grid-row.ms-has-strip, .ms-app-form .form-grid .grid-body .rows, .ms-app-form .form-grid .grid-body, .ms-app-form .form-grid-container > .form-grid { overflow-x: clip !important; }
+  .ms-app-form .data-row.ms-grid-strip::after { content: ""; flex: 0 0 4px; }
+  // The checkbox, the index (on the card) and the open button (the card itself) go.
+  .ms-app-form .data-row.ms-grid-strip > .row-check,
+  .ms-app-form .data-row.ms-grid-strip > .row-index,
+  .ms-app-form .data-row.ms-grid-strip > .col:not(.grid-static-col),
+  .ms-app-form .data-row.ms-grid-strip > .grid-static-col:not([data-fieldname]) { display: none !important; }
+
+  .ms-app-form .data-row.ms-grid-strip > .grid-static-col[data-fieldname] {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: 104px;
+    max-width: 230px !important;
+    height: auto !important;
+    min-height: 58px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+    padding: 7px 10px !important;
+    border: 1px solid var(--ms-border) !important;
+    border-radius: 12px;
+    background: rgba(var(--ms-tint-rgb), .04);
+    scroll-snap-align: start;
+    cursor: text;
+  }
+
+  .ms-app-form .data-row.ms-grid-strip > .grid-static-col.col-xs-1 { max-width: 140px !important; }
+  .ms-app-form .data-row.ms-grid-strip > .grid-static-col.col-xs-2 { min-width: 150px; }
+  .ms-app-form .data-row.ms-grid-strip > .grid-static-col:is(.col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6) { min-width: 190px; }
+  .ms-app-form .data-row.ms-grid-strip > .grid-static-col[data-fieldtype="Check"] { min-width: 88px; }
+  .ms-app-form .data-row.ms-grid-strip > .grid-static-col[data-fieldname]::before { content: attr(data-label); display: block; overflow: hidden; color: var(--ms-text-muted); font-size: 11px; font-weight: 700; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-app-form .data-row.ms-grid-strip .static-area { display: block; overflow: hidden; color: var(--ms-text-strong); font-size: 13.5px; font-weight: 700; line-height: 1.35; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-app-form .data-row.ms-grid-strip .static-area:empty::after { content: "—"; color: var(--ms-text-muted); font-weight: 500; }
+  .ms-app-form .data-row.ms-grid-strip .static-area a { color: var(--ms-accent); }
+  .ms-app-form .data-row.ms-grid-strip > .grid-static-col:active { background: var(--ms-primary-soft); }
+
+  // Editing: the row's cells turn into inputs.
+  .ms-app-form .data-row.ms-grid-strip.editable-row > .grid-static-col[data-fieldname], .ms-app-form .editable-row > .data-row.ms-grid-strip > .grid-static-col[data-fieldname] { border-color: rgba(var(--ms-mint-rgb), .45) !important; background: var(--ms-surface); }
+  .ms-app-form .data-row.ms-grid-strip .field-area { width: 100%; }
+  .ms-app-form .data-row.ms-grid-strip .field-area :is(.control-label, .help-box, .help, .tooltip-content, .like-disabled-input + .help-box) { display: none !important; }
+  .ms-app-form .data-row.ms-grid-strip .field-area :is(.frappe-control, .form-group, .control-input-wrapper, .control-input) { min-height: 0 !important; margin: 0 !important; padding: 0 !important; }
+  .ms-app-form .data-row.ms-grid-strip .field-area .checkbox { margin: 0; }
+  .ms-app-form .data-row.ms-grid-strip .field-area .checkbox > label { min-height: 32px; }
+  .ms-app-form .data-row.ms-grid-strip > .grid-static-col[data-fieldname]:has(.field-area:not([style*="none"])) { justify-content: flex-start; }
+  .ms-app-form .data-row.ms-grid-strip .field-area .form-group { margin: 0; }
+  .ms-app-form .data-row.ms-grid-strip .field-area .form-control, .ms-app-form .data-row.ms-grid-strip .field-area input { min-height: 34px; height: 34px; padding: 4px 8px; border-radius: 9px; font-size: 14px; font-weight: 700; }
+  .ms-app-form .data-row.ms-grid-strip .field-area .form-control:focus { box-shadow: 0 0 0 2px var(--ms-mint); }
+  .ms-app-form .data-row.ms-grid-strip .field-area .link-btn, .ms-app-form .data-row.ms-grid-strip .field-area .tooltip-content { display: none; }
+  .ms-app-form .data-row.ms-grid-strip .field-area .ql-toolbar { display: none; }
+  // A text editor in a cell is one line high (the earlier rule gives editors 120px).
+  .ms-app-form .data-row.ms-grid-strip .field-area :is(.ql-container, .ql-editor, .text-editor) { height: 34px !important; min-height: 34px !important; max-height: 34px !important; overflow: hidden; }
+  .ms-app-form .data-row.ms-grid-strip .field-area .ql-editor { padding: 6px 8px; font-size: 13.5px; }
+  .ms-app-form .data-row.ms-grid-strip .field-area .ql-container { border-radius: 9px; }
+  // Cells keep their own height; the strip does not stretch them to the tallest.
+  .ms-app-form .form-grid .grid-body .grid-row.ms-has-strip:not(.grid-row-open) > .data-row.ms-grid-strip { align-items: flex-start; }
+
+  // Table head: title, count and the column gear.
+  .ms-grid-gear { display: inline-grid; width: 32px; height: 32px; flex: 0 0 32px; place-items: center; padding: 0; border: 1px solid var(--ms-border); border-radius: 10px; background: var(--ms-surface-raised); color: var(--ms-text-muted); }
+  .ms-grid-gear .icon { --icon-stroke: currentColor; stroke: currentColor; }
+  .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label:has(.ms-grid-count) > span:first-child, .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label:has(.ms-grid-count) { gap: 8px; }
+  .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label .ms-grid-count { margin-inline-start: auto; }
 }
