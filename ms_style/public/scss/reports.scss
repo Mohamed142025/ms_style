@@ -15,6 +15,15 @@
   background: var(--ms-primary-soft);
 }
 
+// Sticky (frozen) cells stay opaque when their row is hovered, touched or focused: the
+// soft tint over the table's own colour. A see-through tint let the columns scrolling
+// underneath show through them.
+.datatable .dt-row:hover .dt-cell--sticky,
+.datatable .dt-cell--sticky.dt-cell--focus,
+.datatable .dt-row:hover > .dt-cell--sticky {
+  background: linear-gradient(var(--ms-primary-soft), var(--ms-primary-soft)), var(--ms-surface-raised);
+}
+
 // A report's summary: a grid of cards as wide as the report, each its figure large under
 // its name, read from the start edge, with a stripe and a faint wash in the colour the
 // report gives it (green, red, blue, orange). Figures that are bad news or good news keep

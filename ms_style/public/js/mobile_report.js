@@ -122,8 +122,25 @@ function decorate() {
   const buttons = [...(head?.querySelectorAll(".custom-mobile-actions > .btn:not(.hide)") || [])].map((b, i) => ({ label: b.textContent.trim(), html: `data-act="button" data-index="${i}"` }));
   const chips = [...groups, ...buttons].filter((c) => c.label);
   const html = `<button type="button" class="ms-rp-chip" data-act="refresh"><svg class="icon icon-xs" aria-hidden="true"><use href="#icon-refresh-cw"></use></svg>${__("Refresh")}</button>` + chips.map((c) => `<button type="button" class="ms-rp-chip" ${c.html}>${frappe.utils.escape_html(c.label)}${c.caret ? `<svg class="icon icon-xs" aria-hidden="true"><use href="#icon-chevron-down"></use></svg>` : ""}</button>`).join("");
+  try { narrowFirstColumn(qr); } catch (error) { console.error("ms_style report column", error); }
   const chipsEl = hero.querySelector(".ms-rp-chips");
   if (chipsEl.msHtml !== html) { chipsEl.msHtml = html; chipsEl.innerHTML = html; }
+}
+
+// The first data column (account, item, date, ...) is often 300px: on a phone it hides
+// every other column. It is set to 190px through the datatable's own column API, which
+// keeps the header, the cells, the edit box and the sticky offsets in step.
+const NARROW = 190;
+function narrowFirstColumn(qr) {
+  const dt = qr.datatable;
+  if (!dt?.columnmanager || !dt.datamanager) return;
+  const columns = dt.datamanager.getColumns();
+  const first = columns.find((c) => c.colIndex > 0 && !c.hidden && c.id !== "_rowIndex" && c.id !== "_checkbox");
+  if (!first || first.width <= NARROW || first.msNarrowed === first.width) return;
+  first.width = NARROW;
+  first.msNarrowed = NARROW;
+  dt.columnmanager.setColumnHeaderWidth(first.colIndex);
+  dt.columnmanager.setColumnWidth(first.colIndex);
 }
 
 let timer = null;

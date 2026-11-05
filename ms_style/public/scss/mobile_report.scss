@@ -40,13 +40,16 @@
   .ms-app-report .report-summary { margin: 0 0 12px; padding: 0; gap: 10px; }
   .ms-app-report .chart-wrapper { margin: 0 0 12px; border-radius: 18px; overflow: hidden; }
 
-  // The table in a card; its first column (the account, the item, ...) narrower, so the
-  // amounts are on screen; the table still scrolls sideways for more columns.
+  // The table in a card. Its first column is narrowed through the datatable itself
+  // (mobile_report.js): resizing cells from CSS left the datatable's content boxes and
+  // sticky columns at their old widths, and they overlapped when scrolling sideways.
   .ms-app-report .report-wrapper { margin: 0; padding: 0; overflow: hidden; border: 1px solid var(--ms-border); border-radius: 18px; background: var(--ms-surface-raised); }
-  .ms-app-report .report-wrapper .datatable .dt-cell--col-1 { width: 190px !important; min-width: 190px !important; max-width: 190px !important; }
-  .ms-app-report .report-wrapper .datatable .dt-cell--col-1 .dt-cell__content { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .ms-app-report .report-wrapper .datatable .dt-cell--col-0 { width: 36px !important; min-width: 36px !important; max-width: 36px !important; }
   .ms-app-report .report-wrapper .datatable .dt-cell__content { padding-inline: 8px; font-size: 13px; }
+  // Only the row number stays frozen: reports freeze their first columns (the General
+  // Ledger: date and account, ~330px), which on a phone left no room for the amounts
+  // scrolling underneath.
+  .ms-app-report .report-wrapper .datatable .dt-cell--sticky:not(.dt-cell--col-0) { position: relative !important; left: auto !important; right: auto !important; z-index: auto !important; transform: none !important; }
+  .ms-app-report .report-wrapper .datatable .dt-cell--sticky-last:not(.dt-cell--col-0)::after { display: none; }
   .ms-app-report .report-wrapper .datatable .dt-row-filter { display: none; }
 
   // Footer: the tree controls on one row; the long help text goes.
