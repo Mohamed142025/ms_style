@@ -606,3 +606,54 @@
   .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label:has(.ms-grid-count) > span:first-child, .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label:has(.ms-grid-count) { gap: 8px; }
   .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label .ms-grid-count { margin-inline-start: auto; }
 }
+
+@media (max-width: 767px) {
+  // Configure Columns as a sheet (mobile_form.js) ---------------------------------------------
+  .modal.ms-cols-sheet { display: block !important; padding: 0 !important; background: rgba(var(--ms-roots-rgb), .6); backdrop-filter: blur(3px); }
+  .modal.ms-cols-sheet .modal-dialog { position: fixed; top: auto !important; right: 0; bottom: 0; left: 0; width: 100% !important; max-width: none !important; margin: 0 !important; transform: none !important; }
+  .modal.ms-cols-sheet .modal-content { max-height: calc(100vh - 56px - env(safe-area-inset-top, 0px)); overflow: hidden; display: flex; flex-direction: column; border: 0; border-radius: 26px 26px 0 0; background: var(--ms-surface); box-shadow: 0 -16px 44px rgba(0, 0, 0, .35); animation: ms-sheet-up .28s var(--ms-ease); }
+  .modal.ms-cols-sheet .modal-header { position: relative; padding: 24px 18px 12px; border: 0; }
+  .modal.ms-cols-sheet .modal-header::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .22); }
+  .modal.ms-cols-sheet .modal-title { color: var(--ms-text-strong) !important; font-size: 21px; font-weight: 800; }
+  .modal.ms-cols-sheet .btn-modal-close { display: inline-grid; width: 38px; height: 38px; place-items: center; border-radius: 12px; background: rgba(var(--ms-tint-rgb), .08); }
+  .modal.ms-cols-sheet .modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 0 14px 8px; }
+  .modal.ms-cols-sheet .modal-footer { display: flex; flex-wrap: nowrap; gap: 10px; padding: 12px 14px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--ms-border); background: var(--ms-surface); }
+  .modal.ms-cols-sheet .modal-footer > * { margin: 0; }
+  .modal.ms-cols-sheet .modal-footer .standard-actions { display: flex; flex: 1 1 auto; gap: 10px; }
+  .modal.ms-cols-sheet .modal-footer .btn { flex: 1 1 0; min-height: 50px; border-radius: 16px; font-size: 15px; font-weight: 800; }
+  .modal.ms-cols-sheet .modal-footer .btn-primary { background: var(--ms-mint); border-color: transparent; color: var(--ms-roots); }
+
+  .ms-cols-group > .row:first-child { display: none; }
+  .ms-cols-head { display: grid; grid-template-columns: 1fr 100px 46px; gap: 8px; padding: 0 52px 8px 42px; color: var(--ms-text-muted); font-size: 11.5px; font-weight: 700; }
+  html[dir="rtl"] .ms-cols-head { padding: 0 42px 8px 52px; }
+  .ms-cols-head span:not(:first-child) { text-align: center; }
+
+  // A column row: handle · name · width · sticky · delete.
+  .ms-cols-group .ms-col-row { height: auto !important; min-height: 60px; margin: 0 0 8px !important; padding: 8px 10px !important; border: 1px solid var(--ms-border); border-radius: 16px; background: var(--ms-surface-raised); box-shadow: var(--ms-shadow-sm); }
+  .ms-cols-group .ms-col-row > .row { display: grid !important; grid-template-columns: 22px 1fr 100px 46px 32px; align-items: center; gap: 8px; margin: 0; }
+  .ms-cols-group .ms-col-row > .row > [class*="col-"] { width: auto; max-width: none; flex: none; padding: 0 !important; margin: 0 !important; }
+  .ms-cols-group .ms-col-row > .row > :nth-child(1) a { display: inline-grid; width: 28px; height: 36px; place-items: center; color: var(--ms-text-muted); }
+  .ms-cols-group .ms-col-row > .row > :nth-child(2) { display: -webkit-box; overflow: hidden; color: var(--ms-text-strong); font-size: 14px; font-weight: 700; line-height: 1.3; white-space: normal; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+  .ms-cols-group .ms-col-row > .row > :nth-child(1) a { width: 22px !important; }
+
+  .ms-col-stepper { display: flex; align-items: stretch; height: 36px; overflow: hidden; border: 1px solid var(--ms-border-strong); border-radius: 12px; background: var(--ms-surface); }
+  .ms-col-step { flex: 0 0 30px; padding: 0; border: 0; background: transparent; color: var(--ms-text-strong); font-size: 20px; font-weight: 700; line-height: 1; }
+  .ms-col-step:last-child { background: var(--ms-mint); color: var(--ms-roots); }
+  .ms-col-step:active { opacity: .7; }
+  .ms-col-stepper .column-width { flex: 1 1 auto; width: 100% !important; min-width: 0; max-width: none !important; height: 100% !important; margin: 0 !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; background: transparent !important; text-align: center !important; font-size: 15px; font-weight: 800; box-shadow: none !important; }
+
+  // Sticky as a switch.
+  .ms-cols-group .sticky-col-container { display: flex; justify-content: center; }
+  .ms-cols-group .sticky-column { appearance: none; -webkit-appearance: none; position: relative; width: 42px !important; height: 24px !important; margin: 0 !important; padding: 0 !important; border: 0 !important; border-radius: 999px !important; background: rgba(var(--ms-tint-rgb), .16) !important; box-shadow: inset 0 0 0 1px var(--ms-border-strong) !important; cursor: pointer; transition: background-color .2s var(--ms-ease); }
+  .ms-cols-group .sticky-column::after { content: ""; position: absolute; top: 3px; inset-inline-start: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, .25); transition: transform .2s var(--ms-ease); }
+  .ms-cols-group .sticky-column:checked { background: var(--ms-mint) !important; box-shadow: none !important; }
+  .ms-cols-group .sticky-column:checked::after { transform: translateX(18px); }
+  html[dir="rtl"] .ms-cols-group .sticky-column:checked::after { transform: translateX(-18px); }
+
+  .ms-cols-group .remove-field { display: inline-grid; width: 32px; height: 32px; place-items: center; border-radius: 10px; background: var(--ms-danger-bg); color: var(--ms-danger-text) !important; }
+  .ms-cols-group .remove-field .icon { --icon-stroke: currentColor; stroke: currentColor; width: 15px; height: 15px; }
+
+  .ms-cols-group .help-box { margin: 4px 0 0; }
+  .ms-cols-group .add-new-fields { display: flex; width: 100%; min-height: 50px; align-items: center; justify-content: center; gap: 6px; border: 1.5px dashed rgba(var(--ms-accent-rgb), .5); border-radius: 16px; background: var(--ms-primary-soft); color: var(--ms-accent) !important; font-size: 14.5px; font-weight: 800; text-decoration: none; }
+  body:has(.modal.ms-cols-sheet.show) .ms-mobile-footer, body:has(.modal.ms-cols-sheet.show) .ms-form-bar { visibility: hidden; }
+}

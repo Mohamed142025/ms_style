@@ -468,3 +468,58 @@ window.addEventListener("resize", () => {
   window.clearTimeout(resizeTimer);
   resizeTimer = window.setTimeout(() => window.cur_frm && decorate(window.cur_frm), 200);
 }, { passive: true });
+
+// Configure Columns (the table gear) --------------------------------------------------------
+// Frappe's dialog as a sheet: each column a row with its drag handle, name, a − / +
+// width stepper, a Sticky switch and a delete button. Frappe redraws the rows after
+// every add or remove, and listens to their inputs' change events, which the steppers
+// fire.
+function decorateColumnsDialog(list) {
+  const modal = list.closest(".modal");
+  if (!modal) return;
+  modal.classList.add("ms-cols-sheet");
+  const group = list.closest(".form-group");
+  group?.classList.add("ms-cols-group");
+  if (group && !group.querySelector(".ms-cols-head")) {
+    const head = document.createElement("div");
+    head.className = "ms-cols-head";
+    head.innerHTML = `<span>${__("Column")}</span><span>${__("Column Width")}</span><span>${__("Sticky")}</span>`;
+    list.before(head);
+  }
+  list.querySelectorAll(":scope > .fields_order").forEach((row) => {
+    row.classList.add("ms-col-row");
+    const input = row.querySelector(".column-width");
+    if (input && !input.closest(".ms-col-stepper")) {
+      input.setAttribute("inputmode", "numeric");
+      const wrap = document.createElement("div");
+      wrap.className = "ms-col-stepper";
+      const make = (sign) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "ms-col-step";
+        b.textContent = sign > 0 ? "+" : "−";
+        b.setAttribute("aria-label", sign > 0 ? "+1" : "-1");
+        b.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const v = Math.min(10, Math.max(1, (parseInt(input.value, 10) || 1) + sign));
+          input.value = v;
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+        return b;
+      };
+      input.parentElement.insertBefore(wrap, input);
+      wrap.append(make(-1), input, make(1));
+    }
+  });
+}
+
+new MutationObserver((mutations) => {
+  if (!isPhone()) return;
+  const lists = new Set();
+  mutations.forEach((m) => {
+    const list = m.target.closest?.(".selected-fields") || (m.target.querySelector?.(".modal .selected-fields"));
+    if (list) lists.add(list);
+  });
+  lists.forEach((list) => window.requestAnimationFrame(() => decorateColumnsDialog(list)));
+}).observe(document.body, { childList: true, subtree: true });
