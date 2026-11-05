@@ -375,3 +375,15 @@ msgstr "نهارك سعيد، {0}"
 msgctxt "ms_style"
 msgid "Good evening, {0}"
 msgstr "مساء الخير، {0}"
+
+msgctxt "ms_style"
+msgid "{0} selected"
+msgstr "{0} محدد"
+
+msgctxt "ms_style"
+msgid "Select all"
+msgstr "تحديد الكل"
+
+msgctxt "ms_style"
+msgid "Deselect all"
+msgstr "إلغاء تحديد الكل"

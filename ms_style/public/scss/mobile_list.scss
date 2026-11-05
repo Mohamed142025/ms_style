@@ -14,7 +14,6 @@
   // and "new" live on the hero and the floating button). The head stays in the DOM for
   // the actions it holds (selection "Actions", view switch), shown while rows are selected.
   .page-container:has(.ms-app-list) .page-head { display: none; }
-  .page-container:has(.ms-app-list.ms-has-selection) .page-head { display: flex; }
 
   // Hero --------------------------------------------------------------------------------
   .ms-list-hero {
@@ -204,8 +203,43 @@
   .ms-card-head { display: flex; align-items: center; gap: 10px; }
   .ms-card-check { display: inline-grid; width: 28px; height: 28px; place-items: center; flex: 0 0 auto; margin-inline-start: -6px; }
   .ms-card-check .list-row-checkbox { width: 18px; height: 18px; margin: 0; }
-  // Checkboxes appear once a card is long-pressed (or any is checked).
-  .ms-app-list:not(.ms-has-selection) .ms-card-check { display: none; }
+  // Frappe's checkbox stays in the card for its selection logic; the tile shows the state.
+  .ms-card-check { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); margin: 0; }
+  .ms-card { position: relative; }
+  .ms-card-avatar { cursor: pointer; transition: background-color .18s var(--ms-ease), transform .18s var(--ms-ease); }
+  .ms-card-avatar:active { transform: scale(.92); }
+  .ms-card.is-selected { border-color: rgba(var(--ms-mint-rgb), .6) !important; background: var(--ms-primary-soft) !important; }
+  .ms-card.is-selected .ms-card-avatar { background: var(--ms-mint) !important; color: var(--ms-roots) !important; }
+  .ms-card.is-selected .ms-card-avatar > * { display: none; }
+  .ms-card.is-selected .ms-card-avatar::after { content: ""; width: 20px; height: 20px; background: var(--ms-roots); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat; }
+  .ms-has-selection .ms-card:not(.is-selected) .ms-card-avatar { box-shadow: inset 0 0 0 2px rgba(var(--ms-mint-rgb), .45); }
+
+  .ms-has-selection .ms-fab { display: none; }
+
+  // Selection bar over the hero.
+  .ms-select-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1012;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: -64px;
+    min-height: 64px;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 12px 10px;
+    border-radius: 0 0 22px 22px;
+    background: var(--ms-roots);
+    color: var(--ms-on-dark);
+    box-shadow: 0 12px 26px -16px rgba(0, 0, 0, .7);
+    animation: ms-select-in .2s var(--ms-ease);
+  }
+
+  @keyframes ms-select-in { from { transform: translateY(-12px); opacity: 0; } }
+  .ms-select-bar .ms-hero-btn { display: inline-grid; width: 40px; height: 40px; flex: 0 0 40px; place-items: center; border: 1px solid rgba(255, 255, 255, .14); border-radius: 12px; background: rgba(255, 255, 255, .1); color: var(--ms-on-dark); }
+  .ms-select-bar .icon { --icon-stroke: currentColor; stroke: currentColor; }
+  .ms-select-count { flex: 1 1 auto; min-width: 0; font-size: 17px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ms-select-all { flex: 0 0 auto; min-height: 40px; padding: 0 12px; border: 0; border-radius: 12px; background: transparent; color: var(--ms-mint); font-size: 13.5px; font-weight: 800; }
+  .ms-select-actions { display: inline-flex; flex: 0 0 auto; min-height: 40px; align-items: center; gap: 6px; padding: 0 14px; border: 0; border-radius: 12px; background: var(--ms-mint); color: var(--ms-roots); font-size: 14px; font-weight: 800; }
 
   .ms-card-avatar {
     display: grid;

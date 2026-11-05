@@ -343,7 +343,7 @@ function cardFor(list, config, doc, row) {
   card.innerHTML = `
     <div class="ms-card-head">
       <span class="ms-card-check"></span>
-      <span class="ms-card-avatar" aria-hidden="true">${doc.image ? `<img src="${frappe.utils.escape_html(doc.image)}" alt="">` : `<span>${frappe.utils.escape_html(initials(title))}</span>`}</span>
+      <span class="ms-card-avatar" role="checkbox" aria-checked="false" tabindex="0" aria-label="${__("Select")}">${doc.image ? `<img src="${frappe.utils.escape_html(doc.image)}" alt="">` : `<span>${frappe.utils.escape_html(initials(title))}</span>`}</span>
       <div class="ms-card-text">
         <div class="ms-card-title">${frappe.utils.escape_html(title)}</div>
         ${title !== doc.name ? `<div class="ms-card-name">${frappe.utils.escape_html(doc.name)}</div>` : ""}
@@ -362,6 +362,11 @@ function cardFor(list, config, doc, row) {
   if (checkbox) {
     card.querySelector(".ms-card-check").appendChild(checkbox);
     checkbox.addEventListener("change", () => syncSelection(list));
+    // The tile at the card's start selects it (it turns into a tick), as in mail apps.
+    const avatar = card.querySelector(".ms-card-avatar");
+    const toggle = (event) => { event.preventDefault(); event.stopPropagation(); checkbox.click(); };
+    avatar.addEventListener("click", toggle);
+    avatar.addEventListener("keydown", (event) => { if (event.key === " " || event.key === "Enter") toggle(event); });
   }
   let pressTimer = null;
   card.addEventListener("touchstart", () => { pressTimer = window.setTimeout(() => { checkbox?.click(); }, 450); }, { passive: true });
@@ -369,7 +374,9 @@ function cardFor(list, config, doc, row) {
   card.addEventListener("touchmove", () => window.clearTimeout(pressTimer), { passive: true });
 
   card.addEventListener("click", (event) => {
-    if (event.target.closest(".ms-card-check, .ms-card-action, a, button")) return;
+    if (event.target.closest(".ms-card-check, .ms-card-avatar, .ms-card-action, a, button")) return;
+    // While selecting, a tap on a card adds it to or takes it out of the selection.
+    if (card.closest(".ms-has-selection") && checkbox) { checkbox.click(); return; }
     frappe.set_route("Form", list.doctype, doc.name);
   });
   card.querySelector(".ms-card-action")?.addEventListener("click", (event) => {
@@ -402,11 +409,44 @@ function renderCards(list, config) {
   });
 }
 
+// Selection: a bar over the hero with the count, select all, the bulk actions (Frappe's
+// "Actions" menu, as a sheet) and cancel. Frappe's own head stays hidden.
 function syncSelection(list) {
-  const section = list.$page?.[0]?.querySelector(".layout-main-section");
+  const page = list.$page?.[0];
+  const section = page?.querySelector(".layout-main-section");
   if (!section) return;
-  const any = !!section.querySelector(".list-row-checkbox:checked");
+  const boxes = [...section.querySelectorAll(".ms-card .list-row-checkbox")];
+  const checked = boxes.filter((b) => b.checked);
+  const any = checked.length > 0;
   section.classList.toggle("ms-has-selection", any);
+  boxes.forEach((b) => {
+    const card = b.closest(".ms-card");
+    card?.classList.toggle("is-selected", b.checked);
+    card?.querySelector(".ms-card-avatar")?.setAttribute("aria-checked", String(b.checked));
+  });
+  let bar = page.querySelector(".ms-select-bar");
+  if (!any) { bar?.remove(); return; }
+  if (!bar) {
+    bar = document.createElement("div");
+    bar.className = "ms-select-bar";
+    bar.innerHTML = `
+      <button type="button" class="ms-hero-btn" data-sel="clear" aria-label="${__("Cancel")}"><svg class="icon icon-sm"><use href="#icon-x"></use></svg></button>
+      <div class="ms-select-count"></div>
+      <button type="button" class="ms-select-all" data-sel="all"></button>
+      <button type="button" class="ms-select-actions" data-sel="actions"><span>${__("Actions")}</span><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-chevron-down"></use></svg></button>`;
+    bar.addEventListener("click", (event) => {
+      const act = event.target.closest("[data-sel]")?.dataset.sel;
+      const all = [...section.querySelectorAll(".ms-card .list-row-checkbox")];
+      if (act === "clear") all.filter((b) => b.checked).forEach((b) => b.click());
+      else if (act === "all") {
+        const allOn = all.every((b) => b.checked);
+        all.filter((b) => b.checked === allOn).forEach((b) => b.click());
+      } else if (act === "actions") openActionSheet(null, page.querySelector(".page-head .actions-btn-group .dropdown-menu"), __("Actions"));
+    });
+    (page.querySelector(".ms-list-hero") || section).before(bar);
+  }
+  bar.querySelector(".ms-select-count").textContent = t("{0} selected", [checked.length]);
+  bar.querySelector(".ms-select-all").textContent = checked.length === boxes.length ? t("Deselect all") : t("Select all");
 }
 
 // New button -------------------------------------------------------------------------------
