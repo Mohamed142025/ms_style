@@ -97,3 +97,47 @@ new MutationObserver((mutations) => {
   window.clearTimeout(notifTimer);
   notifTimer = window.setTimeout(syncNotificationSheet, 20);
 }).observe(document.documentElement, { attributes: true, attributeFilter: ["class"], subtree: true });
+
+// Search on phones: Frappe's awesomebar modal as a full screen with a green head (title,
+// close, the field) and results as rows with an icon by kind (mobile_desk.scss).
+function searchKind(li) {
+  const href = li.querySelector("a")?.getAttribute("href") || "";
+  const text = li.textContent.trim();
+  if (/^New\s/.test(text) || text.startsWith(__("New"))) return ["plus", "new"];
+  if (/\/view\/report|query-report|\/report\//.test(href)) return ["chart-column", "report"];
+  if (/Workspaces|Workspace$/.test(href + " " + text) || /^Open\s/.test(text)) return ["layout-grid", "workspace"];
+  if (/\/view\/list|List$/.test(href + " " + text)) return ["list", "list"];
+  if (/^\/desk\/[^/]+\/[^/]+$/.test(href)) return ["file-text", "doc"];
+  if (/^\/desk\/[^/]+$/.test(href)) return ["list", "list"];
+  return ["search", "other"];
+}
+
+function decorateSearch() {
+  const modal = document.querySelector(".modal.show .navbar-modal-wrapper")?.closest(".modal");
+  if (!modal || window.innerWidth > PHONE) return;
+  modal.classList.add("ms-search-modal");
+  const body = modal.querySelector(".modal-body");
+  if (body && !body.querySelector(".ms-search-head")) {
+    const head = document.createElement("div");
+    head.className = "ms-search-head";
+    head.innerHTML = `<h2>${__("Search")}</h2><button type="button" class="ms-search-close" aria-label="${__("Close")}"><svg class="icon icon-sm"><use href="#icon-x"></use></svg></button>`;
+    head.querySelector("button").addEventListener("click", () => window.jQuery?.(modal).modal("hide"));
+    body.prepend(head);
+  }
+  modal.querySelectorAll(".awesomplete li").forEach((li) => {
+    const a = li.querySelector("a");
+    if (!a || a.querySelector(".ms-sr-ico")) return;
+    const [icon, kind] = searchKind(li);
+    li.dataset.kind = kind;
+    a.insertAdjacentHTML("afterbegin", `<span class="ms-sr-ico" aria-hidden="true"><svg class="icon icon-sm"><use href="#icon-${icon}"></use></svg></span>`);
+    a.insertAdjacentHTML("beforeend", `<svg class="icon icon-xs ms-sr-chevron" aria-hidden="true"><use href="#icon-chevron-right"></use></svg>`);
+  });
+}
+
+let searchTimer = null;
+new MutationObserver((mutations) => {
+  if (window.innerWidth > PHONE) return;
+  if (!mutations.some((m) => m.target.closest?.(".navbar-modal-wrapper") || m.target.classList?.contains("modal"))) return;
+  window.clearTimeout(searchTimer);
+  searchTimer = window.setTimeout(decorateSearch, 10);
+}).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });

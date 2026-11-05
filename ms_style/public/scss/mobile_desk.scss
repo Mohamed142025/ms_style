@@ -419,4 +419,131 @@
   body.ms-notif-open .notifications-list .list-footer, body.ms-notif-open .notifications-list a.recent-item.text-center { display: flex; justify-content: center; margin: 4px 0 0; padding: 12px; border: 1.5px dashed rgba(var(--ms-accent-rgb), .4); border-radius: 16px; background: transparent; color: var(--ms-accent); font-weight: 800; }
   body.ms-notif-open .notifications-list .notification-null-state { min-height: 260px; }
   body.ms-notif-open .notifications-list .notification-null-state .null-state { width: 120px; opacity: .85; }
+
+  // Search ------------------------------------------------------------------------------------
+  // Frappe's awesomebar modal as a full screen: a green head with the title, close and the
+  // field; results as rows with an icon by kind (mobile_desk.js). Top-anchored, so the
+  // keyboard never covers the field.
+  .modal.show:has(.navbar-modal-wrapper) { display: block !important; padding: 0 !important; background: var(--ms-surface); }
+  .modal.show:has(.navbar-modal-wrapper) .modal-dialog { width: 100%; max-width: none; height: 100%; margin: 0; transform: none !important; }
+
+  .modal.show:has(.navbar-modal-wrapper) .modal-content {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    border: 0;
+    border-radius: 0;
+    background: var(--ms-surface);
+    box-shadow: none;
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .modal-body { display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; padding: 0; }
+  .modal.show:has(.navbar-modal-wrapper) .modal-footer, .modal.show:has(.navbar-modal-wrapper) .modal-divider { display: none !important; }
+
+  .ms-search-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 12px;
+    background: radial-gradient(120% 160% at 100% 0%, rgba(var(--ms-mint-rgb), .2), transparent 60%) var(--ms-roots);
+  }
+
+  .ms-search-head h2 { margin: 0; color: var(--ms-on-dark); font-size: 21px; font-weight: 800; }
+  .ms-search-close { display: inline-grid; width: 38px; height: 38px; place-items: center; border: 0; border-radius: 12px; background: rgba(255, 255, 255, .12); color: var(--ms-on-dark); }
+  .ms-search-close .icon { --icon-stroke: currentColor; stroke: currentColor; }
+
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper { display: flex; flex: 1 1 auto; min-height: 0; height: auto; flex-direction: column; align-items: stretch; gap: 0; padding: 0 !important; }
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete { position: relative; display: flex; flex: 1 1 auto; min-height: 0; flex-direction: column; width: 100%; }
+
+  // The rest of the head, under the title: the field on the green band.
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 74px;
+    border-radius: 0 0 24px 24px;
+    background: var(--ms-roots);
+    box-shadow: 0 14px 28px -20px rgba(var(--ms-roots-rgb), .9);
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .awesomebar-input-row {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    min-height: 50px;
+    align-items: center;
+    margin: 4px 16px 20px;
+    border: 0;
+    border-radius: 16px;
+    background: var(--ms-surface-raised);
+    box-shadow: 0 10px 24px -12px rgba(0, 0, 0, .5);
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .awesomebar-search-icon { display: inline-grid; width: 44px; place-items: center; padding: 0; color: var(--ms-accent); }
+  .modal.show:has(.navbar-modal-wrapper) .awesomebar-search-icon .icon { width: 18px; height: 18px; }
+
+  .modal.show:has(.navbar-modal-wrapper) .awesomebar-input-row input {
+    height: 50px;
+    padding: 0 12px 0 0;
+    border: 0;
+    outline: 0;
+    box-shadow: none !important;
+    background: transparent !important;
+    color: var(--ms-text-strong);
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  html[dir="rtl"] .modal.show:has(.navbar-modal-wrapper) .awesomebar-input-row input { padding: 0 0 0 12px; }
+
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete > ul {
+    position: static !important;
+    display: block;
+    flex: 1 1 auto;
+    width: auto;
+    max-height: none;
+    min-height: 0;
+    margin: 0;
+    padding: 0 12px calc(20px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    overscroll-behavior: contain;
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete > ul::before { display: none; }
+
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete > ul { left: 0 !important; right: 0 !important; width: 100% !important; max-width: none !important; box-sizing: border-box; }
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete li {
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 0 8px;
+    padding: 0;
+    border: 1px solid var(--ms-border);
+    border-radius: 16px;
+    background: var(--ms-surface-raised);
+    box-shadow: var(--ms-shadow-sm);
+    color: var(--ms-text);
+  }
+
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete li > a { display: flex; min-height: 56px; align-items: center; gap: 12px; padding: 8px 12px; color: inherit; font-size: 14.5px; text-decoration: none; }
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete li > a > span:not(.ms-sr-ico) { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete li b, .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete li mark { color: var(--ms-text-strong); font-weight: 800; }
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete li mark { padding: 0 1px; border-radius: 4px; background: rgba(var(--ms-mint-rgb), .28); }
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete li[aria-selected="true"] { border-color: rgba(var(--ms-mint-rgb), .45); background: var(--ms-primary-soft); }
+  .modal.show:has(.navbar-modal-wrapper) .navbar-modal-wrapper .awesomplete li:active { transform: scale(.99); }
+
+  .ms-sr-ico { display: inline-grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 12px; background: var(--ms-primary-soft); color: var(--ms-accent); }
+  .ms-sr-ico .icon { width: 18px; height: 18px; --icon-stroke: currentColor; stroke: currentColor; }
+  li[data-kind="report"] .ms-sr-ico { background: rgba(124, 199, 255, .14); color: #5fb3f0; }
+  li[data-kind="workspace"] .ms-sr-ico { background: rgba(242, 217, 138, .16); color: #d9a93a; }
+  li[data-kind="new"] .ms-sr-ico { background: var(--ms-mint); color: var(--ms-roots); }
+  li[data-kind="doc"] .ms-sr-ico, li[data-kind="other"] .ms-sr-ico { background: rgba(var(--ms-tint-rgb), .08); color: var(--ms-text-muted); }
+  .ms-sr-chevron { flex: 0 0 auto; color: var(--ms-text-muted); }
+  html[dir="rtl"] .ms-sr-chevron { transform: scaleX(-1); }
+  body:has(.modal.show .navbar-modal-wrapper) .ms-mobile-footer { visibility: hidden; }
 }
