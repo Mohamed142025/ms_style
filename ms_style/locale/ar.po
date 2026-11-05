@@ -343,3 +343,23 @@ msgstr "المزيد"
 msgctxt "ms_style"
 msgid "Show results"
 msgstr "عرض النتائج"
+
+msgctxt "ms_style"
+msgid "Tap + to create"
+msgstr "اضغط + لإنشاء مستند"
+
+msgctxt "ms_style"
+msgid "{0} details"
+msgstr "بيانات {0}"
+
+msgctxt "ms_style"
+msgid "{0} rows"
+msgstr "{0} بنود"
+
+msgctxt "ms_style"
+msgid "No rows yet"
+msgstr "لا توجد بنود بعد"
+
+msgctxt "ms_style"
+msgid "Edit row #{0}"
+msgstr "تعديل البند #{0}"

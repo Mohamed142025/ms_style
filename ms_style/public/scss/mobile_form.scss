@@ -1,0 +1,256 @@
+// Document forms on phones as an app screen (mobile_form.js), the drawer and the tab
+// bar in the same language. Scoped to phones and to .ms-app-form, which the script sets.
+
+@media (max-width: 767px) {
+  // Hero ----------------------------------------------------------------------------------
+  .ms-app-form .page-head { display: none; }
+
+  .ms-form-hero {
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 0;
+    border-radius: 0 0 24px 24px;
+    background: linear-gradient(160deg, #15503f 0%, var(--ms-roots) 60%, #0a2b22 100%);
+    color: var(--ms-on-dark);
+    box-shadow: 0 12px 28px -18px rgba(var(--ms-roots-rgb), .7);
+  }
+
+  .ms-form-hero-row { display: flex; align-items: center; gap: 10px; padding-bottom: 10px; }
+  .ms-form-hero-text { flex: 1 1 auto; min-width: 0; }
+  .ms-form-hero-title { margin: 0; font-size: 19px; font-weight: 800; line-height: 1.2; letter-spacing: -.01em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ms-form-hero-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: 12px; color: var(--ms-on-dark-muted); }
+  .ms-form-hero-status { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 999px; background: rgba(255, 255, 255, .12); color: var(--ms-on-dark); font-weight: 700; }
+  .ms-form-hero-status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+  .ms-form-hero-status.green::before { color: var(--ms-mint); }
+  .ms-form-hero-status.orange::before, .ms-form-hero-status.yellow::before { color: #f2d98a; }
+  .ms-form-hero-status.red::before { color: #ff8a80; }
+  .ms-form-hero-status.blue::before, .ms-form-hero-status.cyan::before { color: #7cc7ff; }
+  .ms-form-hero-tools { display: flex; gap: 6px; flex: 0 0 auto; }
+
+  .ms-form-hero .ms-hero-btn {
+    display: inline-grid;
+    width: 40px;
+    height: 40px;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, .1);
+    color: var(--ms-on-dark);
+  }
+
+  .ms-form-hero .ms-hero-btn .icon { --icon-stroke: currentColor; stroke: currentColor; }
+  html[dir="rtl"] .ms-form-hero [data-act="back"] .icon { transform: scaleX(-1); }
+
+  // Tabs in the hero: pills, the active one underlined in Mint.
+  .ms-form-hero .form-tabs-list { margin: 0 -14px; padding: 0 8px; border: 0; background: transparent; }
+  .ms-form-hero .form-tabs-list .form-tabs { mask-image: none; }
+  .ms-form-hero .form-tabs-list .nav-link { background: transparent !important; color: var(--ms-on-dark-muted); border: 0; border-bottom: 3px solid transparent; border-radius: 0; font-weight: 600; }
+  .ms-form-hero .form-tabs-list .nav-item { background: transparent; }
+  .ms-form-hero .form-tabs-list .nav-link.active { color: var(--ms-on-dark); border-bottom-color: var(--ms-mint); background: transparent; }
+  .ms-form-hero .form-tabs-list .nav-link .tab-count, .ms-form-hero .form-tabs-list .nav-link .badge { background: var(--ms-mint); color: var(--ms-roots); }
+
+  // Body --------------------------------------------------------------------------------------
+  .ms-app-form .layout-main-section-wrapper { margin: 0; }
+  .ms-app-form .layout-main-section { background: transparent; border: 0; box-shadow: none; padding: 12px 12px calc(24px + env(safe-area-inset-bottom, 0px)); }
+  .ms-app-form .form-layout { background: transparent; }
+  .ms-app-form .form-page { background: transparent; border: 0; box-shadow: none; }
+
+  // Sections as cards.
+  .ms-app-form .form-section.card-section {
+    margin: 0 0 12px;
+    padding: 14px 14px 6px;
+    border: 1px solid var(--ms-border);
+    border-radius: 18px;
+    background: var(--ms-surface-raised);
+    box-shadow: var(--ms-shadow-sm);
+  }
+
+  .ms-app-form .form-section.card-section.empty-section, .ms-app-form .form-section.card-section:not(:has(.frappe-control:not(.hide-control))) { display: none; }
+  .ms-app-form .form-section .section-head, .ms-app-form .ms-section-title { margin: 0 0 8px; padding: 0; font-size: 17px; font-weight: 800; color: var(--ms-text-strong); }
+  .ms-app-form .form-section .section-head.collapsible { display: flex; align-items: center; justify-content: space-between; }
+  .ms-app-form .form-section .section-body { padding: 0; }
+  .ms-app-form .form-column { padding: 0; }
+  .ms-app-form .frappe-control .control-label { color: var(--ms-text-muted); font-size: 12.5px; font-weight: 600; }
+  .ms-app-form .frappe-control .control-input .form-control { min-height: 46px; border-radius: 14px; font-size: 15px; font-weight: 600; }
+  .ms-app-form .frappe-control .control-input .like-disabled-input { min-height: 46px; border-radius: 14px; }
+  .ms-app-form .frappe-control .control-input .form-control:focus { box-shadow: 0 0 0 2px var(--ms-mint); }
+  .ms-app-form .frappe-control .checkbox .label-area { font-size: 15px; font-weight: 600; }
+
+  // Connections grid.
+  .ms-app-form .form-dashboard { padding: 0; border: 0; background: transparent; }
+  .ms-app-form .form-dashboard .form-links { padding: 0; border: 0; background: transparent; }
+  .ms-app-form .form-dashboard .form-links .section-body { display: none; }
+  .ms-app-form .form-dashboard-section:not(.form-links):not(.form-heatmap) { margin: 0 0 12px; padding: 12px 14px; border: 1px solid var(--ms-border); border-radius: 18px; background: var(--ms-surface-raised); }
+  .ms-links-hint { margin: 2px 2px 8px; color: var(--ms-text-muted); font-size: 12px; text-align: end; }
+  .ms-links-hint::before { content: ""; }
+  .ms-form-dashboard-toggle { display: none; }
+  .ms-links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+
+  .ms-link-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 128px;
+    padding: 14px;
+    border: 1px solid var(--ms-border);
+    border-radius: 18px;
+    background: var(--ms-surface-raised);
+    box-shadow: var(--ms-shadow-sm);
+  }
+
+  .ms-link-card:active { transform: scale(.98); }
+  .ms-link-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: auto; }
+  .ms-link-card .ms-card-icon { width: 36px; height: 36px; border-radius: 12px; }
+  .ms-link-new { display: inline-grid; width: 40px; height: 40px; place-items: center; border: 1.5px solid rgba(var(--ms-accent-rgb), .4); border-radius: 13px; background: var(--ms-primary-soft); color: var(--ms-accent); }
+  .ms-link-new .icon { --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.4; }
+  .ms-link-card-group { color: var(--ms-text-muted); font-size: 12px; }
+  .ms-link-card-name { display: flex; align-items: center; gap: 6px; color: var(--ms-text-strong); font-size: 15px; font-weight: 800; }
+  .ms-link-count { padding: 1px 7px; border-radius: 999px; background: var(--ms-primary-soft); color: var(--ms-accent); font-size: 12px; }
+  .ms-link-open { padding: 1px 7px; border-radius: 999px; background: var(--ms-warning-bg); color: var(--ms-warning-text); font-size: 12px; }
+
+  // Child tables as cards.
+  .ms-app-form .frappe-control[data-fieldtype="Table"] .form-grid-container { overflow: visible; }
+  .ms-app-form .form-grid { border: 0; background: transparent; }
+  .ms-app-form .form-grid .grid-heading-row { display: none; }
+  .ms-app-form .form-grid .grid-body { border: 0; background: transparent; }
+  .ms-app-form .form-grid .grid-body .grid-row:not(.grid-row-open) > .data-row { display: none; }
+  .ms-app-form .form-grid .grid-body .grid-row { border: 0; background: transparent; margin-bottom: 10px; }
+  .ms-grid-count { margin: 0 2px 8px; color: var(--ms-text-muted); font-size: 12px; }
+
+  .ms-grid-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 12px 12px 14px;
+    border: 1px solid var(--ms-border);
+    border-radius: 16px;
+    background: var(--ms-surface-raised);
+    box-shadow: var(--ms-shadow-sm);
+  }
+
+  .ms-app-form .grid-row.grid-row-open > .ms-grid-card { display: none; }
+  .ms-grid-card-idx { display: inline-grid; width: 30px; height: 30px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: rgba(var(--ms-tint-rgb), .08); color: var(--ms-text-muted); font-size: 13px; font-weight: 800; }
+  .ms-grid-card-text { flex: 1 1 auto; min-width: 0; }
+  .ms-grid-card-title { color: var(--ms-accent); font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-grid-card-sub { margin-top: 2px; color: var(--ms-text-strong); font-size: 15px; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .ms-grid-card-chip { display: inline-block; margin-top: 8px; padding: 3px 9px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .06); color: var(--ms-text-muted); font-size: 12px; }
+  .ms-grid-card-chip b { color: var(--ms-text-strong); }
+  .ms-grid-card-chevron { flex: 0 0 auto; color: var(--ms-text-muted); }
+  html[dir="rtl"] .ms-grid-card-chevron { transform: scaleX(-1); }
+
+  .ms-app-form .grid-footer { margin-top: 2px; padding: 0; background: transparent; }
+  .ms-app-form .grid-footer > .flex { flex-direction: column; }
+  .ms-app-form .grid-footer .grid-buttons { width: 100%; }
+  .ms-app-form .frappe-control[data-fieldtype="Table"] > .form-group > .control-label,
+  .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label { font-size: 17px; font-weight: 800; color: var(--ms-text-strong); margin-bottom: 8px; }
+  .ms-app-form .grid-footer .grid-add-row.ms-grid-add {
+    display: flex !important;
+    width: 100% !important;
+    min-height: 54px;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1.5px dashed rgba(var(--ms-accent-rgb), .5);
+    border-radius: 16px;
+    background: var(--ms-primary-soft);
+    color: var(--ms-accent);
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .ms-app-form .grid-footer .grid-add-row.ms-grid-add .icon { --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.4; }
+  .ms-app-form .grid-footer .grid-add-multiple-row, .ms-app-form .grid-footer .grid-download, .ms-app-form .grid-footer .grid-upload { display: none; }
+  .ms-app-form .grid-footer .grid-remove-rows:not(.hidden) { width: 100%; min-height: 44px; margin-bottom: 8px; border-radius: 14px; }
+
+  // An open row as a sheet.
+  .ms-app-form .grid-row.grid-row-open .form-in-grid {
+    position: fixed !important;
+    inset: auto 0 0 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+    transform: none !important;
+    z-index: 1060;
+    max-height: calc(100vh - 40px - env(safe-area-inset-top, 0px));
+    display: flex;
+    flex-direction: column;
+    border-radius: 26px 26px 0 0;
+    background: var(--ms-surface);
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, .3);
+  }
+
+  .ms-app-form .grid-row.grid-row-open::before { content: ""; position: fixed; inset: 0; z-index: 1055; background: rgba(var(--ms-roots-rgb), .55); }
+  .ms-app-form .grid-row.grid-row-open .form-in-grid::before { content: ""; display: block; width: 44px; height: 5px; margin: 10px auto 0; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .2); }
+  .ms-app-form .grid-form-heading { padding: 8px 20px 4px; border: 0; background: transparent; }
+  .ms-app-form .grid-form-heading .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0; }
+  .ms-row-sheet-title { font-size: 22px; font-weight: 800; color: var(--ms-text-strong); }
+  .ms-app-form .grid-form-heading .row-actions { display: flex; gap: 6px; }
+  .ms-app-form .grid-form-heading .row-actions .btn { float: none; min-height: 40px; border-radius: 13px; font-weight: 700; }
+  .ms-app-form .grid-form-heading .row-actions .grid-delete-row { background: var(--ms-danger-bg); color: var(--ms-danger-text); border-color: transparent; }
+  .ms-app-form .grid-form-heading .row-actions .grid-collapse-row { width: 40px; padding: 0; }
+  .ms-app-form .grid-form-body { overflow-y: auto; padding: 4px 20px 12px; -webkit-overflow-scrolling: touch; }
+  .ms-app-form .grid-form-body .form-section { padding: 0; margin: 0 0 6px; border: 0; background: transparent; box-shadow: none; }
+  .ms-app-form .grid-form-body .form-section .section-head { font-size: 15px; margin: 12px 0 8px; padding-top: 12px; border-top: 1px solid var(--ms-border); }
+  .ms-app-form .grid-form-body .frappe-control { margin-bottom: 10px; }
+  .ms-app-form .grid-form-body .grid-footer-toolbar { display: none !important; }
+  .ms-stepper { display: flex; align-items: stretch; gap: 6px; }
+  .ms-stepper .form-control { flex: 1 1 auto; text-align: center; font-size: 18px; font-weight: 800; }
+  .ms-stepper-btn { flex: 0 0 48px; border: 1px solid var(--ms-border-strong); border-radius: 14px; background: var(--ms-surface-raised); color: var(--ms-text-strong); font-size: 22px; font-weight: 700; }
+  .ms-stepper-btn:last-child { background: var(--ms-mint); border-color: transparent; color: var(--ms-roots); }
+  .ms-row-sheet-foot { padding: 10px 20px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--ms-border); }
+  .ms-row-done { display: inline-flex; width: 100%; min-height: 52px; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 16px; background: var(--ms-mint); color: var(--ms-roots); font-size: 16px; font-weight: 800; }
+  .ms-row-done .icon { --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.4; }
+
+  // Menu / Actions sheet.
+  .ms-action-sheet { position: fixed; inset: 0; z-index: 1060; display: flex; align-items: flex-end; background: rgba(var(--ms-roots-rgb), .55); backdrop-filter: blur(3px); }
+  .ms-action-sheet .ms-sheet { display: flex; flex-direction: column; width: 100%; max-height: calc(100vh - 60px); border-radius: 26px 26px 0 0; background: var(--ms-surface); box-shadow: 0 -12px 40px rgba(0, 0, 0, .25); animation: ms-sheet-up .26s var(--ms-ease); }
+  .ms-action-sheet .ms-sheet-handle { width: 44px; height: 5px; margin: 10px auto 0; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .2); }
+  .ms-action-sheet .ms-sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px 4px; }
+  .ms-action-sheet .ms-sheet-head h2 { margin: 0; font-size: 22px; font-weight: 800; color: var(--ms-text-strong); }
+  .ms-action-sheet .ms-sheet-close { display: inline-grid; width: 40px; height: 40px; place-items: center; border: 0; border-radius: 13px; background: rgba(var(--ms-tint-rgb), .08); color: var(--ms-text); }
+  .ms-action-list { overflow-y: auto; padding: 6px 12px calc(14px + env(safe-area-inset-bottom, 0px)); }
+  .ms-action-row { display: flex; width: 100%; min-height: 50px; align-items: center; padding: 0 12px; border: 0; border-radius: 14px; background: transparent; color: var(--ms-text-strong); font-size: 15px; font-weight: 600; text-align: start; }
+  .ms-action-row:active { background: var(--ms-primary-soft); }
+  .ms-action-divider { height: 1px; margin: 6px 12px; background: var(--ms-border); }
+
+  // Sticky primary action.
+  .ms-form-bar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: calc(66px + env(safe-area-inset-bottom, 0px));
+    z-index: 1016;
+    padding: 8px 14px;
+    background: linear-gradient(to top, var(--ms-surface) 70%, transparent);
+  }
+
+  .ms-form-bar-primary { display: inline-flex; width: 100%; min-height: 54px; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 18px; background: var(--ms-mint); color: var(--ms-roots); font-size: 16px; font-weight: 800; box-shadow: 0 12px 26px -10px rgba(var(--ms-mint-rgb), .8); }
+  .ms-form-bar-primary .icon { --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.6; }
+  body.ms-form-bar-active .ms-app-form .layout-main-section { padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
+  body.ms-sheet-open .ms-form-bar, .ms-app-form:has(.grid-row-open) .ms-form-bar { visibility: hidden; }
+
+  // Comments and activity.
+  .ms-app-form .form-footer { margin-top: 6px; padding: 0 2px; }
+  .ms-app-form .form-footer .comment-box { padding: 0; }
+  .ms-app-form .form-footer .comment-title, .ms-app-form .form-footer .timeline-title { font-size: 17px; font-weight: 800; color: var(--ms-text-strong); }
+  .ms-app-form .form-footer .comment-input-container .ql-editor, .ms-app-form .form-footer .comment-input-container .ql-container { border-radius: 999px; min-height: 48px; }
+  .ms-app-form .form-footer .btn-comment { border-radius: 999px; }
+
+  // Drawer -------------------------------------------------------------------------------------
+  .body-sidebar-container.expanded .body-sidebar { border-radius: 0 26px 26px 0; }
+  html[dir="rtl"] .body-sidebar-container.expanded .body-sidebar { border-radius: 26px 0 0 26px; }
+  .body-sidebar .sidebar-header { margin: 8px 8px 12px; padding: 10px; border-radius: 16px; background: rgba(var(--ms-sand-rgb), .06); }
+  .body-sidebar .sidebar-header .header-logo { width: 42px; height: 42px; border-radius: 13px; }
+  .body-sidebar .standard-sidebar-item .item-anchor { min-height: 46px; padding-inline: 10px; font-size: 14.5px; }
+  .body-sidebar .standard-sidebar-item.active-sidebar { background: rgba(var(--ms-mint-rgb), .14); border-radius: 12px; }
+  .body-sidebar .section-break { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
+
+  // Tab bar: the active tab as a Mint pill with its label.
+  .ms-mobile-footer { padding-inline: 8px; }
+  .ms-mobile-footer-button { flex-direction: column; border-radius: 16px; }
+  .ms-mobile-footer-button.is-active { flex-direction: row; gap: 7px; padding: 0 16px; background: var(--ms-mint); color: var(--ms-roots); }
+  .ms-mobile-footer-button.is-active .icon { color: var(--ms-roots); --icon-stroke: var(--ms-roots); stroke: var(--ms-roots); }
+  .ms-mobile-footer-button.is-active span { display: inline; font-size: 13px; font-weight: 800; color: var(--ms-roots); }
+  .ms-mobile-footer-button:not(.is-active) span { display: none; }
+  .ms-mobile-footer-button:not(.is-active) .icon { width: 22px; height: 22px; }
+}
