@@ -159,6 +159,9 @@
   .ms-sheet-form .page-form .frappe-control.input-max-width { max-width: none; }
   .ms-sheet-form .page-form .standard-filter-section { display: flex !important; flex-direction: column; gap: 10px; }
   .ms-sheet-form .page-form .form-control { min-height: 48px; border-radius: 14px; font-size: 15px; }
+  .ms-sheet-form .page-form .filter-section .frappe-control,
+  .ms-sheet-form .page-form .filter-section .form-control,
+  .ms-sheet-form .page-form .filter-section .input-group { width: 100% !important; max-width: none !important; }
   .ms-sheet-form .page-form .input-group .form-control { border-start-end-radius: 0; border-end-end-radius: 0; }
   .ms-sheet-form .page-form .input-group-append .btn, .ms-sheet-form .page-form .input-group-text { min-height: 48px; border-radius: 0 14px 14px 0; }
   .ms-sheet-form .page-form .checkbox { min-height: 44px; margin: 0; }
