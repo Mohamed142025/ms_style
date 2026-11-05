@@ -7,7 +7,8 @@
   .ms-ws-hero {
     position: sticky;
     top: 0;
-    z-index: 1020;
+    // Under the drawer (.body-sidebar, 1020), over the page.
+    z-index: 1010;
     padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 16px;
     border-radius: 0 0 24px 24px;
     background:

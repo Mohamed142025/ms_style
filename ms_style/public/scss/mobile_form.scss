@@ -8,7 +8,8 @@
   .ms-form-hero {
     position: sticky;
     top: 0;
-    z-index: 1020;
+    // Under the drawer (.body-sidebar, 1020), over the page.
+    z-index: 1010;
     padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 0;
     border-radius: 0 0 24px 24px;
     background: linear-gradient(160deg, #15503f 0%, var(--ms-roots) 60%, #0a2b22 100%);
