@@ -525,4 +525,32 @@
   .ms-app-form .overlay-sidebar .sidebar-menu li::before, .ms-app-form .overlay-sidebar .sidebar-menu li::after, .ms-app-form .overlay-sidebar .sidebar-menu::before { display: none !important; }
   .ms-app-form .overlay-sidebar .sidebar-menu li + li { border-top: 1px solid var(--ms-border); }
   .ms-app-form .overlay-sidebar .sidebar-menu .frappe-timestamp { color: var(--ms-accent); font-size: 12px; font-weight: 700; }
+
+  // Loading skeleton (mobile_form.js) --------------------------------------------------------
+  .ms-form-skeleton { position: fixed; inset: 0; z-index: 990; overflow: hidden; background: var(--ms-surface); }
+  body.ms-form-loading .page-head { visibility: hidden; }
+  .ms-skel-hero { padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 0; border-radius: 0 0 24px 24px; background: linear-gradient(160deg, #15503f 0%, var(--ms-roots) 60%, #0a2b22 100%); }
+  .ms-skel-row { display: flex; align-items: center; gap: 8px; padding-bottom: 12px; }
+  .ms-skel-btn { flex: 0 0 38px; height: 38px; border-radius: 12px; background: rgba(255, 255, 255, .1); }
+  .ms-skel-lines { display: flex; flex: 1 1 auto; flex-direction: column; gap: 7px; }
+  .ms-skel-lines b { display: block; width: 55%; height: 14px; border-radius: 6px; background: rgba(255, 255, 255, .16); }
+  .ms-skel-lines b + b { width: 38%; height: 10px; background: rgba(255, 255, 255, .1); }
+  .ms-skel-tabs { display: flex; gap: 22px; padding: 6px 10px 14px; }
+  .ms-skel-tabs b { display: block; width: 54px; height: 10px; border-radius: 5px; background: rgba(255, 255, 255, .12); }
+  .ms-skel-tabs b:first-child { background: rgba(var(--ms-mint-rgb), .5); }
+  .ms-skel-body { padding: 12px; }
+  .ms-skel-card { margin-bottom: 12px; padding: 16px 14px; border: 1px solid var(--ms-border); border-radius: 18px; background: var(--ms-surface-raised); }
+  .ms-skel-card.is-short { height: 128px; }
+  .ms-skel-card b, .ms-skel-card i { display: block; border-radius: 8px; }
+  .ms-skel-card b { width: 30%; height: 10px; margin: 6px 0 8px; }
+  .ms-skel-card i { height: 46px; margin-bottom: 10px; border-radius: 14px; }
+  .ms-skel-card.is-short, .ms-skel-card b, .ms-skel-card i {
+    background-image: linear-gradient(100deg, rgba(var(--ms-tint-rgb), .05) 30%, rgba(var(--ms-tint-rgb), .11) 50%, rgba(var(--ms-tint-rgb), .05) 70%);
+    background-size: 300% 100%;
+    animation: ms-work-shimmer 1.3s linear infinite;
+  }
+
+  // The hero before its first fill: ghost title and status.
+  .ms-form-hero-title:empty { width: 55%; height: 18px; border-radius: 6px; background: rgba(255, 255, 255, .16); }
+  .ms-form-hero-doctype:empty { display: inline-block; width: 60px; height: 10px; border-radius: 5px; background: rgba(255, 255, 255, .1); }
 }

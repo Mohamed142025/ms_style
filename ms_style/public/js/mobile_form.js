@@ -69,10 +69,18 @@ function renderHero(frm) {
   const head = pageHead(frm);
   const title = (frm.meta.title_field && frm.doc[frm.meta.title_field]) || frm.docname;
   hero.querySelector(".ms-form-hero-title").textContent = frm.is_new() ? __("New {0}", [__(frm.meta.name)]) : title;
-  const pillText = (el) => (el.textContent.trim() || el.getAttribute("data-original-title") || el.getAttribute("title") || "").trim();
-  const indicator = [...(head?.querySelectorAll(".indicator-pill") || [])].find((el) => pillText(el));
+  // The pill's text, else its title; Bootstrap's tooltip keeps the previous document's
+  // title in data-original-title, so that comes last.
+  const pillText = (el) => (el.textContent.trim() || el.getAttribute("title") || el.getAttribute("data-original-title") || "").trim();
+  // Only a pill Frappe shows for this document: the page head is shared by every document
+  // of the doctype, and a hidden pill can still hold the previous document's status.
+  const indicator = [...(head?.querySelectorAll(".indicator-pill") || [])].find((el) => pillText(el) && shown(el) && !el.closest(".hide, .hidden"));
   const status = hero.querySelector(".ms-form-hero-status");
-  if (indicator) {
+  if (frm.is_new() && !indicator) {
+    status.textContent = __("Not Saved");
+    status.className = "ms-form-hero-status orange";
+    status.hidden = false;
+  } else if (indicator) {
     status.textContent = pillText(indicator);
     status.className = `ms-form-hero-status ${[...indicator.classList].find((c) => ["red", "orange", "green", "blue", "gray", "grey", "yellow", "purple", "cyan", "pink", "darkgrey"].includes(c)) || "gray"}`;
     status.hidden = false;
@@ -364,7 +372,62 @@ function decorate(frm) {
   try { renderHero(frm); renderActionBar(frm); renderLinks(frm); renderSections(frm); renderGrids(frm); } catch (error) { console.error("ms_style mobile form", error); }
 }
 
-$(document).on("form-refresh", (event, frm) => { window.setTimeout(() => decorate(frm), 60); window.setTimeout(() => decorate(frm), 700); });
+$(document).on("form-refresh", (event, frm) => { decorate(frm); hideFormSkeleton(); window.setTimeout(() => decorate(frm), 60); window.setTimeout(() => decorate(frm), 700); });
+
+// Loading ----------------------------------------------------------------------------------
+// While a document loads (a reload, or opening one not yet cached), a skeleton in the
+// screen's shape stands in: the green hero and ghost cards, instead of Frappe's empty
+// page head. Frappe's own form is styled from its first render, not after it.
+function isFormRoute() {
+  const route = window.frappe?.get_route?.() || [];
+  if (route.length) return route[0] === "Form";
+  return /^\/desk\/[^/]+\/[^/]+\/?$/.test(window.location.pathname) && !/\/view\//.test(window.location.pathname);
+}
+
+let skeletonTimer = null;
+function showFormSkeleton() {
+  if (!isPhone() || !isFormRoute()) return hideFormSkeleton();
+  // A form already on screen for this route needs no skeleton.
+  const current = window.cur_frm;
+  const route = window.frappe?.get_route?.() || [];
+  if (current && route[1] === current.doctype && route[2] && String(route.slice(2).join("/")) === String(current.docname) && current.page?.wrapper?.[0]?.offsetParent) return;
+  let skel = document.querySelector(".ms-form-skeleton");
+  if (!skel) {
+    skel = document.createElement("div");
+    skel.className = "ms-form-skeleton";
+    skel.setAttribute("aria-hidden", "true");
+    skel.innerHTML = `<div class="ms-skel-hero"><div class="ms-skel-row"><i class="ms-skel-btn"></i><div class="ms-skel-lines"><b></b><b></b></div><i class="ms-skel-btn"></i><i class="ms-skel-btn"></i></div><div class="ms-skel-tabs"><b></b><b></b><b></b><b></b></div></div><div class="ms-skel-body"><div class="ms-skel-card is-short"></div><div class="ms-skel-card"><b></b><i></i><b></b><i></i><b></b><i></i></div></div>`;
+    document.body.appendChild(skel);
+  }
+  document.body.classList.add("ms-form-loading");
+  window.clearTimeout(skeletonTimer);
+  skeletonTimer = window.setTimeout(hideFormSkeleton, 10000);
+}
+
+function hideFormSkeleton() {
+  document.body.classList.remove("ms-form-loading");
+  document.querySelector(".ms-form-skeleton")?.remove();
+}
+
+function patchForm() {
+  const Form = window.frappe?.ui?.form?.Form;
+  if (!Form || Form.prototype.msPhonePatched) return;
+  Form.prototype.msPhonePatched = true;
+  const refresh = Form.prototype.refresh;
+  Form.prototype.refresh = function (...args) {
+    if (isPhone() && this.page?.wrapper?.[0]) {
+      this.page.wrapper[0].classList.add("ms-app-form");
+      heroFor(this);
+    }
+    return refresh.apply(this, args);
+  };
+}
+
+if (isPhone() && isFormRoute()) showFormSkeleton();
+$(() => {
+  patchForm();
+  window.frappe?.router?.on?.("change", () => { patchForm(); if (isFormRoute()) showFormSkeleton(); else hideFormSkeleton(); });
+});
 // The primary action changes with the document's state and after saves.
 $(document).on("page-change", () => { syncRowOverlay(); window.setTimeout(() => window.cur_frm && decorate(window.cur_frm), 300); });
 
