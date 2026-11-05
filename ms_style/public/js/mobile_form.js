@@ -232,14 +232,32 @@ function renderGrid(grid) {
     const unit = doc.uom || doc.stock_uom || "";
     const qtyValue = qty ? frappe.format(doc[qty.fieldname], qty, { inline: true }, doc) : "";
     const qtyText = qty ? `<b>${qtyValue}</b>${unit && !String(qtyValue).includes(unit) ? ` ${frappe.utils.escape_html(unit)}` : ""}` : "";
-    card.innerHTML = `
-      <span class="ms-grid-card-idx">${doc.idx}</span>
-      <div class="ms-grid-card-text">
-        <div class="ms-grid-card-title">${frappe.utils.escape_html(String(titleText))}</div>
-        ${subText && String(subText) !== String(titleText) ? `<div class="ms-grid-card-sub">${frappe.utils.escape_html(String(subText).replace(/<[^>]+>/g, ""))}</div>` : ""}
+    // The other columns as cells in a strip that scrolls sideways within the row.
+    const cellValue = (df) => {
+      const v = doc[df.fieldname];
+      if (df.fieldtype === "Check") return v ? `<span class="ms-cell-yes">✓</span>` : `<span class="ms-cell-no">—</span>`;
+      if (v === undefined || v === null || v === "") return `<span class="ms-cell-no">—</span>`;
+      const html = frappe.format(v, df, { inline: true }, doc);
+      const text = String(html).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+      return frappe.utils.escape_html(text.length > 60 ? `${text.slice(0, 60)}…` : text) || `<span class="ms-cell-no">—</span>`;
+    };
+    const cells = columns.filter((df) => df.fieldname !== title && df !== qty).map((df) => {
+      const unitSuffix = df === qty && unit && !String(doc[df.fieldname]).includes(unit) ? ` <small>${frappe.utils.escape_html(unit)}</small>` : "";
+      return `<div class="ms-cell" data-fieldtype="${df.fieldtype}"><span class="ms-cell-label">${frappe.utils.escape_html(__(df.label || df.fieldname))}</span><span class="ms-cell-value">${cellValue(df)}${unitSuffix}</span></div>`;
+    }).join("");
+    const html = `
+      <div class="ms-grid-card-main">
+        <span class="ms-grid-card-idx">${doc.idx}</span>
+        <div class="ms-grid-card-text">
+          <div class="ms-grid-card-title">${frappe.utils.escape_html(String(titleText))}</div>
+          ${subText && String(subText) !== String(titleText) ? `<div class="ms-grid-card-sub">${frappe.utils.escape_html(String(subText).replace(/<[^>]+>/g, ""))}</div>` : ""}
+        </div>
+        ${qtyText ? `<span class="ms-grid-card-chip">${qtyText}</span>` : ""}
+        <svg class="icon icon-sm ms-grid-card-chevron" aria-hidden="true"><use href="#icon-chevron-right"></use></svg>
       </div>
-      ${qtyText ? `<span class="ms-grid-card-chip">${qtyText}</span>` : ""}
-      <svg class="icon icon-sm ms-grid-card-chevron" aria-hidden="true"><use href="#icon-chevron-right"></use></svg>`;
+      ${cells ? `<div class="ms-grid-card-cols">${cells}</div>` : ""}`;
+    // Rewritten only when the row changed, so the strip keeps its sideways scroll.
+    if (card.msHtml !== html) { card.msHtml = html; card.innerHTML = html; }
   });
   // The "Add row" button as a dashed full-width row.
   const add = wrapper.querySelector(".grid-footer .grid-add-row");
@@ -358,7 +376,7 @@ const observer = new MutationObserver((mutations) => {
       syncRowOverlay();
     }
   }
-  if (window.cur_frm && mutations.some((m) => m.type === "childList" && m.target.closest?.(".grid-body"))) {
+  if (window.cur_frm && mutations.some((m) => m.type === "childList" && m.target.closest?.(".grid-body") && !m.target.closest(".ms-grid-card"))) {
     window.clearTimeout(observer.timer);
     observer.timer = window.setTimeout(() => renderGrids(window.cur_frm), 80);
   }
