@@ -47,6 +47,18 @@ function apply() {
 
 function schedule() { window.setTimeout(apply, 50); window.setTimeout(apply, 600); }
 
+// Frappe rebuilds the desk's navbar when it redraws the desktop (after Edit Layout's
+// save or discard, a theme change, ...): a new navbar gets the hero again at once.
+let navbarTimer = null;
+new MutationObserver(() => {
+  if (window.innerWidth > PHONE || !isDeskHome()) return;
+  const navbar = document.querySelector(".desktop-navbar");
+  if (!navbar || (navbar.classList.contains("ms-desk-hero") && navbar.querySelector(":scope > .ms-desk-hero-text"))) return;
+  window.clearTimeout(navbarTimer);
+  navbarTimer = window.setTimeout(apply, 0);
+}).observe(document.body, { childList: true, subtree: true });
+$(document).on("desktop_screen", schedule);
+
 $(() => {
   schedule();
   window.frappe?.router?.on?.("change", schedule);
