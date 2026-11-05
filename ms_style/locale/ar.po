@@ -339,3 +339,7 @@ msgstr "القائمة"
 msgctxt "ms_style"
 msgid "More"
 msgstr "المزيد"
+
+msgctxt "ms_style"
+msgid "Show results"
+msgstr "عرض النتائج"

@@ -147,7 +147,7 @@ function heroFor(list) {
     if (!button) return;
     const act = button.dataset.act;
     if (act === "menu") document.querySelector(".page-head .sidebar-toggle-btn")?.click();
-    else if (act === "search") { const section = list.$page[0].querySelector(".layout-main-section"); section.classList.add("ms-filters-open"); section.querySelector(".page-form input")?.focus(); }
+    else if (act === "search") openFilterSheet(list, true);
     else if (act === "more") list.$page[0].querySelector(".page-head .menu-btn-group .btn")?.click();
   });
   section.prepend(hero);
@@ -214,13 +214,102 @@ function renderChips(list) {
     const button = event.target.closest(".ms-chip");
     if (!button) return;
     if (button.classList.contains("ms-chip-tools")) {
-      const section = list.$page[0].querySelector(".layout-main-section");
-      section.classList.toggle("ms-filters-open");
+      openFilterSheet(list);
       return;
     }
     const value = button.dataset.status;
     list.filter_area.remove("status").then(() => { if (value) list.filter_area.add([[list.doctype, "status", "=", value]]); });
   };
+}
+
+// Filter sheet ------------------------------------------------------------------------------
+// "Filter & sort" as a bottom sheet: Frappe's own standard filters and ID search move into
+// it while it is open (so every control keeps its behaviour), under status chips and
+// sort segments of our own; "Show results" applies and closes, "Clear all" resets.
+function sortOptionsFor(list) {
+  const seen = new Set();
+  const options = [];
+  const add = (fieldname, label) => { if (fieldname && !seen.has(fieldname)) { seen.add(fieldname); options.push({ fieldname, label }); } };
+  add("modified", __("Last Updated On"));
+  const config = configFor(list);
+  if (config.due) add(config.due, frappe.meta.get_docfield(list.doctype, config.due)?.label);
+  if (config.start) add(config.start, frappe.meta.get_docfield(list.doctype, config.start)?.label);
+  if (list.meta.title_field) add(list.meta.title_field, frappe.meta.get_docfield(list.doctype, list.meta.title_field)?.label);
+  add("creation", __("Created On"));
+  add("name", __("ID"));
+  return options.slice(0, 5);
+}
+
+function openFilterSheet(list, focusSearch = false) {
+  if (document.querySelector(".ms-filter-sheet")) return;
+  const pageForm = list.$page[0].querySelector(".page-form");
+  const formHome = pageForm?.parentElement;
+  const formNext = pageForm?.nextSibling;
+  const statusField = list.meta.fields.find((df) => df.fieldname === "status" && df.fieldtype === "Select");
+  const statuses = statusField ? statusField.options.split("\n").filter((o) => o && o !== "Cancelled") : [];
+  const current = list.get_filter_value?.("status");
+  let chosenStatus = Array.isArray(current) ? (current[0] === "=" ? current[1] : "") : current || "";
+  const sortOptions = sortOptionsFor(list);
+  let sortBy = list.sort_by, sortOrder = list.sort_order;
+
+  const overlay = document.createElement("div");
+  overlay.className = "ms-filter-sheet";
+  overlay.innerHTML = `
+    <div class="ms-sheet" role="dialog" aria-modal="true" aria-label="${t("Filter & sort")}">
+      <div class="ms-sheet-handle"></div>
+      <div class="ms-sheet-head"><h2>${t("Filter & sort")}</h2><button type="button" class="ms-sheet-close" aria-label="${__("Close")}"><svg class="icon icon-sm"><use href="#icon-close"></use></svg></button></div>
+      <div class="ms-sheet-body">
+        ${statuses.length ? `<section class="ms-sheet-section"><h3>${__("Status")}</h3><div class="ms-sheet-chips">${["", ...statuses].map((o) => `<button type="button" class="ms-chip${chosenStatus === o ? " is-active" : ""}" data-status="${frappe.utils.escape_html(o)}"><svg class="icon icon-xs" aria-hidden="true"><use href="#icon-${chosenStatus === o ? "check" : "circle"}"></use></svg>${o ? __(o) : t("All")}</button>`).join("")}</div></section>` : ""}
+        <section class="ms-sheet-section ms-sheet-fields"><h3>${__("Filters")}</h3><div class="ms-sheet-form"></div></section>
+        <section class="ms-sheet-section"><h3>${__("Sort By")}</h3><div class="ms-sheet-segments" data-kind="sort">${sortOptions.map((o) => `<button type="button" class="ms-segment${sortBy === o.fieldname ? " is-active" : ""}" data-sort="${o.fieldname}">${frappe.utils.escape_html(__(o.label || o.fieldname))}</button>`).join("")}</div>
+          <div class="ms-sheet-segments" data-kind="order"><button type="button" class="ms-segment${sortOrder === "desc" ? " is-active" : ""}" data-order="desc">${__("Descending")}</button><button type="button" class="ms-segment${sortOrder === "asc" ? " is-active" : ""}" data-order="asc">${__("Ascending")}</button></div></section>
+      </div>
+      <div class="ms-sheet-foot"><button type="button" class="btn ms-sheet-clear">${__("Clear All")}</button><button type="button" class="btn btn-primary ms-sheet-apply">${t("Show results")}</button></div>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.body.classList.add("ms-sheet-open");
+  if (pageForm) overlay.querySelector(".ms-sheet-form").appendChild(pageForm);
+  // The standard filters are hidden until the filter button is pressed; in the sheet they
+  // are the point.
+  pageForm?.querySelector(".standard-filter-section")?.setAttribute("style", "display:flex");
+  if (focusSearch) window.setTimeout(() => pageForm?.querySelector("input")?.focus(), 250);
+
+  const close = () => {
+    if (pageForm && formHome) formHome.insertBefore(pageForm, formNext);
+    overlay.remove();
+    document.body.classList.remove("ms-sheet-open");
+  };
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay || event.target.closest(".ms-sheet-close")) return close();
+    const chip = event.target.closest(".ms-sheet-chips .ms-chip");
+    if (chip) {
+      chosenStatus = chip.dataset.status;
+      overlay.querySelectorAll(".ms-sheet-chips .ms-chip").forEach((c) => { const on = c === chip; c.classList.toggle("is-active", on); c.querySelector("use").setAttribute("href", `#icon-${on ? "check" : "circle"}`); });
+      return;
+    }
+    const segment = event.target.closest(".ms-segment");
+    if (segment) {
+      if (segment.dataset.sort) sortBy = segment.dataset.sort; else sortOrder = segment.dataset.order;
+      segment.parentElement.querySelectorAll(".ms-segment").forEach((b) => b.classList.toggle("is-active", b === segment));
+      return;
+    }
+    if (event.target.closest(".ms-sheet-clear")) {
+      chosenStatus = ""; sortBy = list.meta.sort_field || "modified"; sortOrder = (list.meta.sort_order || "desc").toLowerCase();
+      list.filter_area.clear(false).then(() => { list.sort_selector?.set_value(sortBy, sortOrder); list.refresh(); close(); });
+      return;
+    }
+    if (event.target.closest(".ms-sheet-apply")) {
+      list.filter_area.remove("status").then(() => {
+        const after = chosenStatus ? list.filter_area.add([[list.doctype, "status", "=", chosenStatus]], false) : Promise.resolve();
+        return after;
+      }).then(() => {
+        if (sortBy !== list.sort_by || sortOrder !== list.sort_order) list.sort_selector?.set_value(sortBy, sortOrder);
+        list.sort_by = sortBy; list.sort_order = sortOrder;
+        close();
+        list.refresh();
+      });
+    }
+  });
 }
 
 // Cards ---------------------------------------------------------------------------------

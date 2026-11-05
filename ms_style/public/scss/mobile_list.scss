@@ -122,13 +122,51 @@
   .ms-chip-tools { width: 44px; padding: 0; justify-content: center; }
   .ms-chip-tools .icon { width: 16px; height: 16px; opacity: 1; }
 
+  // The filter sheet ----------------------------------------------------------------------
+  .ms-filter-sheet { position: fixed; inset: 0; z-index: 1060; display: flex; align-items: flex-end; background: rgba(var(--ms-roots-rgb), .55); backdrop-filter: blur(3px); }
+  .ms-sheet { display: flex; flex-direction: column; width: 100%; max-height: calc(100vh - 40px - env(safe-area-inset-top, 0px)); border-radius: 26px 26px 0 0; background: var(--ms-surface); box-shadow: 0 -12px 40px rgba(0, 0, 0, .25); animation: ms-sheet-up .26s var(--ms-ease); }
+  @keyframes ms-sheet-up { from { transform: translateY(40px); opacity: 0; } }
+  .ms-sheet-handle { width: 44px; height: 5px; margin: 10px auto 0; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .2); }
+  .ms-sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px 4px; }
+  .ms-sheet-head h2 { margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -.01em; color: var(--ms-text-strong); }
+  .ms-sheet-close { display: inline-grid; width: 40px; height: 40px; place-items: center; border: 0; border-radius: 13px; background: rgba(var(--ms-tint-rgb), .08); color: var(--ms-text); }
+  .ms-sheet-body { overflow-y: auto; padding: 4px 20px 12px; -webkit-overflow-scrolling: touch; }
+  .ms-sheet-section { padding: 14px 0 4px; }
+  .ms-sheet-section + .ms-sheet-section { border-top: 1px solid var(--ms-border); }
+  .ms-sheet-section h3 { margin: 0 0 10px; color: var(--ms-text-muted); font-size: 13px; font-weight: 700; }
+  .ms-sheet-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ms-sheet-chips .ms-chip { min-height: 42px; }
+  .ms-sheet-segments { display: flex; gap: 4px; padding: 4px; margin-bottom: 8px; border-radius: 16px; background: rgba(var(--ms-tint-rgb), .06); }
+  .ms-segment { flex: 1 1 0; min-height: 40px; padding: 0 8px; border: 0; border-radius: 12px; background: transparent; color: var(--ms-text); font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ms-segment.is-active { background: var(--ms-surface-raised); color: var(--ms-accent); box-shadow: var(--ms-shadow-sm); }
+  .ms-sheet-segments[data-kind="sort"] { display: grid; grid-template-columns: 1fr 1fr; }
+  .ms-sheet-segments[data-kind="sort"] .ms-segment { min-width: 0; }
+  .ms-sheet-foot { display: flex; gap: 10px; padding: 12px 20px calc(14px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--ms-border); background: var(--ms-surface); }
+  .ms-sheet-foot .btn { min-height: 50px; border-radius: 16px; font-size: 15px; font-weight: 800; }
+  .ms-sheet-clear { flex: 0 0 auto; padding: 0 18px; border: 1px solid var(--ms-border-strong) !important; background: var(--ms-surface-raised); color: var(--ms-text); }
+  .ms-sheet-apply { flex: 1 1 auto; background: var(--ms-mint) !important; border-color: transparent !important; color: var(--ms-roots) !important; }
+  body.ms-sheet-open .ms-fab, body.ms-sheet-open .ms-mobile-footer { visibility: hidden; }
+
+  // Frappe's filter strip inside the sheet: a stacked form with big fields.
+  .ms-sheet-form .page-form { display: flex !important; flex-direction: column; gap: 10px; padding: 0; }
+  .ms-sheet-form .page-form .filter-section { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ms-sheet-form .page-form .filter-section .frappe-control,
+  .ms-sheet-form .page-form .standard-filter-section .frappe-control { flex: 1 1 100%; max-width: none; margin: 0; }
+  .ms-sheet-form .page-form .filter-section > .filter-selector,
+  .ms-sheet-form .page-form .filter-section > .sort-selector,
+  .ms-sheet-form .page-form .filter-section > .filter-x-button { display: none; }
+  .ms-sheet-form .page-form .filter-section .frappe-control.input-max-width,
+  .ms-sheet-form .page-form .frappe-control.input-max-width { max-width: none; }
+  .ms-sheet-form .page-form .standard-filter-section { display: flex !important; flex-direction: column; gap: 10px; }
+  .ms-sheet-form .page-form .form-control { min-height: 48px; border-radius: 14px; font-size: 15px; }
+  .ms-sheet-form .page-form .input-group .form-control { border-start-end-radius: 0; border-end-end-radius: 0; }
+  .ms-sheet-form .page-form .input-group-append .btn, .ms-sheet-form .page-form .input-group-text { min-height: 48px; border-radius: 0 14px 14px 0; }
+  .ms-sheet-form .page-form .checkbox { min-height: 44px; margin: 0; }
+  .ms-sheet-form .page-form .checkbox .label-area { font-size: 15px; }
+  .ms-sheet-form .page-form .ellipsis-filter { display: none; }
+
   // The native filter strip and header row are tucked away unless asked for.
   .ms-app-list .page-form { display: none !important; }
-  .ms-app-list.ms-filters-open .page-form { display: flex !important; flex-direction: column; gap: 8px; margin: 0 16px 10px; padding: 12px; border: 1px solid var(--ms-border); border-radius: 16px; background: var(--ms-surface-raised); }
-  .ms-app-list.ms-filters-open .standard-filter-section { display: flex !important; flex-wrap: wrap; gap: 8px; }
-  .ms-app-list.ms-filters-open .page-form .frappe-control { margin: 0; }
-  .ms-app-list.ms-filters-open .page-form .form-control { min-height: 42px; }
-  .ms-app-list.ms-filters-open .page-form .filter-section { flex-wrap: wrap; gap: 8px; }
   .ms-app-list .list-row-container:has(.list-row-head) { display: none; }
   .ms-app-list .frappe-list .result { background: transparent; }
 
