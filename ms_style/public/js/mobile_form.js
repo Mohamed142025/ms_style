@@ -45,6 +45,7 @@ function heroFor(frm) {
         <div class="ms-form-hero-meta"><span class="ms-form-hero-status"></span><span class="ms-form-hero-doctype"></span></div>
       </div>
       <div class="ms-form-hero-tools">
+        <button type="button" class="ms-hero-btn" data-act="sidebar" aria-label="${__("Toggle Sidebar")}" hidden><svg class="icon icon-sm"><use href="#icon-info"></use></svg></button>
         <button type="button" class="ms-hero-btn" data-act="actions" aria-label="${__("Actions")}" hidden><svg class="icon icon-sm"><use href="#icon-select"></use></svg></button>
         <button type="button" class="ms-hero-btn" data-act="menu" aria-label="${__("Menu")}"><svg class="icon icon-sm"><use href="#icon-dot-horizontal"></use></svg></button>
       </div>
@@ -55,6 +56,7 @@ function heroFor(frm) {
     const head = pageHead(frm);
     if (button.dataset.act === "back") (window.history.length > 1 ? window.history.back() : frappe.set_route("List", frm.doctype));
     else if (button.dataset.act === "menu") openActionSheet(frm, head?.querySelector(".menu-btn-group .dropdown-menu"), __("Menu"));
+    else if (button.dataset.act === "sidebar") frm.toolbar?.setup_sidebar_toggle?.(frm.sidebar.sidebar.parent());
     else if (button.dataset.act === "actions") openActionSheet(frm, head?.querySelector(".actions-btn-group .dropdown-menu"), __("Actions"));
   });
   wrapper.insertBefore(hero, wrapper.firstChild);
@@ -78,6 +80,8 @@ function renderHero(frm) {
   hero.querySelector(".ms-form-hero-doctype").textContent = __(frm.meta.name);
   const actions = head?.querySelector(".actions-btn-group");
   hero.querySelector('[data-act="actions"]').hidden = !shown(actions);
+  // The document sidebar (assign, attach, tags, share), as a sheet (mobile_form.scss).
+  hero.querySelector('[data-act="sidebar"]').hidden = !(frm.sidebar?.sidebar && !frm.page.hide_sidebar && frappe.boot.desk_settings?.form_sidebar && !frm.is_new());
   // The tabs sit under the hero; their list is moved up once.
   const tabs = frm.page?.wrapper?.[0]?.querySelector(".form-tabs-list");
   if (tabs && !hero.contains(tabs) && tabs.querySelectorAll(".nav-item").length > 1) {
