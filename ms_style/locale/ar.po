@@ -363,3 +363,15 @@ msgstr "لا توجد بنود بعد"
 msgctxt "ms_style"
 msgid "Edit row #{0}"
 msgstr "تعديل البند #{0}"
+
+msgctxt "ms_style"
+msgid "Good morning, {0}"
+msgstr "صباح الخير، {0}"
+
+msgctxt "ms_style"
+msgid "Good afternoon, {0}"
+msgstr "نهارك سعيد، {0}"
+
+msgctxt "ms_style"
+msgid "Good evening, {0}"
+msgstr "مساء الخير، {0}"

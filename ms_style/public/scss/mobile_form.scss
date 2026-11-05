@@ -47,7 +47,9 @@
   .ms-form-hero .form-tabs-list .form-tabs { mask-image: none; }
   .ms-form-hero .form-tabs-list .nav-link { background: transparent !important; color: var(--ms-on-dark-muted); border: 0; border-bottom: 3px solid transparent; border-radius: 0; font-weight: 600; }
   .ms-form-hero .form-tabs-list .nav-item { background: transparent; }
-  .ms-form-hero .form-tabs-list .nav-link.active { color: var(--ms-on-dark); border-bottom-color: var(--ms-mint); background: transparent; }
+  .ms-form-hero .form-tabs-list .nav-link.active { color: var(--ms-on-dark) !important; border-bottom-color: var(--ms-mint) !important; background: transparent; }
+  .ms-form-hero .form-tabs-list .nav-link:not(.active) { color: var(--ms-on-dark-muted) !important; }
+  .ms-form-hero .ms-form-hero-title { color: var(--ms-on-dark) !important; }
   .ms-form-hero .form-tabs-list .nav-link .tab-count, .ms-form-hero .form-tabs-list .nav-link .badge { background: var(--ms-mint); color: var(--ms-roots); }
 
   // Body --------------------------------------------------------------------------------------
@@ -271,7 +273,7 @@
   .ms-form-bar {
     position: fixed;
     inset-inline: 0;
-    bottom: calc(66px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--ms-footer-height, 66px) - 6px);
     z-index: 1016;
     padding: 8px 14px;
     background: linear-gradient(to top, var(--ms-surface) 70%, transparent);
@@ -310,14 +312,4 @@
   .frappe-menu.ms-menu-inline .dropdown-menu-item a { min-height: 42px; }
   .frappe-menu.ms-menu-inline .dropdown-menu-item a:hover { transform: none; }
 
-  // Tab bar: the current tab as a Mint pill with its label, the others as icons.
-  .ms-mobile-footer { padding-inline: 8px; }
-  .ms-mobile-footer-button { flex: 0 0 auto; width: 52px; flex-direction: column; border-radius: 999px; margin: 0; transition: background-color .2s var(--ms-ease), color .2s var(--ms-ease), width .2s var(--ms-ease); }
-  .ms-mobile-footer { justify-content: space-between; }
-  .ms-mobile-footer-button.is-active { width: auto; flex: 0 1 auto; flex-direction: row; gap: 8px; padding: 0 18px; background: var(--ms-mint); color: var(--ms-roots); box-shadow: 0 8px 20px -8px rgba(var(--ms-mint-rgb), .8); }
-  .ms-mobile-footer .ms-mobile-footer-button.is-active .icon { color: var(--ms-roots); --icon-stroke: var(--ms-roots); stroke: var(--ms-roots); }
-  .ms-mobile-footer-button.is-active span { display: inline; font-size: 14px; font-weight: 800; color: var(--ms-roots); }
-  .ms-mobile-footer-button:not(.is-active) span { display: none; }
-  .ms-mobile-footer .ms-mobile-footer-button:not(.is-active) .icon { width: 24px; height: 24px; }
-  .ms-mobile-footer-button:not(.is-active):active { background: var(--ms-primary-soft); }
 }

@@ -3,6 +3,7 @@ import "./notification_counter";
 import "./mobile_list";
 import "./mobile_form";
 import "./mobile_menu";
+import "./mobile_desk";
 import "./document_views";
 import "./sidebar_icons";
 import "./workspace_cards";
@@ -366,7 +367,7 @@ import { applySidebarLanguageToggle } from "./language_toggle";
   const footerButtons = [
     { action: "home", icon: "home", label: "Home" },
     { action: "search", icon: "search", label: "Search" },
-    { action: "work", icon: "clipboard", label: "Work" },
+    { action: "work", icon: "chart-column-increasing", label: "Work" },
     // "Notifications" does not fit a fifth of a phone screen.
     { action: "notifications", icon: "bell", label: "Alerts" },
     { action: "back", icon: "arrow-left", label: "Back" },
@@ -449,14 +450,12 @@ import { applySidebarLanguageToggle } from "./language_toggle";
     const mobileFooter = document.createElement("nav");
     mobileFooter.className = "ms-mobile-footer";
     mobileFooter.setAttribute("aria-label", t("Mobile navigation"));
-    mobileFooter.innerHTML = footerButtons
-      .map(
-        ({ action, icon, label }) => `<button type="button" class="ms-mobile-footer-button" data-action="${action}">
+    // A floating pill with the four tabs, and Back on its own beside it.
+    const footerButton = ({ action, icon, label }) => `<button type="button" class="ms-mobile-footer-button" data-action="${action}" aria-label="${t(label)}">
         <svg class="icon icon-md" aria-hidden="true"><use href="#icon-${icon}"></use></svg>
         <span>${t(label)}</span>
-      </button>`
-      )
-      .join("");
+      </button>`;
+    mobileFooter.innerHTML = `<div class="ms-footer-pill">${footerButtons.filter((b) => b.action !== "back").map(footerButton).join("")}</div>${footerButtons.filter((b) => b.action === "back").map(footerButton).join("")}`;
     mobileFooter.addEventListener("click", (event) => {
       const button = event.target.closest(".ms-mobile-footer-button");
       if (!button) return;

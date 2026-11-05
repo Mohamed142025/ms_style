@@ -83,7 +83,7 @@
   }
 
   body.ms-mobile-footer-active {
-    --ms-footer-height: calc(66px + env(safe-area-inset-bottom));
+    --ms-footer-height: calc(84px + env(safe-area-inset-bottom));
   }
 
   // Pages scroll inside .main-section, not the body, so the room kept for the bottom bar

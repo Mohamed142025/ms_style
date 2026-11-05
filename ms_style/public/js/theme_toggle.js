@@ -47,7 +47,10 @@ function makeToggle() {
     .join("");
   toggle.addEventListener("click", (event) => {
     const button = event.target.closest("button[data-ms-theme]");
-    if (button) setTheme(button.dataset.msTheme);
+    if (!button) return;
+    // On phones the toggle is one round button showing the current theme: a tap flips it.
+    if (window.innerWidth <= 767 && button.getAttribute("aria-pressed") === "true") setTheme(currentTheme() === "dark" ? "light" : "dark");
+    else setTheme(button.dataset.msTheme);
   });
   return toggle;
 }

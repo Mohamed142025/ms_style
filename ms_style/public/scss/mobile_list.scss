@@ -260,7 +260,7 @@
   // Floating "new" button, above the tab bar on the start side.
   .ms-fab {
     position: fixed;
-    bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(var(--ms-footer-height, 66px) + 10px);
     inset-inline-start: 16px;
     z-index: 1015;
     display: inline-flex;
