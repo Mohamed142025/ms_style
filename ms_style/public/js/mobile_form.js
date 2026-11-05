@@ -102,7 +102,7 @@ function renderHero(frm) {
 }
 
 // A dropdown of the page head, as a sheet of large rows; a row presses the original item.
-function openActionSheet(frm, menu, title) {
+export function openActionSheet(frm, menu, title) {
   if (!menu || document.querySelector(".ms-action-sheet")) return;
   const items = [...menu.querySelectorAll("li")].filter((li) => !li.classList.contains("hide") && li.style.display !== "none");
   const rows = items.map((li, index) => {

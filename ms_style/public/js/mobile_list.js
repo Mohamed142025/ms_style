@@ -1,3 +1,4 @@
+import { openActionSheet } from "./mobile_form";
 // List views on phones (up to 767px) as an app screen: a hero with the list's name, its
 // count and a week strip with a count per day; status chips; one card per document with
 // its party, number, due badge, progress, status and next action, grouped by day; and a
@@ -146,9 +147,11 @@ function heroFor(list) {
     const button = event.target.closest("[data-act]");
     if (!button) return;
     const act = button.dataset.act;
-    if (act === "menu") document.querySelector(".page-head .sidebar-toggle-btn")?.click();
+    const head = list.$page[0].querySelector(".page-head");
+    if (act === "menu") (head?.querySelector(".sidebar-toggle-btn") || document.querySelector(".page-head .sidebar-toggle-btn"))?.click();
     else if (act === "search") openFilterSheet(list, true);
-    else if (act === "more") list.$page[0].querySelector(".page-head .menu-btn-group .btn")?.click();
+    // The page head is hidden on phones, so its menu opens as a sheet of large rows.
+    else if (act === "more") openActionSheet(null, head?.querySelector(".menu-btn-group .dropdown-menu"), t("Menu"));
   });
   section.prepend(hero);
 
@@ -313,9 +316,12 @@ function openFilterSheet(list, focusSearch = false) {
 }
 
 // Cards ---------------------------------------------------------------------------------
+// The first letters of the first two words that start with a letter (any script), so
+// "1102 - Accumulated depreciation - GESC" gives "AD", not "1-".
 function initials(text) {
-  const words = String(text || "").trim().split(/\s+/).filter(Boolean);
-  return (words.length > 1 ? words[0][0] + words[1][0] : (words[0] || "?").slice(0, 1)).toUpperCase();
+  const words = String(text || "").trim().split(/\s+/).filter((w) => /^\p{L}/u.test(w));
+  if (!words.length) return (String(text || "").match(/\p{L}|\d/u) || ["?"])[0].toUpperCase();
+  return (words.length > 1 ? words[0][0] + words[1][0] : words[0].slice(0, 1)).toUpperCase();
 }
 
 function cardFor(list, config, doc, row) {

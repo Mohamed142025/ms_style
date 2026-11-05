@@ -186,7 +186,10 @@
 
   .ms-list-group::after { content: ""; flex: 1; height: 1px; background: var(--ms-border); }
 
-  .ms-app-list .ms-card-row { padding: 0 16px; margin: 0 0 10px; background: transparent !important; }
+  .ms-app-list .ms-card-row { width: 100% !important; max-width: 100%; padding: 0 1px; margin: 0 0 10px; background: transparent !important; }
+  // A long party or title is cut in its card instead of widening the row past the screen.
+  .ms-app-list .ms-card-row > .ms-card { flex: 1 1 auto; width: 100%; min-width: 0; max-width: 100%; }
+  .ms-app-list .ms-card-row > .ms-card * { min-width: 0; }
   .ms-app-list .ms-card-row > .list-row { display: none; }
 
   .ms-card {
