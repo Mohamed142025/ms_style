@@ -215,7 +215,7 @@ import { applySidebarLanguageToggle } from "./language_toggle";
         `).join("")
       : `<p class="ms-work-empty">${t("Your recent work will appear here.")}</p>`;
     const frequentMarkup = frequentRoutes.length
-      ? frequentRoutes.map((item, index) => `<a class="ms-work-route" href="${escapeWorkCenterHtml(getRouteHref(item.route))}"><span><b>0${index + 1}</b>${escapeWorkCenterHtml(item.label)}</span><small>${t("{0} visits", [item.count])}</small></a>`).join("")
+      ? frequentRoutes.map((item, index) => `<a class="ms-work-route" href="${escapeWorkCenterHtml(getRouteHref(item.route))}"><span><b>0${index + 1}</b>${escapeWorkCenterHtml(item.label)}</span><small>${t("{0} visits", [item.count])}</small><svg class="icon icon-xs ms-work-chevron" aria-hidden="true"><use href="#icon-chevron-right"></use></svg></a>`).join("")
       : `<p class="ms-work-empty">${t("Your frequent work will appear here.")}</p>`;
     const support = data?.support || {};
     const supportPhone = String(support.phone || "").replace(/[^\d+]/g, "");
@@ -224,7 +224,7 @@ import { applySidebarLanguageToggle } from "./language_toggle";
       ? `<section class="ms-work-support"><span>${t("Need help?")}</span>${support.message ? `<p>${escapeWorkCenterHtml(support.message)}</p>` : ""}<div>${supportPhone ? `<a href="tel:${supportPhone}"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-phone"></use></svg>${t("Call")}</a>` : ""}${supportWhatsapp ? `<a href="https://wa.me/${supportWhatsapp}" target="_blank" rel="noopener"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-message-circle"></use></svg>${t("WhatsApp")}</a>` : ""}</div></section>`
       : "";
     const quickCreateMarkup = quickCreateItems.length
-      ? quickCreateItems.map((item) => `<button type="button" data-create-doctype="${escapeWorkCenterHtml(item.doctype)}">${escapeWorkCenterHtml(item.label)}</button>`).join("")
+      ? quickCreateItems.map((item) => `<button type="button" data-create-doctype="${escapeWorkCenterHtml(item.doctype)}"><svg class="icon icon-xs ms-work-ico" aria-hidden="true"><use href="#icon-plus"></use></svg><span>${escapeWorkCenterHtml(item.label)}</span></button>`).join("")
       : `<p class="ms-work-empty">${t("Your create shortcuts will appear here as you work.")}</p>`;
 
     panel.innerHTML = `
@@ -233,10 +233,10 @@ import { applySidebarLanguageToggle } from "./language_toggle";
         <span class="ms-work-status-dot" title="${t("Live workspace")}"></span>
       </div>
       <div class="ms-work-summary">
-        <button type="button" data-summary-kind="all"><strong>${counts.actions}</strong><span>${t("Open items")}</span></button>
-        <button type="button" data-summary-kind="approval"><strong>${counts.approvals}</strong><span>${t("Approvals")}</span></button>
-        <button type="button" data-summary-kind="task"><strong>${counts.tasks}</strong><span>${t("Tasks")}</span></button>
-        <button type="button" data-summary-kind="draft"><strong>${counts.drafts}</strong><span>${t("Drafts")}</span></button>
+        <button type="button" data-summary-kind="all"><i class="ms-work-ico" aria-hidden="true"><svg class="icon icon-sm"><use href="#icon-inbox"></use></svg></i><strong>${counts.actions}</strong><span>${t("Open items")}</span></button>
+        <button type="button" data-summary-kind="approval"><i class="ms-work-ico" aria-hidden="true"><svg class="icon icon-sm"><use href="#icon-circle-check"></use></svg></i><strong>${counts.approvals}</strong><span>${t("Approvals")}</span></button>
+        <button type="button" data-summary-kind="task"><i class="ms-work-ico" aria-hidden="true"><svg class="icon icon-sm"><use href="#icon-list-checks"></use></svg></i><strong>${counts.tasks}</strong><span>${t("Tasks")}</span></button>
+        <button type="button" data-summary-kind="draft"><i class="ms-work-ico" aria-hidden="true"><svg class="icon icon-sm"><use href="#icon-file-pen-line"></use></svg></i><strong>${counts.drafts}</strong><span>${t("Drafts")}</span></button>
       </div>
       <section class="ms-work-section"><div class="ms-work-section-title"><h3>${t("Quick create")}</h3><span>${t("Based on your work")}</span></div><div class="ms-work-quick-actions">${quickCreateMarkup}</div></section>
       ${recent.length ? `<section class="ms-work-section"><div class="ms-work-section-title"><h3>${t("Recent work")}</h3><span>${t("{0} latest", [recent.length])}</span></div><div class="ms-work-recent-list">${recentMarkup}</div></section>` : ""}
@@ -332,7 +332,7 @@ import { applySidebarLanguageToggle } from "./language_toggle";
 
     overlay = document.createElement("div");
     overlay.className = "ms-work-center-overlay";
-    overlay.innerHTML = `<div class="ms-work-center-dialog" role="dialog" aria-modal="true" aria-label="${t("My Work Center")}"><button type="button" class="ms-work-center-close" aria-label="${t("Close")}">&times;</button><div class="ms-work-center-modal"></div></div>`;
+    overlay.innerHTML = `<div class="ms-work-center-dialog" role="dialog" aria-modal="true" aria-label="${t("My Work Center")}"><button type="button" class="ms-work-center-close" aria-label="${t("Close")}"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-x"></use></svg></button><div class="ms-work-center-modal"></div></div>`;
     document.body.appendChild(overlay);
     overlay.addEventListener("click", (event) => {
       if (event.target === overlay || event.target.closest(".ms-work-center-close")) overlay.remove();
@@ -342,7 +342,8 @@ import { applySidebarLanguageToggle } from "./language_toggle";
       renderMyWorkCenter(window.msMyWorkCenterData || {});
       loadMyWorkCenter(true);
     } else {
-      panel.innerHTML = `<div class="ms-work-loading">${t("Loading your work center...")}</div>`;
+      // The sheet's shape while the data loads: the head, then ghost cards.
+      panel.innerHTML = `<div class="ms-work-heading"><div><span class="ms-work-eyebrow">${t("Personal workspace")}</span><h2>${t("My Work Center")}</h2><p>${t("Loading your work center...")}</p></div></div><div class="ms-work-ghost" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b><b></b></div>`;
       loadMyWorkCenter();
     }
   }
@@ -353,7 +354,7 @@ import { applySidebarLanguageToggle } from "./language_toggle";
     const title = t(kind === "approval" ? "Approvals" : kind === "task" ? "Tasks" : kind === "draft" ? "Drafts" : "Open items");
     const overlay = document.createElement("div");
     overlay.className = "ms-work-center-overlay";
-    overlay.innerHTML = `<div class="ms-work-center-dialog ms-work-items-dialog" role="dialog" aria-modal="true" aria-label="${title}"><button type="button" class="ms-work-center-close" aria-label="${t("Close")}">&times;</button><div class="ms-work-items-content"><span class="ms-work-eyebrow">${t("My Work Center")}</span><h2>${title}</h2><p>${t("Items linked to your work: {0}", [items.length])}</p><div class="ms-work-items-list">${items.length ? items.map((item) => `<button class="ms-work-item" type="button" data-doctype="${escapeWorkCenterHtml(item.doctype)}" data-name="${escapeWorkCenterHtml(item.name)}"><span class="ms-work-item-icon ${item.kind === "approval" ? "is-approval" : "is-task"}"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-${item.kind === "approval" ? "check" : "check-square"}"></use></svg></span><span class="ms-work-item-copy"><strong>${escapeWorkCenterHtml(item.title)}</strong><small>${escapeWorkCenterHtml(item.subtitle)}</small></span><svg class="icon icon-xs ms-work-item-arrow" aria-hidden="true"><use href="#icon-chevron-right"></use></svg></button>`).join("") : `<p class="ms-work-empty">${t("Nothing needs your attention here.")}</p>`}</div></div></div>`;
+    overlay.innerHTML = `<div class="ms-work-center-dialog ms-work-items-dialog" role="dialog" aria-modal="true" aria-label="${title}"><button type="button" class="ms-work-center-close" aria-label="${t("Close")}"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-x"></use></svg></button><div class="ms-work-items-content"><span class="ms-work-eyebrow">${t("My Work Center")}</span><h2>${title}</h2><p>${t("Items linked to your work: {0}", [items.length])}</p><div class="ms-work-items-list">${items.length ? items.map((item) => `<button class="ms-work-item" type="button" data-doctype="${escapeWorkCenterHtml(item.doctype)}" data-name="${escapeWorkCenterHtml(item.name)}"><span class="ms-work-item-icon ${item.kind === "approval" ? "is-approval" : "is-task"}"><svg class="icon icon-sm" aria-hidden="true"><use href="#icon-${({ approval: "circle-check", task: "list-checks", draft: "file-pen-line" })[item.kind] || "inbox"}"></use></svg></span><span class="ms-work-item-copy"><strong>${escapeWorkCenterHtml(item.title)}</strong><small>${escapeWorkCenterHtml(item.subtitle)}</small></span><svg class="icon icon-xs ms-work-item-arrow" aria-hidden="true"><use href="#icon-chevron-right"></use></svg></button>`).join("") : `<p class="ms-work-empty">${t("Nothing needs your attention here.")}</p>`}</div></div></div>`;
     document.body.appendChild(overlay);
     overlay.addEventListener("click", (event) => {
       if (event.target === overlay || event.target.closest(".ms-work-center-close")) overlay.remove();

@@ -1,3 +1,6 @@
+// The Work center's icons and chevrons show only in the phone sheet below.
+.ms-work-ico, .ms-work-chevron { display: none; }
+
 // Phones: the desk home's hero (mobile_desk.js) and the floating tab bar (ms_style.bundle.js).
 
 @media (max-width: 767px) {
@@ -158,4 +161,152 @@
   .ms-mobile-footer .ms-mobile-footer-button:not(.is-active):active { background: var(--ms-primary-soft); }
 
   .ms-mobile-footer > .ms-mobile-footer-button[data-action="back"] { width: 64px; height: 64px; flex: 0 0 64px; border-radius: 50%; color: var(--ms-text-strong); }
+
+  // Work center sheet ----------------------------------------------------------------------------
+  // The popup from the tab bar's Work (and its item lists) as a bottom sheet: a green head
+  // with the title, the four counts as cards, quick create as chips, most used as rows.
+  .ms-work-center-overlay { place-items: end stretch; padding: 0; background: rgba(var(--ms-roots-rgb), .6); backdrop-filter: blur(3px); }
+
+  .ms-work-center-overlay .ms-work-center-dialog {
+    width: 100%;
+    max-height: calc(100vh - 56px - env(safe-area-inset-top, 0px));
+    border: 0;
+    border-radius: 26px 26px 0 0;
+    background: var(--ms-surface);
+    box-shadow: 0 -16px 44px rgba(0, 0, 0, .35);
+    animation: ms-sheet-up .28s var(--ms-ease);
+    overscroll-behavior: contain;
+  }
+
+  .ms-work-center-overlay .ms-work-center-close {
+    top: 22px;
+    right: auto;
+    inset-inline-end: 16px;
+    display: inline-grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, .12);
+    color: var(--ms-on-dark);
+  }
+
+  .ms-work-center-overlay .ms-work-center-close .icon { --icon-stroke: currentColor; stroke: currentColor; }
+
+  .ms-work-center-overlay .ms-work-center-modal { display: block; padding: 0 0 calc(18px + env(safe-area-inset-bottom, 0px)); border: 0; background: transparent; box-shadow: none; }
+
+  // Head.
+  .ms-work-center-overlay .ms-work-heading {
+    position: relative;
+    display: block;
+    margin: 0 0 14px;
+    padding: 22px 64px 18px 18px;
+    overflow: hidden;
+    border-radius: 26px 26px 22px 22px;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(var(--ms-mint-rgb), .22), transparent 55%),
+      linear-gradient(165deg, #15503f 0%, var(--ms-roots) 60%, #0a2b22 100%);
+  }
+
+  html[dir="rtl"] .ms-work-center-overlay .ms-work-heading { padding: 22px 18px 18px 64px; }
+  .ms-work-center-overlay .ms-work-heading::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 999px; background: rgba(255, 255, 255, .28); }
+  .ms-work-center-overlay .ms-work-eyebrow { margin-bottom: 4px; color: var(--ms-mint); font-size: 10.5px; letter-spacing: .1em; }
+  .ms-work-center-overlay .ms-work-heading h2 { margin: 0; color: var(--ms-on-dark); font-size: 21px; font-weight: 800; }
+  .ms-work-center-overlay .ms-work-heading p { margin: 3px 0 0; color: var(--ms-on-dark-muted); font-size: 12.5px; }
+  .ms-work-center-overlay .ms-work-status-dot { display: none; }
+
+  // Counts.
+  .ms-work-center-overlay .ms-work-summary { gap: 10px; margin: 0 14px 6px; }
+
+  .ms-work-center-overlay .ms-work-summary button {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 2px;
+    min-height: 74px;
+    padding: 12px;
+    border: 1px solid var(--ms-border);
+    border-radius: 18px;
+    background: var(--ms-surface-raised);
+    box-shadow: var(--ms-shadow-sm);
+  }
+
+  .ms-work-center-overlay .ms-work-summary button:active { transform: scale(.98); }
+  .ms-work-center-overlay .ms-work-summary .ms-work-ico { display: inline-grid; grid-row: 1 / span 2; width: 40px; height: 40px; place-items: center; border-radius: 13px; background: var(--ms-primary-soft); color: var(--ms-accent); font-style: normal; }
+  .ms-work-center-overlay .ms-work-summary .ms-work-ico .icon { width: 19px; height: 19px; --icon-stroke: currentColor; stroke: currentColor; }
+  .ms-work-center-overlay .ms-work-summary [data-summary-kind="approval"] .ms-work-ico { background: rgba(124, 199, 255, .14); color: #5fb3f0; }
+  .ms-work-center-overlay .ms-work-summary [data-summary-kind="task"] .ms-work-ico { background: rgba(242, 217, 138, .16); color: #d9a93a; }
+  .ms-work-center-overlay .ms-work-summary [data-summary-kind="draft"] .ms-work-ico { background: rgba(var(--ms-tint-rgb), .08); color: var(--ms-text-muted); }
+  .ms-work-center-overlay .ms-work-summary strong { align-self: end; font-size: 22px; font-weight: 800; }
+  .ms-work-center-overlay .ms-work-summary span { align-self: start; font-size: 12.5px; font-weight: 600; }
+
+  // Sections.
+  .ms-work-center-overlay .ms-work-section { margin: 14px 14px 0; padding: 14px; border: 1px solid var(--ms-border); border-radius: 18px; background: var(--ms-surface-raised); }
+  .ms-work-center-overlay .ms-work-section-title { align-items: baseline; margin-bottom: 10px; }
+  .ms-work-center-overlay .ms-work-section h3 { color: var(--ms-text-strong); font-size: 15px; font-weight: 800; letter-spacing: 0; text-transform: none; }
+  .ms-work-center-overlay .ms-work-section-title > span { color: var(--ms-text-muted); font-size: 12px; font-weight: 600; }
+
+  .ms-work-center-overlay .ms-work-quick-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .ms-work-center-overlay .ms-work-quick-actions button {
+    display: inline-flex;
+    max-width: 100%;
+    min-height: 40px;
+    align-items: center;
+    gap: 6px;
+    padding: 0 14px 0 10px;
+    border: 1px solid rgba(var(--ms-accent-rgb), .28);
+    border-radius: 999px;
+    background: var(--ms-primary-soft);
+    color: var(--ms-text-strong);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  html[dir="rtl"] .ms-work-center-overlay .ms-work-quick-actions button { padding: 0 10px 0 14px; }
+  .ms-work-center-overlay .ms-work-quick-actions button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-work-center-overlay .ms-work-quick-actions .ms-work-ico { display: inline-grid; width: 22px; height: 22px; flex: 0 0 auto; place-items: center; padding: 4px; border-radius: 50%; background: var(--ms-mint); color: var(--ms-roots); --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.6; }
+
+  .ms-work-center-overlay .ms-work-route-list { gap: 2px; }
+  .ms-work-center-overlay .ms-work-route { min-height: 50px; gap: 10px; padding: 6px 4px; border-radius: 14px; color: var(--ms-text-strong); }
+  .ms-work-center-overlay .ms-work-route + .ms-work-route { border-top: 1px solid var(--ms-border); border-radius: 0; }
+  .ms-work-center-overlay .ms-work-route:active { background: var(--ms-primary-soft); }
+  .ms-work-center-overlay .ms-work-route span { display: flex; flex: 1 1 auto; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; }
+  .ms-work-center-overlay .ms-work-route b { display: inline-grid; width: 30px; height: 30px; flex: 0 0 auto; place-items: center; border-radius: 10px; background: rgba(var(--ms-tint-rgb), .07); color: var(--ms-text-muted); font-size: 12px; font-weight: 800; }
+  .ms-work-center-overlay .ms-work-route:first-child b { background: var(--ms-mint); color: var(--ms-roots); }
+  .ms-work-center-overlay .ms-work-route small { padding: 3px 9px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .06); font-size: 11.5px; font-weight: 600; }
+  .ms-work-center-overlay .ms-work-chevron { display: inline-block; flex: 0 0 auto; color: var(--ms-text-muted); }
+  html[dir="rtl"] .ms-work-center-overlay .ms-work-chevron { transform: scaleX(-1); }
+
+  .ms-work-center-overlay .ms-work-recent-list { gap: 6px; }
+  .ms-work-center-overlay :is(.ms-work-recent, .ms-work-item) { min-height: 54px; gap: 10px; padding: 8px 10px; border: 1px solid var(--ms-border); border-radius: 14px; background: var(--ms-surface); text-align: start; }
+  .ms-work-center-overlay :is(.ms-work-item-copy strong, .ms-work-recent span) { color: var(--ms-text-strong); font-size: 14px; font-weight: 700; }
+  .ms-work-center-overlay :is(.ms-work-item-copy small, .ms-work-recent small) { font-size: 12px; }
+  .ms-work-center-overlay .ms-work-item-icon { width: 36px; height: 36px; flex: 0 0 36px; border-radius: 12px; }
+  .ms-work-center-overlay .ms-work-empty { margin: 0; color: var(--ms-text-muted); font-size: 13px; }
+
+  .ms-work-center-overlay .ms-work-support { margin: 14px 14px 0; padding: 14px; border-radius: 18px; }
+  .ms-work-center-overlay .ms-work-support a { display: inline-flex; min-height: 40px; align-items: center; gap: 6px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+
+  // A list of items (a count tapped) in the same sheet.
+  .ms-work-center-overlay .ms-work-items-dialog { width: 100%; }
+  .ms-work-center-overlay .ms-work-items-content { padding: 26px 16px calc(18px + env(safe-area-inset-bottom, 0px)); }
+  .ms-work-center-overlay .ms-work-items-content::before { content: ""; position: absolute; top: 8px; left: 50%; width: 40px; height: 4px; margin-left: -20px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .22); }
+  .ms-work-center-overlay .ms-work-items-dialog .ms-work-center-close { top: 18px; background: rgba(var(--ms-tint-rgb), .08); color: var(--ms-text); }
+  .ms-work-center-overlay .ms-work-items-content h2 { font-size: 21px; font-weight: 800; }
+  .ms-work-center-overlay .ms-work-items-content p { font-size: 12.5px; }
+  .ms-work-center-overlay .ms-work-items-list { gap: 8px; }
+  body:has(.ms-work-center-overlay) .ms-mobile-footer { visibility: hidden; }
+  .ms-work-center-overlay .ms-work-item-icon .icon { --icon-stroke: currentColor; stroke: currentColor; color: inherit; }
+  .ms-work-center-overlay .ms-work-item-icon.is-approval { background: rgba(124, 199, 255, .14); color: #5fb3f0; }
+  .ms-work-center-overlay .ms-work-item-arrow { flex: 0 0 auto; color: var(--ms-text-muted); }
+  html[dir="rtl"] .ms-work-center-overlay .ms-work-item-arrow { transform: scaleX(-1); }
+
+  // Ghost cards while loading.
+  .ms-work-ghost { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 14px; }
+  .ms-work-ghost > * { display: block; height: 74px; border-radius: 18px; background: linear-gradient(100deg, rgba(var(--ms-tint-rgb), .05) 30%, rgba(var(--ms-tint-rgb), .11) 50%, rgba(var(--ms-tint-rgb), .05) 70%) 0 0 / 300% 100%; animation: ms-work-shimmer 1.3s linear infinite; }
+  .ms-work-ghost > b { grid-column: 1 / -1; height: 120px; }
+  @keyframes ms-work-shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
 }
