@@ -8,9 +8,9 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: calc(14px + env(safe-area-inset-top, 0px)) 18px 24px;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 16px;
     border: 0;
-    border-radius: 0 0 30px 30px;
+    border-radius: 0 0 24px 24px;
     overflow: hidden;
     background:
       radial-gradient(120% 90% at 100% 0%, rgba(var(--ms-mint-rgb), .22), transparent 55%),
@@ -21,16 +21,16 @@
   // The brand's rising bars, drawn faintly at the end of the hero.
   .desktop-navbar.ms-desk-hero::after {
     inset: auto;
-    inset-inline-end: 20px;
-    bottom: -6px;
-    width: 104px;
-    height: 96px;
+    inset-inline-end: 18px;
+    bottom: -4px;
+    width: 72px;
+    height: 58px;
     opacity: 1;
     mix-blend-mode: normal;
     background:
-      linear-gradient(rgba(var(--ms-mint-rgb), .14), rgba(var(--ms-mint-rgb), .04)) 0 100% / 24px 46% no-repeat,
-      linear-gradient(rgba(var(--ms-mint-rgb), .16), rgba(var(--ms-mint-rgb), .04)) 40px 100% / 24px 70% no-repeat,
-      linear-gradient(rgba(var(--ms-mint-rgb), .2), rgba(var(--ms-mint-rgb), .05)) 80px 100% / 24px 100% no-repeat;
+      linear-gradient(rgba(var(--ms-mint-rgb), .14), rgba(var(--ms-mint-rgb), .04)) 0 100% / 16px 46% no-repeat,
+      linear-gradient(rgba(var(--ms-mint-rgb), .16), rgba(var(--ms-mint-rgb), .04)) 28px 100% / 16px 70% no-repeat,
+      linear-gradient(rgba(var(--ms-mint-rgb), .2), rgba(var(--ms-mint-rgb), .05)) 56px 100% / 16px 100% no-repeat;
     border-radius: 8px;
     -webkit-mask: linear-gradient(#000 60%, transparent);
             mask: linear-gradient(#000 60%, transparent);
@@ -38,22 +38,22 @@
 
   html[dir="rtl"] .desktop-navbar.ms-desk-hero::after { transform: scaleX(-1); }
 
-  .desktop-navbar.ms-desk-hero .navbar-home { width: 140px; min-width: 0; height: 44px; margin: 0; padding: 0; background-color: transparent; background-size: contain; background-position: left center; }
+  .desktop-navbar.ms-desk-hero .navbar-home { width: 112px; min-width: 0; height: 34px; margin: 0; padding: 0; background-color: transparent; background-size: contain; background-position: left center; }
   html[dir="rtl"] .desktop-navbar.ms-desk-hero .navbar-home { background-position: right center; }
-  .desktop-navbar.ms-desk-hero .ms-user-tools { gap: 10px !important; }
+  .desktop-navbar.ms-desk-hero .ms-user-tools { gap: 8px !important; }
   // The tab bar has the bell; the hero keeps the theme, the language and the user.
   .desktop-navbar.ms-desk-hero .ms-user-tools .desktop-notifications { display: none !important; }
 
   .desktop-navbar.ms-desk-hero .ms-theme-toggle,
   .desktop-navbar.ms-desk-hero .ms-language-button {
     display: inline-flex;
-    height: 44px;
-    min-width: 44px;
+    height: 36px;
+    min-width: 36px;
     align-items: center;
     justify-content: center;
     padding: 0;
     border: 1px solid rgba(255, 255, 255, .14);
-    border-radius: 15px;
+    border-radius: 12px;
     background: rgba(255, 255, 255, .09);
     box-shadow: none;
     backdrop-filter: blur(6px);
@@ -63,36 +63,36 @@
   .desktop-navbar.ms-desk-hero .ms-theme-toggle button { display: none; }
   .desktop-navbar.ms-desk-hero .ms-theme-toggle button[aria-pressed="true"] {
     display: inline-grid;
-    width: 42px;
-    height: 42px;
+    width: 34px;
+    height: 34px;
     place-items: center;
     padding: 0;
     border: 0;
-    border-radius: 14px;
+    border-radius: 11px;
     background: transparent !important;
     color: var(--ms-on-dark);
     box-shadow: none !important;
   }
 
-  .desktop-navbar.ms-desk-hero .ms-theme-toggle button .icon { width: 18px; height: 18px; color: var(--ms-on-dark); --icon-stroke: currentColor; stroke: currentColor; }
+  .desktop-navbar.ms-desk-hero .ms-theme-toggle button .icon { width: 16px; height: 16px; color: var(--ms-on-dark); --icon-stroke: currentColor; stroke: currentColor; }
   .desktop-navbar.ms-desk-hero .ms-language-switcher { margin: 0; }
-  .desktop-navbar.ms-desk-hero .ms-language-button { flex-direction: row-reverse; gap: 6px; padding: 0 12px; color: var(--ms-on-dark); }
-  .desktop-navbar.ms-desk-hero .ms-language-current { font-size: 13px; font-weight: 800; }
-  .desktop-navbar.ms-desk-hero .ms-language-globe { width: 16px; height: 16px; }
+  .desktop-navbar.ms-desk-hero .ms-language-button { flex-direction: row-reverse; gap: 5px; padding: 0 10px; color: var(--ms-on-dark); }
+  .desktop-navbar.ms-desk-hero .ms-language-current { font-size: 12px; font-weight: 800; }
+  .desktop-navbar.ms-desk-hero .ms-language-globe { width: 14px; height: 14px; }
 
-  .desktop-navbar.ms-desk-hero .desktop-avatar .avatar { width: 44px; height: 44px; }
+  .desktop-navbar.ms-desk-hero .desktop-avatar .avatar { width: 36px; height: 36px; }
   .desktop-navbar.ms-desk-hero .desktop-avatar .avatar-frame {
     border: 0;
     background: var(--ms-mint);
     color: var(--ms-roots);
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 800;
     box-shadow: 0 8px 18px -8px rgba(var(--ms-mint-rgb), .9);
   }
 
-  .ms-desk-hero-text { position: relative; z-index: 1; flex: 1 0 100%; margin-top: 22px; padding-inline-end: 96px; }
-  .ms-desk-hero-date { color: var(--ms-on-dark-muted); font-size: 13px; font-weight: 600; }
-  .ms-desk-hero-greeting { margin: 4px 0 0; color: var(--ms-on-dark); font-size: 25px; font-weight: 800; line-height: 1.25; letter-spacing: -.01em; overflow-wrap: anywhere; }
+  .ms-desk-hero-text { position: relative; z-index: 1; flex: 1 0 100%; min-width: 0; margin-top: 12px; padding-inline-end: 72px; }
+  .ms-desk-hero-date { color: var(--ms-on-dark-muted); font-size: 12px; font-weight: 600; }
+  .ms-desk-hero-greeting { margin: 2px 0 0; color: var(--ms-on-dark); font-size: 19px; font-weight: 800; line-height: 1.3; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   // Floating tab bar ---------------------------------------------------------------------------
   .ms-mobile-footer {
