@@ -104,12 +104,15 @@ function renderHero(frm) {
 // A dropdown of the page head, as a sheet of large rows; a row presses the original item.
 export function openActionSheet(frm, menu, title) {
   if (!menu || document.querySelector(".ms-action-sheet")) return;
-  const items = [...menu.querySelectorAll("li")].filter((li) => !li.classList.contains("hide") && li.style.display !== "none");
+  // Bootstrap menus hold <li> items, or bare .dropdown-item links (Frappe's button groups).
+  const lis = [...menu.querySelectorAll("li")];
+  const items = (lis.length ? lis : [...menu.querySelectorAll(":scope > .dropdown-item, :scope > a, :scope > .dropdown-divider")]).filter((li) => !li.classList.contains("hide") && li.style.display !== "none");
   const rows = items.map((li, index) => {
     if (li.classList.contains("dropdown-divider")) return `<div class="ms-action-divider"></div>`;
-    const link = li.querySelector("a, button");
+    const link = li.matches("a, button") ? li : li.querySelector("a, button");
     if (!link) return "";
     const label = (link.querySelector(".menu-item-label")?.textContent || link.textContent).replace(/\s+/g, " ").trim();
+    if (!label) return "";
     return `<button type="button" class="ms-action-row" data-index="${index}"><span>${frappe.utils.escape_html(label)}</span></button>`;
   }).join("");
   const overlay = document.createElement("div");
@@ -123,7 +126,8 @@ export function openActionSheet(frm, menu, title) {
     const row = event.target.closest(".ms-action-row");
     if (!row) return;
     close();
-    items[+row.dataset.index]?.querySelector("a, button")?.click();
+    const item = items[+row.dataset.index];
+    (item?.matches("a, button") ? item : item?.querySelector("a, button"))?.click();
   });
 }
 
@@ -381,7 +385,11 @@ $(document).on("form-refresh", (event, frm) => { decorate(frm); hideFormSkeleton
 function isFormRoute() {
   const route = window.frappe?.get_route?.() || [];
   if (route.length) return route[0] === "Form";
-  return /^\/desk\/[^/]+\/[^/]+\/?$/.test(window.location.pathname) && !/\/view\//.test(window.location.pathname);
+  // Before the router is ready: /desk/<doctype>/<name>, but not the desk's own pages
+  // that share that shape (reports, print views, pages, workspaces).
+  const path = decodeURIComponent(window.location.pathname);
+  if (/^\/desk\/(query-report|print|page|report|dashboard-view|Workspaces|workspace|tree|calendar|gantt|kanban|image|inbox|map|file)\//i.test(path)) return false;
+  return /^\/desk\/[^/]+\/[^/]+\/?$/.test(path) && !/\/view\//.test(path);
 }
 
 let skeletonTimer = null;
@@ -429,7 +437,7 @@ $(() => {
   window.frappe?.router?.on?.("change", () => { patchForm(); if (isFormRoute()) showFormSkeleton(); else hideFormSkeleton(); });
 });
 // The primary action changes with the document's state and after saves.
-$(document).on("page-change", () => { syncRowOverlay(); window.setTimeout(() => window.cur_frm && decorate(window.cur_frm), 300); });
+$(document).on("page-change", () => { if (!isFormRoute()) hideFormSkeleton(); syncRowOverlay(); window.setTimeout(() => window.cur_frm && decorate(window.cur_frm), 300); });
 
 const observer = new MutationObserver((mutations) => {
   if (!isPhone()) return;

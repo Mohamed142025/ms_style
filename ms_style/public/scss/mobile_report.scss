@@ -1,0 +1,81 @@
+// Query reports on phones as an app screen (mobile_report.js).
+
+@media (max-width: 767px) {
+  .ms-app-report .page-head { display: none; }
+  // The filters live in the sheet; on the page they would fill the first screen.
+  .ms-app-report .layout-main-section > .page-form { display: none !important; }
+
+  // Hero -----------------------------------------------------------------------------------
+  .ms-rp-hero {
+    position: sticky;
+    top: 0;
+    // Under the drawer (.body-sidebar, 1020), over the page.
+    z-index: 1010;
+    padding: calc(10px + env(safe-area-inset-top, 0px)) 14px 12px;
+    border-radius: 0 0 24px 24px;
+    background:
+      radial-gradient(120% 90% at 100% 0%, rgba(var(--ms-mint-rgb), .22), transparent 55%),
+      linear-gradient(165deg, #15503f 0%, var(--ms-roots) 60%, #0a2b22 100%);
+    color: var(--ms-on-dark);
+    box-shadow: 0 14px 30px -20px rgba(var(--ms-roots-rgb), .9);
+  }
+
+  .ms-rp-hero-row { display: flex; align-items: center; gap: 8px; }
+  .ms-rp-hero .ms-hero-btn { position: relative; display: inline-grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border: 1px solid rgba(255, 255, 255, .14); border-radius: 12px; background: rgba(255, 255, 255, .1); color: var(--ms-on-dark); }
+  .ms-rp-hero .ms-hero-btn .icon { --icon-stroke: currentColor; stroke: currentColor; }
+  .ms-rp-badge { position: absolute; top: -5px; inset-inline-end: -5px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--ms-mint); color: var(--ms-roots); font-size: 11px; font-weight: 800; line-height: 18px; text-align: center; }
+  .ms-rp-hero-text { flex: 1 1 auto; min-width: 0; text-align: start; }
+  .ms-rp-hero-title { margin: 0; color: var(--ms-on-dark) !important; font-size: 19px; font-weight: 800; line-height: 1.2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: start; }
+  .ms-rp-hero-sub { margin: 3px 0 0; color: var(--ms-on-dark-muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: start; }
+  .ms-rp-chips { display: flex; gap: 8px; margin: 12px -14px 0; padding: 0 14px; overflow-x: auto; scrollbar-width: none; }
+  .ms-rp-chips::-webkit-scrollbar { display: none; }
+  .ms-rp-chip { display: inline-flex; flex: 0 0 auto; min-height: 36px; align-items: center; gap: 6px; padding: 0 14px; border: 1px solid rgba(255, 255, 255, .16); border-radius: 999px; background: rgba(255, 255, 255, .08); color: var(--ms-on-dark); font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .ms-rp-chip .icon { --icon-stroke: currentColor; stroke: currentColor; }
+  .ms-rp-chip:active { background: rgba(var(--ms-mint-rgb), .25); }
+
+  // Body -----------------------------------------------------------------------------------
+  .ms-app-report .layout-main-section-wrapper, .ms-app-report .layout-main-section { margin: 0; padding: 0; border: 0; background: transparent; box-shadow: none; }
+  .ms-app-report .layout-main-section { padding: 12px 12px calc(24px + env(safe-area-inset-bottom, 0px)); }
+  .ms-app-report .form-message { margin: 0 2px 8px; }
+  .ms-app-report .report-summary { margin: 0 0 12px; padding: 0; gap: 10px; }
+  .ms-app-report .chart-wrapper { margin: 0 0 12px; border-radius: 18px; overflow: hidden; }
+
+  // The table in a card; its first column (the account, the item, ...) narrower, so the
+  // amounts are on screen; the table still scrolls sideways for more columns.
+  .ms-app-report .report-wrapper { margin: 0; padding: 0; overflow: hidden; border: 1px solid var(--ms-border); border-radius: 18px; background: var(--ms-surface-raised); }
+  .ms-app-report .report-wrapper .datatable .dt-cell--col-1 { width: 190px !important; min-width: 190px !important; max-width: 190px !important; }
+  .ms-app-report .report-wrapper .datatable .dt-cell--col-1 .dt-cell__content { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ms-app-report .report-wrapper .datatable .dt-cell--col-0 { width: 36px !important; min-width: 36px !important; max-width: 36px !important; }
+  .ms-app-report .report-wrapper .datatable .dt-cell__content { padding-inline: 8px; font-size: 13px; }
+  .ms-app-report .report-wrapper .datatable .dt-row-filter { display: none; }
+
+  // Footer: the tree controls on one row; the long help text goes.
+  .ms-app-report .report-footer { margin-top: 10px; padding: 0 4px; font-size: 11.5px; }
+  .ms-app-report .report-footer > .col-md-12:not(.tree-footer) { display: none; }
+  .ms-app-report .report-footer .tree-footer { padding: 0; }
+  .ms-app-report .report-footer .tree-footer .input-group { display: flex; flex-wrap: nowrap; align-items: stretch; gap: 8px; }
+  .ms-app-report .report-footer .tree-footer #tree-level { flex: 0 0 72px; max-width: 72px !important; min-height: 40px; border-radius: 12px !important; text-align: center; font-weight: 800; }
+  .ms-app-report .report-footer .tree-footer .btn { flex: 1 1 auto; min-height: 40px; border-radius: 12px !important; font-size: 13px; font-weight: 800; }
+  .ms-app-report .layout-main-section > .flex.justify-center.align-center.text-muted { margin: 8px 0 0; gap: 8px; }
+}
+
+@media (max-width: 767px) {
+  // Report filters carry their label only as a placeholder and a tooltip; in the sheet,
+  // each field shows it above, so two "2026" fields read as From and To.
+  .ms-report-sheet .page-form .frappe-control[data-original-title]:not([data-fieldtype="Check"])::before {
+    content: attr(data-original-title);
+    display: block;
+    margin: 0 2px 5px;
+    color: var(--ms-text-muted);
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  .ms-report-sheet .page-form { gap: 14px !important; }
+  .ms-report-sheet .page-form .frappe-control { flex: 1 1 100% !important; max-width: none !important; margin: 0 !important; padding: 0 !important; }
+  .ms-report-sheet .page-form .frappe-control .form-control { min-height: 46px; border-radius: 14px; }
+  // Select arrows and placeholders sit on the field, not on its new label.
+  .ms-report-sheet .page-form .frappe-control { position: relative; }
+  .ms-report-sheet .page-form .frappe-control .select-icon { top: auto !important; bottom: 15px !important; }
+  .ms-report-sheet .page-form .frappe-control .placeholder { top: auto !important; bottom: 13px !important; }
+}

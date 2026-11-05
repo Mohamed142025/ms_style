@@ -5,6 +5,7 @@ import "./mobile_form";
 import "./mobile_menu";
 import "./mobile_desk";
 import "./mobile_workspace";
+import "./mobile_report";
 import "./document_views";
 import "./sidebar_icons";
 import "./workspace_cards";
