@@ -30,7 +30,12 @@ function patch() {
         // A leaf of the submenu closes the whole chain, as a click outside did when the
         // submenu floated beside the menu.
         this.template.on("click", ".dropdown-menu-item", (e) => {
-          if (e.currentTarget.querySelector(".frappe-menu")) return;
+          // An item that opens a deeper submenu (Workspaces > Accounting > ...) is not a
+          // leaf: it toggles its submenu and the chain stays open.
+          const item = e.currentTarget;
+          const box = item.closest(".frappe-menu");
+          const owner = Object.values(window.frappe.menu_map || {}).find((m) => m.template?.[0] === box);
+          if (owner?.nested_menus?.some((m) => m.parent?.get(0) === item)) return;
           window.setTimeout(() => {
             let menu = window.frappe.menu_map[this.opts.parent_menu];
             while (menu) {
