@@ -84,32 +84,36 @@
   .ms-app-form .form-dashboard .form-links { padding: 0; border: 0; background: transparent; }
   .ms-app-form .form-dashboard .form-links .section-body { display: none; }
   .ms-app-form .form-dashboard-section:not(.form-links):not(.form-heatmap) { margin: 0 0 12px; padding: 12px 14px; border: 1px solid var(--ms-border); border-radius: 18px; background: var(--ms-surface-raised); }
-  .ms-links-hint { margin: 2px 2px 8px; color: var(--ms-text-muted); font-size: 12px; text-align: end; }
+  .ms-links-hint { margin: 0 2px 6px; color: var(--ms-text-muted); font-size: 12px; text-align: end; }
   .ms-links-hint::before { content: ""; }
   .ms-form-dashboard-toggle { display: none; }
-  .ms-links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .ms-links-grid { display: grid; grid-template-columns: 1fr; gap: 0; margin-bottom: 12px; overflow: hidden; border: 1px solid var(--ms-border); border-radius: 18px; background: var(--ms-surface-raised); box-shadow: var(--ms-shadow-sm); }
 
   .ms-link-card {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    min-height: 128px;
-    padding: 14px;
-    border: 1px solid var(--ms-border);
-    border-radius: 18px;
-    background: var(--ms-surface-raised);
-    box-shadow: var(--ms-shadow-sm);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto auto;
+    align-items: center;
+    column-gap: 10px;
+    min-height: 60px;
+    padding: 9px 12px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
   }
 
-  .ms-link-card:active { transform: scale(.98); }
-  .ms-link-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: auto; }
-  .ms-link-card .ms-card-icon { width: 36px; height: 36px; border-radius: 12px; }
-  .ms-link-new { display: inline-grid; width: 40px; height: 40px; place-items: center; border: 1.5px solid rgba(var(--ms-accent-rgb), .4); border-radius: 13px; background: var(--ms-primary-soft); color: var(--ms-accent); }
+  .ms-link-card + .ms-link-card { border-top: 1px solid var(--ms-border); }
+  .ms-link-card:active { background: var(--ms-primary-soft); }
+  .ms-link-card-top { display: contents; }
+  .ms-link-card .ms-card-icon { grid-row: 1 / span 2; grid-column: 1; width: 34px; height: 34px; border-radius: 11px; }
+  .ms-link-new { grid-row: 1 / span 2; grid-column: 3; display: inline-grid; width: 32px; height: 32px; place-items: center; border: 1.5px solid rgba(var(--ms-accent-rgb), .4); border-radius: 11px; background: var(--ms-primary-soft); color: var(--ms-accent); }
   .ms-link-new .icon { --icon-stroke: currentColor; stroke: currentColor; stroke-width: 2.4; }
-  .ms-link-card-group { color: var(--ms-text-muted); font-size: 12px; }
-  .ms-link-card-name { display: flex; align-items: center; gap: 6px; color: var(--ms-text-strong); font-size: 15px; font-weight: 800; }
-  .ms-link-count { padding: 1px 7px; border-radius: 999px; background: var(--ms-primary-soft); color: var(--ms-accent); font-size: 12px; }
-  .ms-link-open { padding: 1px 7px; border-radius: 999px; background: var(--ms-warning-bg); color: var(--ms-warning-text); font-size: 12px; }
+  .ms-link-card-group { grid-column: 2; align-self: end; min-width: 0; overflow: hidden; color: var(--ms-text-muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-link-card-name { grid-column: 2; align-self: start; display: flex; min-width: 0; align-items: center; gap: 5px; color: var(--ms-text-strong); font-size: 13.5px; font-weight: 800; }
+  .ms-link-card-name { line-height: 1.3; overflow: hidden; white-space: nowrap; font-size: 14.5px; }
+  .ms-link-count { flex: 0 0 auto; padding: 0 6px; border-radius: 999px; background: var(--ms-primary-soft); color: var(--ms-accent); font-size: 11px; }
+  .ms-link-open { flex: 0 0 auto; padding: 0 6px; border-radius: 999px; background: var(--ms-warning-bg); color: var(--ms-warning-text); font-size: 11px; }
 
   // Child tables as cards: the table takes the screen's width (forms.scss widens it for
   // sideways scrolling, which cards do not need) and loses the scroll fade.
@@ -122,7 +126,12 @@
   .ms-app-form .form-grid .grid-body { border: 0; background: transparent; }
   .ms-app-form .form-grid .grid-body .grid-row:not(.grid-row-open) > .data-row { display: none; }
   .ms-app-form .form-grid .grid-body .grid-row { border: 0; background: transparent; margin-bottom: 10px; }
-  .ms-grid-count { margin: 0 2px 8px; color: var(--ms-text-muted); font-size: 12px; }
+  .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label:has(.ms-grid-count) { display: flex !important; align-items: center; justify-content: space-between; gap: 8px; }
+  .ms-grid-count { flex: 0 0 auto; padding: 3px 10px; border-radius: 999px; background: var(--ms-primary-soft); color: var(--ms-accent); font-size: 12px; font-weight: 700; }
+  .ms-grid-empty .ms-grid-count { background: rgba(var(--ms-tint-rgb), .07); color: var(--ms-text-muted); }
+  .ms-app-form .ms-grid-empty .grid-empty, .ms-app-form .form-grid .grid-empty { display: none !important; }
+  .ms-app-form .ms-grid-empty .form-grid .grid-body { display: none; }
+  .ms-app-form .ms-grid-empty .form-grid { min-height: 0; margin: 0; }
 
   .ms-grid-card {
     display: flex;
@@ -141,7 +150,7 @@
   .ms-grid-card-text { flex: 1 1 auto; min-width: 0; }
   .ms-grid-card-title { color: var(--ms-accent); font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .ms-grid-card-sub { margin-top: 2px; color: var(--ms-text-strong); font-size: 14.5px; font-weight: 700; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  .ms-grid-card-chip { flex: 0 0 auto; max-width: 38%; padding: 5px 10px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .07); color: var(--ms-text-muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ms-grid-card-chip { flex: 0 0 auto; max-width: 34%; padding: 5px 10px; border-radius: 999px; background: rgba(var(--ms-tint-rgb), .07); color: var(--ms-text-muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .ms-grid-card-chip b { color: var(--ms-text-strong); }
   .ms-grid-card-chevron { flex: 0 0 auto; color: var(--ms-text-muted); }
   html[dir="rtl"] .ms-grid-card-chevron { transform: scaleX(-1); }
@@ -232,11 +241,13 @@
     appearance: none;
     -webkit-appearance: none;
     position: relative;
-    width: 48px;
-    height: 28px;
-    margin: 0;
-    border: 0;
-    border-radius: 999px;
+    flex: 0 0 48px;
+    width: 48px !important;
+    min-width: 48px;
+    height: 28px !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 999px !important;
     background: rgba(var(--ms-tint-rgb), .22);
     transition: background-color .2s var(--ms-ease);
     cursor: pointer;
@@ -244,7 +255,7 @@
 
   .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]::before { display: none; }
   .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]::after { content: ""; position: absolute; top: 3px; inset-inline-start: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .25); transition: transform .2s var(--ms-ease); }
-  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:checked { background: var(--ms-mint); }
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:checked { background: var(--ms-mint) !important; background-image: none !important; }
   .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:checked::after { transform: translateX(20px); }
   html[dir="rtl"] .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:checked::after { transform: translateX(-20px); }
   .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:disabled { opacity: .55; }
@@ -312,4 +323,53 @@
   .frappe-menu.ms-menu-inline .dropdown-menu-item a { min-height: 42px; }
   .frappe-menu.ms-menu-inline .dropdown-menu-item a:hover { transform: none; }
 
+
+  // Switches: a visible track in both themes.
+  .ms-app-form .frappe-control[data-fieldtype="Check"] .checkbox input[type="checkbox"]:not(:checked) { background: rgba(var(--ms-tint-rgb), .16) !important; box-shadow: inset 0 0 0 1px var(--ms-border-strong); }
+
+  // Text editor: one scrolling toolbar row and a shorter box.
+  .ms-app-form .frappe-control[data-fieldtype="Text Editor"] .ql-toolbar { display: flex; flex-wrap: nowrap; gap: 2px; overflow-x: auto; padding: 6px 8px; border-radius: 14px 14px 0 0; scrollbar-width: none; }
+  .ms-app-form .frappe-control[data-fieldtype="Text Editor"] .ql-toolbar::-webkit-scrollbar { display: none; }
+  .ms-app-form .frappe-control[data-fieldtype="Text Editor"] .ql-toolbar .ql-formats { display: inline-flex; flex: 0 0 auto; margin: 0 4px 0 0 !important; }
+  .ms-app-form .frappe-control[data-fieldtype="Text Editor"] .ql-container { border-radius: 0 0 14px 14px; }
+  .ms-app-form .frappe-control[data-fieldtype="Text Editor"] .ql-editor { height: auto !important; min-height: 120px !important; max-height: 280px; font-size: 15px; }
+  .ms-app-form .frappe-control[data-fieldtype="Text Editor"] .text-editor, .ms-app-form .frappe-control[data-fieldtype="Text Editor"] .ql-container { height: auto !important; min-height: 0 !important; max-height: none !important; }
+
+  // Tabs: the row fades out at its end, so a cut tab reads as "more".
+  .ms-form-hero .form-tabs-list .form-tabs { -webkit-mask-image: linear-gradient(90deg, #000 85%, transparent); mask-image: linear-gradient(90deg, #000 85%, transparent); scroll-padding-inline: 24px; padding-inline-end: 24px; }
+  html[dir="rtl"] .ms-form-hero .form-tabs-list .form-tabs { -webkit-mask-image: linear-gradient(270deg, #000 85%, transparent); mask-image: linear-gradient(270deg, #000 85%, transparent); }
+
+  // Comments and activity as cards in the page's gutter.
+  .ms-app-form .form-footer { margin: 0; padding: 0 12px; }
+  .ms-app-form .form-footer .after-save { display: flex; flex-direction: column; gap: 12px; }
+  .ms-app-form .form-footer .comment-box,
+  .ms-app-form .form-footer .new-timeline { margin: 0; padding: 14px; border: 1px solid var(--ms-border); border-radius: 18px; background: var(--ms-surface-raised); box-shadow: var(--ms-shadow-sm); }
+  .ms-app-form .form-footer .comment-input-header { margin-bottom: 8px; color: var(--ms-text-strong); font-size: 17px; font-weight: 800; }
+  .ms-app-form .form-footer .comment-input-container { display: flex; align-items: center; gap: 10px; }
+  .ms-app-form .form-footer .comment-input-container > .avatar { width: 36px; height: 36px; flex: 0 0 36px; margin: 0; }
+  .ms-app-form .form-footer .comment-input-container .frappe-control { min-width: 0; padding: 0; margin: 0; }
+  .ms-app-form .form-footer .comment-input-container .ql-editor { min-height: 44px; padding: 11px 16px; font-size: 14.5px; }
+  .ms-app-form .form-footer .comment-input-container .ql-container { border-radius: 22px; background: var(--ms-surface); }
+  .ms-app-form .form-footer .btn-comment:not(.hidden) { margin-top: 10px; min-height: 42px; border: 0; border-radius: 14px; background: var(--ms-mint); color: var(--ms-roots); font-weight: 800; }
+  .ms-app-form .form-footer .new-timeline { padding-inline-start: 14px; }
+  .ms-app-form .form-footer .new-timeline::before { display: none; }
+  .ms-app-form .form-footer .timeline-item.activity-title { background: transparent !important; display: flex; align-items: center; justify-content: space-between; margin: 0 0 6px; padding: 0; }
+  .ms-app-form .form-footer .timeline-item.activity-title h4 { margin: 0; color: var(--ms-text-strong); font-size: 17px; font-weight: 800; }
+  .ms-app-form .form-footer .timeline-actions, .ms-app-form .form-footer .timeline-actions .timeline-item { margin: 0; padding: 0; background: transparent !important; }
+  .ms-app-form .form-footer { margin-top: -4px; }
+  .ms-app-form .form-footer .timeline-actions .timeline-item { margin: 0; padding: 0; }
+  .ms-app-form .form-footer .timeline-actions .btn { min-height: 36px; border-radius: 12px; font-weight: 700; }
+  .ms-app-form .form-footer .timeline-items:not(.timeline-actions) { position: relative; margin: 0; padding-inline-start: 0; }
+  .ms-app-form .form-footer .timeline-items:not(.timeline-actions) > .timeline-item { position: relative; margin: 0; padding: 10px 0 10px 36px; border-top: 1px solid var(--ms-border); }
+  html[dir="rtl"] .ms-app-form .form-footer .timeline-items:not(.timeline-actions) > .timeline-item { padding: 10px 36px 10px 0; }
+  .ms-app-form .form-footer .timeline-items:not(.timeline-actions) > .timeline-item:first-child { border-top: 0; }
+  .ms-app-form .form-footer .timeline-items:not(.timeline-actions) > .timeline-item::before { display: none; }
+  .ms-app-form .form-footer .timeline-items .timeline-dot, .ms-app-form .form-footer .timeline-items .timeline-badge { position: absolute; top: 12px; left: 0; right: auto; margin: 0; }
+  html[dir="rtl"] .ms-app-form .form-footer .timeline-items .timeline-dot, html[dir="rtl"] .ms-app-form .form-footer .timeline-items .timeline-badge { left: auto; right: 0; }
+  .ms-app-form .form-footer .timeline-items .timeline-dot { width: 24px; height: 24px; border: 0; border-radius: 8px; background: var(--ms-primary-soft); }
+  .ms-app-form .form-footer .timeline-items .timeline-dot::before { content: ""; position: absolute; inset: 9px; border-radius: 50%; background: var(--ms-accent); }
+  .ms-app-form .form-footer .timeline-items .timeline-badge { width: 24px; height: 24px; border-radius: 8px; background: rgba(124, 199, 255, .14); color: #5fb3f0; }
+  .ms-app-form .form-footer .timeline-content { margin: 0; padding: 0; color: var(--ms-text); font-size: 13.5px; line-height: 1.5; }
+  .ms-app-form .form-footer .timeline-content .text-muted, .ms-app-form .form-footer .timeline-content .frappe-timestamp { color: var(--ms-text-muted) !important; font-size: 12px; }
+  .ms-app-form .scroll-to-top { bottom: calc(var(--ms-footer-height, 66px) + 70px) !important; width: 40px; height: 40px; border-radius: 13px; }
 }

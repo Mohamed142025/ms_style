@@ -80,7 +80,13 @@ function renderHero(frm) {
   hero.querySelector('[data-act="actions"]').hidden = !shown(actions);
   // The tabs sit under the hero; their list is moved up once.
   const tabs = frm.page?.wrapper?.[0]?.querySelector(".form-tabs-list");
-  if (tabs && !hero.contains(tabs) && tabs.querySelectorAll(".nav-item").length > 1) hero.appendChild(tabs);
+  if (tabs && !hero.contains(tabs) && tabs.querySelectorAll(".nav-item").length > 1) {
+    hero.appendChild(tabs);
+    tabs.addEventListener("click", (event) => {
+      const link = event.target.closest(".nav-link");
+      if (link) window.setTimeout(() => link.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" }), 30);
+    });
+  }
 }
 
 // A dropdown of the page head, as a sheet of large rows; a row presses the original item.
@@ -215,8 +221,13 @@ function renderGrid(grid) {
       rowEl.prepend(card);
     }
     const titleText = (title && (doc[`${title}_title`] || doc[title])) || "";
-    const subText = (subtitle && doc[subtitle]) || "";
-    const qtyText = qty ? `${__(qty.label)} <b>${frappe.format(doc[qty.fieldname], qty, { inline: true }, doc)}</b>` : "";
+    // The row's name: the title link's own name field (item_code -> item_name), else the
+    // first text column with a value.
+    const nameField = title && [title.replace(/_code$|_id$/, "") + "_name", title + "_name"].find((f) => doc[f]);
+    const subText = (nameField && doc[nameField]) || (subtitle && doc[subtitle]) || "";
+    const unit = doc.uom || doc.stock_uom || "";
+    const qtyValue = qty ? frappe.format(doc[qty.fieldname], qty, { inline: true }, doc) : "";
+    const qtyText = qty ? `<b>${qtyValue}</b>${unit && !String(qtyValue).includes(unit) ? ` ${frappe.utils.escape_html(unit)}` : ""}` : "";
     card.innerHTML = `
       <span class="ms-grid-card-idx">${doc.idx}</span>
       <div class="ms-grid-card-text">
@@ -232,10 +243,17 @@ function renderGrid(grid) {
     add.classList.add("ms-grid-add");
     add.innerHTML = `<svg class="icon icon-sm" aria-hidden="true"><use href="#icon-add"></use></svg>${__("Add Row")}`;
   }
+  // The row count as a chip beside the table's title.
   const count = wrapper.querySelectorAll(".grid-body .grid-row").length;
-  let countEl = wrapper.querySelector(":scope > .ms-grid-count");
-  if (!countEl) { countEl = document.createElement("div"); countEl.className = "ms-grid-count"; wrapper.prepend(countEl); }
-  countEl.textContent = count ? t("{0} rows", [count]) : t("No rows yet");
+  wrapper.querySelector(":scope > .ms-grid-count")?.remove();
+  const label = wrapper.querySelector(".control-label") || wrapper.closest(".frappe-control")?.querySelector(".control-label");
+  wrapper.classList.toggle("ms-grid-empty", !count);
+  if (label) {
+    let countEl = label.querySelector(".ms-grid-count");
+    if (!countEl) { countEl = document.createElement("span"); countEl.className = "ms-grid-count"; label.appendChild(countEl); }
+    const text = count ? t("{0} rows", [count]) : t("No rows yet");
+    if (countEl.textContent !== text) countEl.textContent = text;
+  }
 }
 
 function renderGrids(frm) {
