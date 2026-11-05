@@ -1,3 +1,4 @@
+import "./brand_theme_color";
 import "./notification_counter";
 import "./document_views";
 import "./sidebar_icons";
