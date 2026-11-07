@@ -676,3 +676,15 @@
   .modal { z-index: 1090; }
   .modal-backdrop { z-index: 1085; }
 }
+
+@media (max-width: 767px) {
+  // Tables with many columns (column-limit-reached) are a CSS grid in Frappe; its body, a
+  // grid item, grew to the width of all its cells (1500px+), so the row strip had nothing
+  // to scroll and the cells past the screen were cut. The body is held to the table.
+  .ms-app-form .form-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .ms-app-form .form-grid > *, .ms-app-form .form-grid .grid-body, .ms-app-form .form-grid .grid-body .rows, .ms-app-form .form-grid .grid-body .grid-row { min-width: 0 !important; max-width: 100%; }
+
+  // A long value (an item code, a name) wraps to two lines in its cell instead of being cut.
+  .ms-app-form .data-row.ms-grid-strip .static-area { display: -webkit-box; white-space: normal; overflow-wrap: anywhere; -webkit-line-clamp: 2; -webkit-box-orient: vertical; text-overflow: clip; }
+  .ms-app-form .data-row.ms-grid-strip > .grid-static-col[data-fieldtype="Link"] { min-width: 170px; }
+}
