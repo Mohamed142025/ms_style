@@ -70,7 +70,7 @@
   .ms-app-ws .ms-ws-shortcut .shortcut-widget-box .indicator-pill::before { display: none; }
 
   // Charts and link cards: full width, tighter.
-  .ms-app-ws .ce-block:has(.dashboard-widget-box), .ms-app-ws .ce-block:has(.links-widget-box), .ms-app-ws .ce-block:has(.onboarding-widget-box), .ms-app-ws .ce-block:has(.quick-list-widget-box) { flex: 0 0 100%; max-width: 100%; }
+  .ms-app-ws .ce-block.ms-ws-wide { flex: 0 0 100%; max-width: 100%; }
   .ms-app-ws .dashboard-widget-box { margin: 0; padding: 14px 12px 8px !important; border-radius: 18px; }
   .ms-app-ws .dashboard-widget-box .widget-head { flex-wrap: wrap; gap: 8px; }
   .ms-app-ws .dashboard-widget-box .widget-title { font-size: 15px !important; font-weight: 800; }

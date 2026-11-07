@@ -3,7 +3,7 @@ import "./notification_counter";
 import "./mobile_list";
 import "./mobile_form";
 import "./mobile_menu";
-import "./mobile_desk";
+import { prepareSearch } from "./mobile_desk";
 import "./mobile_workspace";
 import "./mobile_report";
 import "./mobile_keyboard";
@@ -393,6 +393,7 @@ import { applySidebarLanguageToggle } from "./language_toggle";
         ? document.querySelector("#desktop-navbar-modal-search")
         : page?.querySelector(".page-head .search-bar .search-icon") || document.querySelector("#desktop-navbar-modal-search");
       searchTrigger?.click();
+      prepareSearch();
     },
     work: openMyWorkCenterPopup,
     // Frappe's own notification panel: the bell on the desk home, elsewhere the one in the

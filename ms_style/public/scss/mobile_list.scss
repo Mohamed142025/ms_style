@@ -13,7 +13,7 @@
   // The hero is the screen's header; Frappe's page head folds away (its menu, search
   // and "new" live on the hero and the floating button). The head stays in the DOM for
   // the actions it holds (selection "Actions", view switch), shown while rows are selected.
-  .page-container:has(.ms-app-list) .page-head { display: none; }
+  .page-container.ms-list-page .page-head { display: none; }
 
   // Hero --------------------------------------------------------------------------------
   .ms-list-hero {

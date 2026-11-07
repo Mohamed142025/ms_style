@@ -73,7 +73,7 @@
     box-shadow: var(--ms-shadow-sm);
   }
 
-  .ms-app-form .form-section.card-section.empty-section, .ms-app-form .form-section.card-section:not(:has(.frappe-control:not(.hide-control))) { display: none; }
+  .ms-app-form .form-section.card-section.empty-section { display: none; }
   .ms-app-form .form-section .section-head, .ms-app-form .ms-section-title { margin: 0 0 8px; padding: 0; font-size: 17px; font-weight: 800; color: var(--ms-text-strong); }
   .ms-app-form .form-section .section-head.collapsible { display: flex; align-items: center; justify-content: space-between; }
   .ms-app-form .form-section .section-body { padding: 0; }
@@ -124,14 +124,14 @@
   // sideways scrolling, which cards do not need) and loses the scroll fade.
   .ms-app-form .frappe-control[data-fieldtype="Table"] .form-grid-container { overflow: visible; }
   .ms-app-form .frappe-control[data-fieldtype="Table"] .form-grid-container::after { display: none; }
-  .ms-app-form .form-grid-container > .form-grid, .ms-app-form .form-grid-container:not(.column-limit-reached):not(:has(.grid-row-open)) > .form-grid { width: 100% !important; min-width: 0 !important; }
+  .ms-app-form .form-grid-container > .form-grid, .ms-app-form .form-grid-container:not(.column-limit-reached):not(.ms-row-open) > .form-grid { width: 100% !important; min-width: 0 !important; }
   .ms-app-form .form-grid { border: 0; background: transparent; }
   .ms-app-form .form-grid .grid-body .rows, .ms-app-form .form-grid .grid-body .grid-row { width: 100%; }
   .ms-app-form .form-grid .grid-heading-row { display: none; }
   .ms-app-form .form-grid .grid-body { border: 0; background: transparent; }
   .ms-app-form .form-grid .grid-body .grid-row:not(.grid-row-open):not(.ms-has-strip) > .data-row { display: none; }
   .ms-app-form .form-grid .grid-body .grid-row { border: 0; background: transparent; margin-bottom: 10px; }
-  .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label:has(.ms-grid-count) { display: flex !important; align-items: center; justify-content: space-between; gap: 8px; }
+  .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label.ms-grid-label { display: flex !important; align-items: center; justify-content: space-between; gap: 8px; }
   .ms-grid-count { flex: 0 0 auto; padding: 3px 10px; border-radius: 999px; background: var(--ms-primary-soft); color: var(--ms-accent); font-size: 12px; font-weight: 700; }
   .ms-grid-empty .ms-grid-count { background: rgba(var(--ms-tint-rgb), .07); color: var(--ms-text-muted); }
   .ms-app-form .ms-grid-empty .grid-empty, .ms-app-form .form-grid .grid-empty { display: none !important; }
@@ -400,7 +400,7 @@
 
   html body .ms-app-form .overlay-sidebar.opened { transform: none !important; }
   html body .ms-app-form div.close-sidebar { opacity: 1 !important; background: rgba(var(--ms-roots-rgb), .6); backdrop-filter: blur(3px); }
-  body:has(.ms-app-form .overlay-sidebar.opened) .ms-mobile-footer, body:has(.ms-app-form .overlay-sidebar.opened) .ms-form-bar { visibility: hidden; }
+  html.ms-docsidebar-open .ms-mobile-footer, html.ms-docsidebar-open .ms-form-bar { visibility: hidden; }
 
   // Head: title, name, edit / print / like.
   .ms-app-form .overlay-sidebar .sidebar-meta-details {
@@ -587,7 +587,7 @@
   .ms-app-form .data-row.ms-grid-strip .field-area :is(.frappe-control, .form-group, .control-input-wrapper, .control-input) { min-height: 0 !important; margin: 0 !important; padding: 0 !important; }
   .ms-app-form .data-row.ms-grid-strip .field-area .checkbox { margin: 0; }
   .ms-app-form .data-row.ms-grid-strip .field-area .checkbox > label { min-height: 32px; }
-  .ms-app-form .data-row.ms-grid-strip > .grid-static-col[data-fieldname]:has(.field-area:not([style*="none"])) { justify-content: flex-start; }
+  .ms-app-form .data-row.ms-grid-strip.editable-row > .grid-static-col[data-fieldname] { justify-content: flex-start; }
   .ms-app-form .data-row.ms-grid-strip .field-area .form-group { margin: 0; }
   .ms-app-form .data-row.ms-grid-strip .field-area .form-control, .ms-app-form .data-row.ms-grid-strip .field-area input { min-height: 34px; height: 34px; padding: 4px 8px; border-radius: 9px; font-size: 14px; font-weight: 700; }
   .ms-app-form .data-row.ms-grid-strip .field-area .form-control:focus { box-shadow: 0 0 0 2px var(--ms-mint); }
@@ -603,7 +603,7 @@
   // Table head: title, count and the column gear.
   .ms-grid-gear { display: inline-grid; width: 32px; height: 32px; flex: 0 0 32px; place-items: center; padding: 0; border: 1px solid var(--ms-border); border-radius: 10px; background: var(--ms-surface-raised); color: var(--ms-text-muted); }
   .ms-grid-gear .icon { --icon-stroke: currentColor; stroke: currentColor; }
-  .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label:has(.ms-grid-count) > span:first-child, .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label:has(.ms-grid-count) { gap: 8px; }
+  .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label.ms-grid-label > span:first-child, .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label.ms-grid-label { gap: 8px; }
   .ms-app-form .frappe-control[data-fieldtype="Table"] .control-label .ms-grid-count { margin-inline-start: auto; }
 }
 
@@ -655,5 +655,16 @@
 
   .ms-cols-group .help-box { margin: 4px 0 0; }
   .ms-cols-group .add-new-fields { display: flex; width: 100%; min-height: 50px; align-items: center; justify-content: center; gap: 6px; border: 1.5px dashed rgba(var(--ms-accent-rgb), .5); border-radius: 16px; background: var(--ms-primary-soft); color: var(--ms-accent) !important; font-size: 14.5px; font-weight: 800; text-decoration: none; }
-  body:has(.modal.ms-cols-sheet.show) .ms-mobile-footer, body:has(.modal.ms-cols-sheet.show) .ms-form-bar { visibility: hidden; }
+  html.ms-modal-open .ms-mobile-footer, html.ms-modal-open .ms-form-bar { visibility: hidden; }
+}
+
+@media (max-width: 767px) {
+  // Long tables: the browser skips style, layout and paint for rows off the screen (40
+  // items: about 36 rows), which is most of the work when a cell starts or stops editing.
+  // The open row is left out: its sheet is position: fixed, which this containment would
+  // pin to the row.
+  .ms-app-form .form-grid .grid-body .grid-row.ms-has-strip:not(.grid-row-open):not(:focus-within) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 150px;
+  }
 }

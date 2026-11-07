@@ -34,10 +34,9 @@ function tune(el) {
     else if (options === "email" || el.type === "email") el.setAttribute("inputmode", "email");
   }
   if (["Date", "Datetime", "Time"].includes(type)) el.setAttribute("inputmode", "none");
-  if (el.tagName === "INPUT") {
-    const list = fieldsIn(scopeOf(el));
-    el.setAttribute("enterkeyhint", list.indexOf(el) < list.length - 1 ? "next" : "done");
-  }
+  // Next on every field: the field after it is looked up only when Enter is pressed
+  // (listing every field on focus forced a layout of the whole form, 40 rows and all).
+  if (el.tagName === "INPUT" && el.getAttribute("enterkeyhint") !== "next") el.setAttribute("enterkeyhint", "next");
 }
 
 function labelOf(el) {
@@ -63,31 +62,41 @@ function makeBar() {
     const act = event.target.closest("[data-kb]")?.dataset.kb;
     if (!act || !current) return;
     if (act === "done") { current.blur(); hide(); return; }
+    // The fields are listed only now, when the user asks to move.
     const list = fieldsIn(scopeOf(current));
     const next = list[list.indexOf(current) + (act === "next" ? 1 : -1)];
     if (next) { next.focus(); next.scrollIntoView({ block: "center", behavior: "smooth" }); }
+    else if (act === "next") { current.blur(); hide(); }
   });
   document.body.appendChild(bar);
 }
 
+// Placed at most once a frame, and only while a field has the focus; the page is touched
+// only when the keyboard's height changed.
+let placeFrame = 0;
+let lastKeyboard = -1;
 function place() {
-  if (!bar || !current) return;
-  const vv = window.visualViewport;
-  const keyboard = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
-  bar.style.transform = `translateY(${-keyboard}px)`;
-  // No keyboard (a hardware keyboard, or a picker): no bar.
-  bar.classList.toggle("is-on", keyboard > 80);
-  document.body.classList.toggle("ms-kb-open", keyboard > 80);
+  if (!bar || !current || placeFrame) return;
+  placeFrame = window.requestAnimationFrame(() => {
+    placeFrame = 0;
+    if (!bar || !current) return;
+    const vv = window.visualViewport;
+    const keyboard = vv ? Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)) : 0;
+    if (keyboard === lastKeyboard) return;
+    lastKeyboard = keyboard;
+    bar.style.transform = `translateY(${-keyboard}px)`;
+    // No keyboard (a hardware keyboard, or a picker): no bar.
+    if (bar.classList.contains("is-on") !== keyboard > 80) bar.classList.toggle("is-on", keyboard > 80);
+    if (document.body.classList.contains("ms-kb-open") !== keyboard > 80) document.body.classList.toggle("ms-kb-open", keyboard > 80);
+  });
 }
 
 function show(el) {
   if (!bar) makeBar();
   current = el;
-  const list = fieldsIn(scopeOf(el));
-  const i = list.indexOf(el);
-  bar.querySelector('[data-kb="prev"]').disabled = i <= 0;
-  bar.querySelector('[data-kb="next"]').disabled = i < 0 || i >= list.length - 1;
-  bar.querySelector(".ms-kb-label").textContent = labelOf(el);
+  const label = labelOf(el);
+  const labelEl = bar.querySelector(".ms-kb-label");
+  if (labelEl.textContent !== label) labelEl.textContent = label;
   place();
   // The keyboard animates in; follow it.
   [120, 300, 600].forEach((ms) => window.setTimeout(place, ms));
@@ -95,11 +104,22 @@ function show(el) {
 
 function hide() {
   current = null;
-  bar?.classList.remove("is-on");
-  document.body.classList.remove("ms-kb-open");
+  lastKeyboard = -1;
+  if (bar?.classList.contains("is-on")) bar.classList.remove("is-on");
+  if (document.body.classList.contains("ms-kb-open")) document.body.classList.remove("ms-kb-open");
+}
+
+// Typing in a field: a class on <html> (the tab bar steps aside), not a body:has(:focus)
+// rule the browser would re-check on every change in the page.
+const TYPING = 'input:not([type="checkbox"], [type="radio"], [type="button"], [type="submit"], [type="file"]), textarea, [contenteditable="true"]';
+function syncTyping() {
+  const el = document.activeElement;
+  const on = isPhone() && el instanceof Element && el.matches(TYPING);
+  if (document.documentElement.classList.contains("ms-typing") !== on) document.documentElement.classList.toggle("ms-typing", on);
 }
 
 document.addEventListener("focusin", (event) => {
+  syncTyping();
   if (!isPhone()) return;
   const el = event.target;
   if (!(el instanceof Element) || !el.matches(FIELDS)) return;
@@ -109,6 +129,7 @@ document.addEventListener("focusin", (event) => {
 
 document.addEventListener("focusout", () => {
   window.setTimeout(() => {
+    syncTyping();
     const el = document.activeElement;
     if (!el || !(el instanceof Element) || !el.matches(FIELDS)) hide();
   }, 80);
@@ -123,7 +144,8 @@ document.addEventListener("keydown", (event) => {
   const list = fieldsIn(scopeOf(current));
   const next = list[list.indexOf(current) + 1];
   if (next) { event.preventDefault(); next.focus(); }
+  else { event.preventDefault(); current.blur(); }
 });
 
-window.visualViewport?.addEventListener("resize", place);
-window.visualViewport?.addEventListener("scroll", place);
+window.visualViewport?.addEventListener("resize", place, { passive: true });
+window.visualViewport?.addEventListener("scroll", place, { passive: true });

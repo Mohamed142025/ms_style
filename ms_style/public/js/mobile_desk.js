@@ -1,6 +1,8 @@
 // The desk home on phones (up to 767px): the navbar grows into a hero with the user's
 // tools on top and, under them, today's date and a greeting by the time of day.
-const PHONE = 767;
+import { isPhone, setClass, PhoneObserver } from "./phone";
+
+const html = document.documentElement;
 
 function t(message, args) {
   return typeof window.__ === "function" ? window.__(message, args, "ms_style") : message;
@@ -30,7 +32,7 @@ function todayLabel() {
 function apply() {
   const navbar = document.querySelector(".desktop-navbar");
   if (!navbar) return;
-  const on = window.innerWidth <= PHONE && isDeskHome();
+  const on = isPhone() && isDeskHome();
   navbar.classList.toggle("ms-desk-hero", on);
   let text = navbar.querySelector(":scope > .ms-desk-hero-text");
   if (!on) { text?.remove(); return; }
@@ -50,15 +52,7 @@ function apply() {
 function schedule() { window.setTimeout(apply, 50); window.setTimeout(apply, 600); }
 
 // Frappe rebuilds the desk's navbar when it redraws the desktop (after Edit Layout's
-// save or discard, a theme change, ...): a new navbar gets the hero again at once.
-let navbarTimer = null;
-new MutationObserver(() => {
-  if (window.innerWidth > PHONE || !isDeskHome()) return;
-  const navbar = document.querySelector(".desktop-navbar");
-  if (!navbar || (navbar.classList.contains("ms-desk-hero") && navbar.querySelector(":scope > .ms-desk-hero-text"))) return;
-  window.clearTimeout(navbarTimer);
-  navbarTimer = window.setTimeout(apply, 0);
-}).observe(document.body, { childList: true, subtree: true });
+// save or discard, a theme change, ...); every redraw fires desktop_screen.
 $(document).on("desktop_screen", schedule);
 
 $(() => {
@@ -85,8 +79,8 @@ function closeNotificationPanel() {
 }
 
 function syncNotificationSheet() {
-  const panel = window.innerWidth <= PHONE ? openNotificationPanel() : null;
-  document.body.classList.toggle("ms-notif-open", !!panel);
+  const panel = isPhone() ? openNotificationPanel() : null;
+  setClass(document.body, "ms-notif-open", !!panel);
   let overlay = document.querySelector(".ms-notif-overlay");
   if (!panel) { overlay?.remove(); return; }
   if (!overlay) {
@@ -105,12 +99,13 @@ function syncNotificationSheet() {
   }
 }
 
-let notifTimer = null;
-new MutationObserver((mutations) => {
-  if (!mutations.some((m) => m.target.classList?.contains("dropdown-notifications") || m.target.classList?.contains("notifications-list"))) return;
-  window.clearTimeout(notifTimer);
-  notifTimer = window.setTimeout(syncNotificationSheet, 20);
-}).observe(document.documentElement, { attributes: true, attributeFilter: ["class"], subtree: true });
+// Watched on phones only, and only the panels themselves (their class says open/closed).
+const notifObserver = new PhoneObserver(
+  () => syncNotificationSheet(),
+  () => [
+    ...document.querySelectorAll(".body-sidebar .dropdown-notifications, .desktop-notifications .dropdown-notifications, .desktop-notifications .notifications-list"),
+  ].map((el) => [el, { attributes: true, attributeFilter: ["class"] }])
+);
 
 // Search on phones: Frappe's awesomebar modal as a full screen with a green head (title,
 // close, the field) and results as rows with an icon by kind (mobile_desk.scss).
@@ -127,7 +122,7 @@ function searchKind(li) {
 }
 
 function decorateSearch() {
-  if (window.innerWidth > PHONE) return;
+  if (!isPhone()) return;
   // Every open search: the desk home's and a page's can both exist.
   document.querySelectorAll(".modal.show .navbar-modal-wrapper").forEach((wrapper) => decorateSearchModal(wrapper.closest(".modal")));
 }
@@ -167,12 +162,72 @@ function decorateSearchModal(modal) {
   });
 }
 
-$(document).on("shown.bs.modal", () => window.setTimeout(decorateSearch, 0));
-// Decorated in the observer itself: it runs before the browser paints, so the new
-// suggestions never show a frame without their icons (a timer let every keystroke paint
-// the bare list first, and the list jumped).
-new MutationObserver((mutations) => {
-  if (window.innerWidth > PHONE) return;
-  if (!mutations.some((m) => m.target.closest?.(".navbar-modal-wrapper") || m.target.classList?.contains("modal"))) return;
-  decorateSearch();
-}).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+// The search is watched only while it is open, and only its suggestions; decorated in
+// the observer itself, which runs before the browser paints, so new suggestions never
+// show a frame without their icons.
+let searchModal = null;
+const searchObserver = new PhoneObserver(
+  () => decorateSearchModal(searchModal),
+  () => (searchModal ? [[searchModal.querySelector(".awesomplete") || searchModal, { childList: true, subtree: true }]] : [])
+);
+
+// Any open dialog hides the tab bar and the Save bar: a class on <html>, not a
+// body:has() rule the browser would re-check on every change in the page. Frappe's search
+// dialog fires only "shown" (not "show"), so both are handled.
+function openedModal(modal) {
+  if (!(modal instanceof Element) || !modal.classList.contains("modal")) return;
+  setClass(html, "ms-modal-open", true);
+  if (modal.querySelector(".navbar-modal-wrapper")) startSearch(modal);
+}
+
+function startSearch(modal) {
+  setClass(modal, "ms-search-modal", true);
+  if (!isPhone()) return;
+  if (searchModal !== modal) { searchModal = modal; searchObserver.sync(); }
+  decorateSearchModal(modal);
+}
+
+// The tab bar's Search button calls this right after opening the search, so the dialog
+// has its look from its first frame.
+export function prepareSearch() {
+  const wrapper = document.querySelector(".modal.show .navbar-modal-wrapper") || document.querySelector(".modal .navbar-modal-wrapper");
+  if (wrapper) { setClass(html, "ms-modal-open", true); startSearch(wrapper.closest(".modal")); }
+}
+
+$(document).on("show.bs.modal shown.bs.modal", (event) => openedModal(event.target));
+$(document).on("hidden.bs.modal", (event) => {
+  if (event.target === searchModal) { searchModal = null; searchObserver.stop(); }
+  setClass(html, "ms-modal-open", !!document.querySelector(".modal.show"));
+});
+
+// The tab's work center popup: a class on <html> while it is on the page (it is a
+// direct child of <body>, so only <body>'s own children are watched).
+const bodyObserver = new PhoneObserver(
+  () => setClass(html, "ms-work-open", !!document.querySelector("body > .ms-work-center-overlay")),
+  () => [[document.body, { childList: true }]]
+);
+
+// The sidebar drawer open: a class on <html> (also for tablets' form columns), from the
+// one element whose class says so.
+let drawer = null;
+const drawerObserver = new MutationObserver(() => setClass(html, "ms-drawer-open", !!drawer?.classList.contains("expanded")));
+function watchDrawer() {
+  const el = document.querySelector(".body-sidebar-container");
+  if (el === drawer) return;
+  drawerObserver.disconnect();
+  drawer = el;
+  if (drawer) drawerObserver.observe(drawer, { attributes: true, attributeFilter: ["class"] });
+  setClass(html, "ms-drawer-open", !!drawer?.classList.contains("expanded"));
+}
+
+function syncWatchers() {
+  notifObserver.sync();
+  bodyObserver.sync();
+  watchDrawer();
+}
+
+$(() => {
+  syncWatchers();
+  window.frappe?.router?.on?.("change", () => window.setTimeout(syncWatchers, 300));
+  $(document).on("desktop_screen", () => window.setTimeout(syncWatchers, 100));
+});

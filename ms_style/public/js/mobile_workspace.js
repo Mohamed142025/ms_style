@@ -4,12 +4,7 @@
 // headers as titles. Frappe's blocks stay where they are; only classes and the hero are
 // added (mobile_workspace.scss).
 import { getDeskIcon } from "./brand_icons";
-
-const PHONE = 767;
-
-function isPhone() {
-  return window.innerWidth <= PHONE;
-}
+import { isPhone, PhoneObserver } from "./phone";
 
 function currentPage() {
   const route = window.frappe?.get_route?.() || [];
@@ -23,6 +18,8 @@ function decorate() {
   if (!page) return;
   const on = isPhone();
   page.classList.toggle("ms-app-ws", on);
+  const body = page.querySelector(".layout-main-section");
+  if (body !== watchedBody) { watchedBody = body; wsObserver.sync(); }
   let hero = page.querySelector(":scope > .ms-ws-hero");
   if (!on) { hero?.remove(); return; }
 
@@ -49,6 +46,7 @@ function decorate() {
     b.classList.toggle("ms-ws-section", !!b.querySelector(".ce-header") && !b.classList.contains("ms-ws-moved"));
     b.classList.toggle("ms-ws-number", !!b.querySelector(".number-widget-box"));
     b.classList.toggle("ms-ws-shortcut", !!b.querySelector(".shortcut-widget-box"));
+    b.classList.toggle("ms-ws-wide", !!b.querySelector(".dashboard-widget-box, .links-widget-box, .onboarding-widget-box, .quick-list-widget-box"));
   });
 
   if (!hero) {
@@ -95,6 +93,18 @@ function patchNumberCard() {
   };
 }
 
+// Workspaces draw their blocks (and Frappe's loading skeleton) after the route change and
+// again after editing: the workspace page's own body is watched, on phones only.
+let watchedBody = null;
+const wsObserver = new PhoneObserver(
+  (mutations) => {
+    const added = mutations.flatMap((m) => [...m.addedNodes]);
+    if (added.some((n) => n.classList?.contains("workspace-skeleton"))) decorate();
+    else if (added.some((n) => n.classList?.contains("ce-block"))) schedule(60);
+  },
+  () => (watchedBody ? [[watchedBody, { childList: true, subtree: true }]] : [])
+);
+
 let timer = null;
 function schedule(delay = 60) {
   window.clearTimeout(timer);
@@ -108,11 +118,6 @@ $(() => {
   window.frappe?.router?.on?.("change", () => { patchNumberCard(); decorate(); window.requestAnimationFrame(decorate); schedule(80); schedule(700); });
   window.addEventListener("resize", () => schedule(150), { passive: true });
   // Workspaces render their blocks after the route change, and again after editing.
-  new MutationObserver((mutations) => {
-    if (!isPhone()) return;
-    if (mutations.some((m) => m.target.closest?.(".codex-editor__redactor") && [...m.addedNodes].some((n) => n.classList?.contains("ce-block")))) schedule(60);
-    // Frappe's loading skeleton, or the workspace page itself, appearing.
-    if (mutations.some((m) => [...m.addedNodes].some((n) => n.classList?.contains("workspace-skeleton") || (n.classList?.contains("page-container") && n.dataset.pageRoute === "Workspaces")))) decorate();
-  }).observe(document.body, { childList: true, subtree: true });
+
   schedule(300);
 });

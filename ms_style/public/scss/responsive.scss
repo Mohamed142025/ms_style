@@ -90,8 +90,10 @@
 
   // Out of the way while the sidebar drawer is open, and while the keyboard is up for a
   // field (it would sit right above the keyboard, over what is being typed).
-  body:has(.body-sidebar-container.expanded) .ms-mobile-footer,
-  body:has(:is(input:not([type="checkbox"], [type="radio"], [type="button"], [type="submit"], [type="file"]), textarea, [contenteditable="true"]):focus) .ms-mobile-footer {
+  // Classes on <html> set by mobile_desk.js (drawer) and mobile_keyboard.js (typing):
+  // body:has() rules here made the browser re-check the whole page on every change.
+  html.ms-drawer-open .ms-mobile-footer,
+  html.ms-typing .ms-mobile-footer {
     transform: translateY(110%);
   }
 

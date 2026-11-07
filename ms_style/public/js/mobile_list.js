@@ -468,6 +468,8 @@ function decorate(list) {
   if (!section) return;
   const on = isPhone() && list.view_name === "List";
   section.classList.toggle("ms-app-list", on);
+  // The page itself knows it is an app list (its page head folds away), no :has() needed.
+  section.closest(".page-container")?.classList.toggle("ms-list-page", on);
   if (!on) {
     section.querySelectorAll(":scope > .ms-list-hero, :scope > .ms-list-chips, :scope > .ms-fab").forEach((e) => e.remove());
     return;
@@ -496,6 +498,7 @@ if (ListView && !ListView.prototype.render_list.msAppList) {
     const result = renderSkeleton.apply(this, args);
     if (isPhone() && this.view_name === "List") {
       this.$page?.[0]?.querySelector(".layout-main-section")?.classList.add("ms-app-list");
+      this.$page?.[0]?.querySelector(".layout-main-section")?.closest(".page-container")?.classList.toggle("ms-list-page", true);
       for (let i = 0; i < 3; i++) this.$result.append(this.get_list_row_html_skeleton('<div><input type="checkbox" class="render-list-checkbox"/></div>'));
       try { heroFor(this); renderHero(this, configFor(this)); } catch (error) { /* meta not ready yet */ }
     }

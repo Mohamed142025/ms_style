@@ -5,15 +5,10 @@
 // narrower first column so the amounts show. Frappe's page stays in charge
 // (mobile_report.scss).
 import { openActionSheet } from "./mobile_form";
-
-const PHONE = 767;
+import { isPhone, PhoneObserver } from "./phone";
 
 function t(message, args) {
   return typeof window.__ === "function" ? window.__(message, args, "ms_style") : message;
-}
-
-function isPhone() {
-  return window.innerWidth <= PHONE;
 }
 
 function report() {
@@ -73,12 +68,15 @@ function openFilters(qr) {
 }
 
 function decorate() {
+  patchQueryReport();
   const qr = report();
   document.querySelectorAll(".ms-app-report").forEach((p) => (!qr || p !== qr.page.wrapper[0]) && p.classList.remove("ms-app-report"));
   if (!qr) return;
   const page = qr.page.wrapper[0];
   const on = isPhone();
   page.classList.toggle("ms-app-report", on);
+  // Watch this report's own buttons and table, on phones only.
+  if (watched !== page) { watched = page; reportObserver.sync(); }
   let hero = page.querySelector(":scope > .ms-rp-hero");
   if (!on) { hero?.remove(); return; }
   const head = page.querySelector(".page-head");
@@ -143,6 +141,28 @@ function narrowFirstColumn(qr) {
   dt.columnmanager.setColumnWidth(first.colIndex);
 }
 
+// The report on screen: its buttons (drawn after it loads) and its table (redrawn when
+// filters change) are watched, nothing else.
+let watched = null;
+const reportObserver = new PhoneObserver(
+  () => report() && schedule(200),
+  () => (watched ? [watched.querySelector(".page-head .page-actions")].filter(Boolean).map((el) => [el, { childList: true, subtree: true }]) : [])
+);
+
+// The table is redrawn on every filter change (with its full-width first column): the
+// report's own render_datatable is followed, instead of watching the table's rows.
+function patchQueryReport() {
+  const QueryReport = window.frappe?.views?.QueryReport;
+  if (!QueryReport || QueryReport.prototype.msPatched) return;
+  QueryReport.prototype.msPatched = true;
+  const render = QueryReport.prototype.render_datatable;
+  QueryReport.prototype.render_datatable = function (...args) {
+    const out = render.apply(this, args);
+    if (isPhone()) schedule(50);
+    return out;
+  };
+}
+
 let timer = null;
 function schedule(delay = 80) {
   window.clearTimeout(timer);
@@ -150,14 +170,12 @@ function schedule(delay = 80) {
 }
 
 $(() => {
-  window.frappe?.router?.on?.("change", () => { schedule(120); schedule(900); });
+  patchQueryReport();
+  window.frappe?.router?.on?.("change", () => { patchQueryReport(); schedule(120); schedule(900); });
   window.addEventListener("resize", () => schedule(150), { passive: true });
   // Filters change the summary; reports also draw their buttons after loading.
   $(document).on("change", ".page-form .frappe-control", () => schedule(300));
-  new MutationObserver((mutations) => {
-    if (!isPhone() || !report()) return;
-    if (mutations.some((m) => m.target.closest?.(".page-head .page-actions, .report-wrapper"))) schedule(200);
-  }).observe(document.body, { childList: true, subtree: true });
+
   schedule(600);
   schedule(2500);
 });

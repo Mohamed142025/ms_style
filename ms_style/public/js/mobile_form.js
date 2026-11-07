@@ -5,15 +5,10 @@
 // it is: the hero's buttons press Frappe's buttons, the sticky bar presses the page's
 // primary action, and the row sheet is Frappe's own row editor restyled.
 import { getDocGlyph } from "./brand_icons";
-
-const PHONE = 767;
+import { isPhone, setClass, PhoneObserver } from "./phone";
 
 function t(message, args) {
   return typeof window.__ === "function" ? window.__(message, args, "ms_style") : message;
-}
-
-function isPhone() {
-  return window.innerWidth <= PHONE;
 }
 
 function pageHead(frm) {
@@ -216,35 +211,57 @@ function renderSections(frm) {
 }
 
 // Child tables ------------------------------------------------------------------------------
-// Each row becomes a card: the first two columns (code / title), the number column as a
-// chip, and a chevron. Frappe's row stays underneath and is what the card opens.
-function renderGrid(grid) {
-  const wrapper = grid.wrapper?.[0];
-  if (!wrapper) return;
+// Each row becomes a card: the first column (code / title), the row's name, the number
+// column as a chip, and a chevron; Frappe's own row is the strip under it. Rows are drawn
+// when Frappe draws them (patchGrid): a typed value redraws its own row only, once per
+// frame, and a row whose card values did not change is left alone.
+
+// What a table's cards show, worked out once per column set.
+function gridInfo(grid) {
+  if (grid.msInfo && grid.msInfo.source === grid.visible_columns) return grid.msInfo;
   const columns = (grid.visible_columns || []).map(([df]) => df);
   const title = columns[0]?.fieldname;
-  const subtitle = columns.find((df, i) => i > 0 && ["Data", "Link", "Small Text", "Text", "Read Only"].includes(df.fieldtype))?.fieldname;
-  const qty = columns.find((df) => ["Float", "Int", "Currency", "Percent"].includes(df.fieldtype));
-  wrapper.querySelectorAll(".grid-body .grid-row").forEach((rowEl) => {
-    const row = grid.grid_rows_by_docname?.[rowEl.dataset.name];
-    const doc = row?.doc;
-    if (!doc) return;
-    let card = rowEl.querySelector(":scope > .ms-grid-card");
-    if (!card) {
-      card = document.createElement("div");
-      card.className = "ms-grid-card";
-      card.addEventListener("click", (event) => { if (!event.target.closest(".ms-grid-card-check")) row.toggle_view(true); });
-      rowEl.prepend(card);
-    }
-    const titleText = (title && (doc[`${title}_title`] || doc[title])) || "";
-    // The row's name: the title link's own name field (item_code -> item_name), else the
-    // first text column with a value.
-    const nameField = title && [title.replace(/_code$|_id$/, "") + "_name", title + "_name"].find((f) => doc[f]);
-    const subText = (nameField && doc[nameField]) || (subtitle && doc[subtitle]) || "";
-    const unit = doc.uom || doc.stock_uom || "";
-    const qtyValue = qty ? frappe.format(doc[qty.fieldname], qty, { inline: true }, doc) : "";
+  grid.msInfo = {
+    source: grid.visible_columns,
+    columns,
+    title,
+    subtitle: columns.find((df, i) => i > 0 && ["Data", "Link", "Small Text", "Text", "Read Only"].includes(df.fieldtype))?.fieldname,
+    // The quantity column (qty, stock_qty, ...), else the first number column.
+    qty: columns.find((df) => /(^|_)qty$/.test(df.fieldname) && ["Float", "Int"].includes(df.fieldtype)) || columns.find((df) => ["Float", "Int", "Currency", "Percent"].includes(df.fieldtype)),
+    labels: Object.fromEntries(columns.map((df) => [df.fieldname, __(df.label || df.fieldname)])),
+    key: columns.map((df) => df.fieldname).join(","),
+  };
+  return grid.msInfo;
+}
+
+function renderRow(grid, row) {
+  const rowEl = row.wrapper?.[0];
+  const doc = row.doc;
+  if (!rowEl || !rowEl.isConnected || !doc) return;
+  const info = gridInfo(grid);
+  rowEl.msRow = row;
+  let card = rowEl.querySelector(":scope > .ms-grid-card");
+  if (!card) {
+    card = document.createElement("div");
+    card.className = "ms-grid-card";
+    card.addEventListener("click", () => rowEl.msRow?.toggle_view(true));
+    rowEl.prepend(card);
+  }
+  const { title, subtitle, qty } = info;
+  // The row's name: the title link's own name field (item_code -> item_name), else the
+  // first text column with a value.
+  const nameField = title && [title.replace(/_code$|_id$/, "") + "_name", title + "_name"].find((f) => doc[f]);
+  const titleText = (title && (doc[`${title}_title`] || doc[title])) || "";
+  const subText = (nameField && doc[nameField]) || (subtitle && doc[subtitle]) || "";
+  const unit = doc.uom || doc.stock_uom || "";
+  const qtyRaw = qty ? doc[qty.fieldname] : "";
+  // Formatting and markup only when what the card shows changed.
+  const sig = [doc.idx, titleText, subText, qtyRaw, unit, info.key].join("\u241f");
+  if (card.msSig !== sig) {
+    card.msSig = sig;
+    const qtyValue = qty ? frappe.format(qtyRaw, qty, { inline: true }, doc) : "";
     const qtyText = qty ? `<b>${qtyValue}</b>${unit && !String(qtyValue).includes(unit) ? ` ${frappe.utils.escape_html(unit)}` : ""}` : "";
-    const html = `
+    card.innerHTML = `
       <div class="ms-grid-card-main">
         <span class="ms-grid-card-idx">${doc.idx}</span>
         <div class="ms-grid-card-text">
@@ -253,36 +270,43 @@ function renderGrid(grid) {
         </div>
         ${qtyText ? `<span class="ms-grid-card-chip">${qtyText}</span>` : ""}
         <svg class="icon icon-sm ms-grid-card-chevron" aria-hidden="true"><use href="#icon-chevron-right"></use></svg>
-      </div>
-`;
-    if (card.msHtml !== html) { card.msHtml = html; card.innerHTML = html; }
-    // Frappe's own row is the strip under the card: it scrolls sideways and a tap on a
-    // cell edits it in place (Frappe's editable grid: links keep their queries, scripts
-    // and totals run). Each cell gets its column's label.
-    const strip = rowEl.querySelector(":scope > .data-row");
-    if (strip) {
-      strip.classList.add("ms-grid-strip");
-      rowEl.classList.add("ms-has-strip");
+      </div>`;
+  }
+  // Frappe's own row is the strip under the card: it scrolls sideways and a tap on a
+  // cell edits it in place (Frappe's editable grid: links keep their queries, scripts
+  // and totals run). Each cell gets its column's label, once.
+  const strip = rowEl.querySelector(":scope > .data-row");
+  if (strip) {
+    setClass(strip, "ms-grid-strip", true);
+    setClass(rowEl, "ms-has-strip", true);
+    if (strip.msLabels !== info.key || strip.querySelector(":scope > .grid-static-col[data-fieldname]:not([data-label])")) {
+      strip.msLabels = info.key;
       strip.querySelectorAll(":scope > .grid-static-col[data-fieldname]").forEach((col) => {
-        const df = columns.find((c) => c.fieldname === col.dataset.fieldname);
-        const label = df ? __(df.label || df.fieldname) : "";
+        const label = info.labels[col.dataset.fieldname] || "";
         if (col.dataset.label !== label) col.dataset.label = label;
       });
     }
-  });
+  }
+}
+
+// The whole table: every drawn row, the add button, the count, the column gear.
+function renderGrid(grid) {
+  const wrapper = grid.wrapper?.[0];
+  if (!wrapper) return;
+  (grid.grid_rows || []).forEach((row) => renderRow(grid, row));
   // The "Add row" button as a dashed full-width row.
   const add = wrapper.querySelector(".grid-footer .grid-add-row");
   if (add && !add.classList.contains("ms-grid-add")) {
     add.classList.add("ms-grid-add");
     add.innerHTML = `<svg class="icon icon-sm" aria-hidden="true"><use href="#icon-add"></use></svg>${__("Add Row")}`;
   }
-  // The row count as a chip beside the table's title.
-  const count = wrapper.querySelectorAll(".grid-body .grid-row").length;
-  wrapper.querySelector(":scope > .ms-grid-count")?.remove();
+  const count = (grid.data || []).length;
+  setClass(wrapper, "ms-grid-empty", !count);
   const label = wrapper.querySelector(".control-label") || wrapper.closest(".frappe-control")?.querySelector(".control-label");
-  wrapper.classList.toggle("ms-grid-empty", !count);
+  if (!label) return;
+  setClass(label, "ms-grid-label", true);
   // Frappe's "Configure Columns" (which columns the strip shows), as a gear.
-  if (label && grid.header_row?.configure_columns && grid.frm && !label.querySelector(".ms-grid-gear")) {
+  if (grid.header_row?.configure_columns && grid.frm && !label.querySelector(".ms-grid-gear")) {
     const gear = document.createElement("button");
     gear.type = "button";
     gear.className = "ms-grid-gear";
@@ -291,16 +315,92 @@ function renderGrid(grid) {
     gear.addEventListener("click", (event) => { event.preventDefault(); event.stopPropagation(); grid.header_row.configure_dialog_for_columns_selector(); });
     label.appendChild(gear);
   }
-  if (label) {
-    let countEl = label.querySelector(".ms-grid-count");
-    if (!countEl) { countEl = document.createElement("span"); countEl.className = "ms-grid-count"; label.appendChild(countEl); }
-    const text = count ? t("{0} rows", [count]) : t("No rows yet");
-    if (countEl.textContent !== text) countEl.textContent = text;
-  }
+  // The row count as a chip beside the table's title.
+  let countEl = label.querySelector(".ms-grid-count");
+  if (!countEl) { countEl = document.createElement("span"); countEl.className = "ms-grid-count"; label.appendChild(countEl); }
+  const text = count ? t("{0} rows", [count]) : t("No rows yet");
+  if (countEl.textContent !== text) countEl.textContent = text;
 }
 
 function renderGrids(frm) {
-  Object.values(frm.fields_dict || {}).forEach((field) => { if (field.df?.fieldtype === "Table" && field.grid && field.grid.wrapper) renderGrid(field.grid); });
+  Object.values(frm.fields_dict || {}).forEach((field) => {
+    if (field.df?.fieldtype === "Table" && field.grid && field.grid.wrapper) {
+      patchGrid(field.grid);
+      renderGrid(field.grid);
+    }
+  });
+}
+
+// Frappe draws tables and rows through Grid.refresh, GridRow.refresh / refresh_field and
+// GridRow.toggle_view; the cards follow those calls instead of watching the page. Redraws
+// are gathered and run once in the next frame (before it is painted).
+const gridQueue = new Set();
+const rowQueue = new Set();
+let drawFrame = 0;
+
+function queueDraw() {
+  if (!drawFrame) drawFrame = window.requestAnimationFrame(flushDraw);
+}
+
+function flushDraw() {
+  drawFrame = 0;
+  const grids = [...gridQueue];
+  gridQueue.clear();
+  grids.forEach(renderGrid);
+  const rows = [...rowQueue];
+  rowQueue.clear();
+  rows.forEach((row) => !gridQueue.has(row.grid) && renderRow(row.grid, row));
+}
+
+function afterToggle(row) {
+  const rowEl = row.wrapper?.[0];
+  if (!rowEl) return;
+  const open = rowEl.classList.contains("grid-row-open");
+  if (open) decorateOpenRow(rowEl);
+  setClass(rowEl.closest(".form-grid-container"), "ms-row-open", open);
+  syncRowOverlay();
+}
+
+function patchGrid(grid) {
+  if (!grid?.header_row) return;
+  const Grid = Object.getPrototypeOf(grid);
+  const GridRow = Object.getPrototypeOf(grid.header_row);
+  if (!Grid.msPatched) {
+    Grid.msPatched = true;
+    const refresh = Grid.refresh;
+    Grid.refresh = function (...args) {
+      const out = refresh.apply(this, args);
+      if (this.frm && isPhone()) { gridQueue.add(this); queueDraw(); }
+      return out;
+    };
+  }
+  if (!GridRow.msPatched) {
+    GridRow.msPatched = true;
+    ["refresh", "refresh_field"].forEach((method) => {
+      const original = GridRow[method];
+      GridRow[method] = function (...args) {
+        const out = original.apply(this, args);
+        if (this.doc && this.grid?.frm && isPhone()) { rowQueue.add(this); queueDraw(); }
+        return out;
+      };
+    });
+    const toggleView = GridRow.toggle_view;
+    GridRow.toggle_view = function (...args) {
+      const out = toggleView.apply(this, args);
+      if (isPhone()) {
+        window.requestAnimationFrame(() => afterToggle(this));
+        window.setTimeout(() => afterToggle(this), 250);
+      }
+      return out;
+    };
+    const renderColumns = GridRow.render_selected_columns;
+    GridRow.render_selected_columns = function (...args) {
+      const out = renderColumns.apply(this, args);
+      const list = isPhone() && this.fields_html_wrapper?.querySelector(".selected-fields");
+      if (list) decorateColumnsDialog(list);
+      return out;
+    };
+  }
 }
 
 // An open row: Frappe's editor, shown as a sheet with its own title, a close button, and
@@ -322,10 +422,9 @@ function rowOverlay() {
 
 function syncRowOverlay() {
   const open = isPhone() && document.querySelector(".ms-app-form .grid-row.grid-row-open");
-  const overlay = document.querySelector(".ms-row-overlay");
-  if (open) rowOverlay().classList.add("is-on");
-  else overlay?.classList.remove("is-on");
-  document.body.classList.toggle("ms-row-sheet-open", !!open);
+  if (open) setClass(rowOverlay(), "is-on", true);
+  else setClass(document.querySelector(".ms-row-overlay"), "is-on", false);
+  setClass(document.body, "ms-row-sheet-open", !!open);
 }
 
 function decorateOpenRow(rowEl) {
@@ -383,6 +482,8 @@ function decorate(frm) {
     return;
   }
   try { renderHero(frm); renderActionBar(frm); renderLinks(frm); renderSections(frm); renderGrids(frm); } catch (error) { console.error("ms_style mobile form", error); }
+  const sidebar = wrapper.querySelector(".overlay-sidebar");
+  if (sidebar !== docSidebar) { docSidebar = sidebar; docSidebarObserver.sync(); }
 }
 
 $(document).on("form-refresh", (event, frm) => { decorate(frm); hideFormSkeleton(); window.setTimeout(() => decorate(frm), 60); window.setTimeout(() => decorate(frm), 700); });
@@ -448,20 +549,13 @@ $(() => {
 // The primary action changes with the document's state and after saves.
 $(document).on("page-change", () => { if (!isFormRoute()) hideFormSkeleton(); syncRowOverlay(); window.setTimeout(() => window.cur_frm && decorate(window.cur_frm), 300); });
 
-const observer = new MutationObserver((mutations) => {
-  if (!isPhone()) return;
-  for (const m of mutations) {
-    if (m.type === "attributes" && m.target.classList?.contains("grid-row")) {
-      if (m.target.classList.contains("grid-row-open")) decorateOpenRow(m.target);
-      syncRowOverlay();
-    }
-  }
-  if (window.cur_frm && mutations.some((m) => m.type === "childList" && m.target.closest?.(".grid-body") && !m.target.closest(".ms-grid-card"))) {
-    window.clearTimeout(observer.timer);
-    observer.timer = window.setTimeout(() => renderGrids(window.cur_frm), 80);
-  }
-});
-$(() => observer.observe(document.body, { attributes: true, attributeFilter: ["class"], childList: true, subtree: true }));
+// The document sidebar (assign, attach, tags, share) open as a sheet: a class on <html>
+// hides the tab bar and the Save bar (watching that one element, on phones).
+let docSidebar = null;
+const docSidebarObserver = new PhoneObserver(
+  () => setClass(document.documentElement, "ms-docsidebar-open", !!docSidebar?.classList.contains("opened")),
+  () => (docSidebar ? [[docSidebar, { attributes: true, attributeFilter: ["class"] }]] : [])
+);
 
 let resizeTimer = null;
 window.addEventListener("resize", () => {
@@ -514,12 +608,8 @@ function decorateColumnsDialog(list) {
   });
 }
 
-new MutationObserver((mutations) => {
-  if (!isPhone()) return;
-  const lists = new Set();
-  mutations.forEach((m) => {
-    const list = m.target.closest?.(".selected-fields") || (m.target.querySelector?.(".modal .selected-fields"));
-    if (list) lists.add(list);
-  });
-  lists.forEach((list) => window.requestAnimationFrame(() => decorateColumnsDialog(list)));
-}).observe(document.body, { childList: true, subtree: true });
+// A table whose cell shows link suggestions lets them out of its sideways scroll
+// (forms.scss .ms-ac-open). Awesomplete announces opening and closing with bubbling
+// events, so no :has() rule has to watch every table for an open list.
+document.addEventListener("awesomplete-open", (event) => setClass(event.target.closest?.('.frappe-control[data-fieldtype="Table"]'), "ms-ac-open", true));
+document.addEventListener("awesomplete-close", (event) => setClass(event.target.closest?.('.frappe-control[data-fieldtype="Table"]'), "ms-ac-open", false));
