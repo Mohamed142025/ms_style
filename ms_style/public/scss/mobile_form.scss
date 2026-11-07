@@ -668,3 +668,11 @@
     contain-intrinsic-size: auto 150px;
   }
 }
+
+@media (max-width: 767px) {
+  // Frappe's dialogs (the file uploader, Configure Columns, quick entry, ...) above our
+  // sheets: the row sheet (1060), the action and filter sheets. They opened under the
+  // row sheet, behind the item's fields.
+  .modal { z-index: 1090; }
+  .modal-backdrop { z-index: 1085; }
+}
