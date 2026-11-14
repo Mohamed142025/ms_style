@@ -368,6 +368,36 @@
 .notifications-list .notification-item.unread:hover { background-color: var(--ms-primary-soft, rgba(52, 211, 153, .2)); }
 .notifications-list .notification-item:not(.unread) { background-color: transparent; }
 
+// Above the phone width (tablets, phones on their side, short windows) the panel stays
+// inside the visible screen: Frappe gives it 100vh (past a mobile browser's toolbar) and
+// at least 480px, taller than a phone on its side, so its end fell below the screen.
+// The list scrolls inside it instead. Phones have their own sheet (responsive.scss).
+@media (min-width: 768px) {
+  .body-sidebar .dropdown-notifications:not(.hidden) .notifications-list,
+  .desktop-notifications .dropdown-notifications .notifications-list.show {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .body-sidebar .dropdown-notifications:not(.hidden) .notifications-list { height: 100vh; height: 100dvh; }
+
+  .desktop-notifications .dropdown-notifications .notifications-list.show {
+    height: min(500px, calc(100vh - var(--desktop-navbar-height, 52px) - 12px));
+    height: min(500px, calc(100dvh - var(--desktop-navbar-height, 52px) - 12px));
+    max-height: none;
+  }
+
+  :is(.body-sidebar .dropdown-notifications:not(.hidden), .desktop-notifications .dropdown-notifications) .notifications-list .notification-list-header { flex: 0 0 auto; }
+
+  :is(.body-sidebar .dropdown-notifications:not(.hidden), .desktop-notifications .dropdown-notifications) .notifications-list .notification-list-body {
+    flex: 1 1 auto;
+    height: auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+}
+
 .body-sidebar .sidebar-header {
   min-height: 58px;
   margin-bottom: 12px;
