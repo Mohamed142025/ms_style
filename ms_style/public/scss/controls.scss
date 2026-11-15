@@ -194,6 +194,35 @@ input[type="checkbox"]:active { transform: scale(.94); }
   cursor: not-allowed;
 }
 
+// A Check the user cannot change is drawn as a disabled checkbox, marked
+// .disabled-selected / .disabled-deselected (forms, grids, read-only documents). The
+// disabled fill above wiped Frappe's tick, so a ticked value looked unticked: draw both
+// states here - the brand fill, softened, with the white tick.
+input[type="checkbox"].disabled-deselected,
+.frappe-control input[type="checkbox"].disabled-deselected,
+.frappe-control input[type="checkbox"]:disabled:not(:checked):not(.disabled-selected) {
+  border: 1px solid var(--ms-border);
+  background: rgba(var(--ms-tint-rgb), .06);
+  box-shadow: none;
+  cursor: default;
+}
+
+input[type="checkbox"].disabled-selected,
+.frappe-control input[type="checkbox"].disabled-selected,
+.frappe-control input[type="checkbox"]:disabled:checked,
+[data-theme="dark"] input[type="checkbox"].disabled-selected,
+[data-theme="dark"] input[type="checkbox"]:disabled:checked {
+  border: 1px solid transparent;
+  background-color: var(--ms-primary);
+  background-image: $ms-check-icon;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 13px 13px;
+  box-shadow: none;
+  opacity: .6;
+  cursor: default;
+}
+
 // Missing or invalid values.
 .has-error .form-control, .has-error .frappe-control input, .has-error .input-with-feedback,
 .frappe-control.has-error .awesomplete .input-with-feedback {
