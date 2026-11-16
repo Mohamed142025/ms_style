@@ -395,3 +395,19 @@ msgstr "الحقل السابق"
 msgctxt "ms_style"
 msgid "Next field"
 msgstr "الحقل التالي"
+
+msgctxt "ms_style"
+msgid "Open file"
+msgstr "فتح الملف"
+
+msgctxt "ms_style"
+msgid "This file opens in another app"
+msgstr "يُفتح هذا الملف في تطبيق آخر"
+
+msgctxt "ms_style"
+msgid "{0} of {1}"
+msgstr "{0} من {1}"
+
+msgctxt "ms_style"
+msgid "Share"
+msgstr "مشاركة"

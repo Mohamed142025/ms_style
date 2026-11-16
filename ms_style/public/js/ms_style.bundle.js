@@ -7,6 +7,7 @@ import { prepareSearch } from "./mobile_desk";
 import "./mobile_workspace";
 import "./mobile_report";
 import "./mobile_keyboard";
+import "./mobile_files";
 import "./document_views";
 import "./sidebar_icons";
 import "./workspace_cards";

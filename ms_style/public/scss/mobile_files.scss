@@ -1,0 +1,118 @@
+// Files on phones (mobile_files.js): chips for files in tables, fields and dialogs, and the
+// full-screen file viewer.
+@media (max-width: 767px) {
+  // The chip: a thumbnail or a type badge, then the name.
+  a.ms-file-chip {
+    display: inline-flex !important; max-width: 100%; min-height: 36px; align-items: center !important; gap: 8px !important;
+    padding: 3px 10px 3px 3px; border: 1px solid var(--ms-border); border-radius: 12px;
+    background: var(--card-bg, #fff); color: var(--ms-text-strong, var(--text-color)) !important;
+    font-size: 13px; font-weight: 700; line-height: 1.2; text-decoration: none !important;
+    vertical-align: middle; -webkit-tap-highlight-color: transparent;
+    transition: transform var(--ms-duration-fast, .12s) var(--ms-ease, ease), border-color .12s;
+  }
+  [dir="rtl"] a.ms-file-chip { padding: 3px 3px 3px 10px; }
+  a.ms-file-chip:active { transform: scale(.97); border-color: rgba(var(--ms-mint-rgb), .8); }
+  a.ms-file-chip .icon { display: none; }
+  .ms-file-thumb {
+    display: inline-flex; flex: 0 0 auto; width: 30px; height: 30px; align-items: center; justify-content: center;
+    overflow: hidden; border-radius: 9px; background: rgba(var(--ms-roots-rgb), .08);
+  }
+  .ms-file-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ms-file-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  // The type badge: the extension on a colour by kind.
+  .ms-file-badge {
+    color: #fff; font-size: 9.5px; font-weight: 900; letter-spacing: .02em; background: #64748b;
+  }
+  .ms-file-badge[data-kind="pdf"] { background: #dc2626; }
+  .ms-file-badge[data-kind="sheet"] { background: #16a34a; }
+  .ms-file-badge[data-kind="doc"] { background: #2563eb; }
+  .ms-file-badge[data-kind="cad"] { background: #d97706; }
+  .ms-file-badge[data-kind="zip"] { background: #7c3aed; }
+  .ms-file-badge[data-kind="video"] { background: #0f766e; }
+
+  // In a table's cell the chip fits the cell; in the attach field it takes the line.
+  .grid-static-col a.ms-file-chip, .static-area a.ms-file-chip { min-height: 32px; max-width: 100%; }
+  .static-area.ms-file-cell { display: flex !important; overflow: visible !important; padding: 0; -webkit-line-clamp: unset; }
+  .grid-static-col.ms-file-col { padding-top: 4px !important; padding-bottom: 4px !important; }
+  .static-area.ms-file-cell > a.ms-file-chip { height: 34px; min-height: 0; padding-top: 0; padding-bottom: 0; }
+  .ms-file-viewer .icon { margin: 0 !important; }
+  .grid-static-col .ms-file-thumb, .static-area .ms-file-thumb { width: 26px; height: 26px; border-radius: 8px; }
+  .attached-file { gap: 8px; }
+  .attached-file > .ellipsis { min-width: 0; flex: 1 1 auto; }
+  .attached-file > .ms-file-holder { display: flex; overflow: visible; }
+  .attached-file > .ms-file-holder > svg { display: none; }
+  .attached-file a.ms-file-chip { min-height: 44px; width: 100%; }
+  .attached-file a.ms-file-chip .ms-file-thumb { width: 36px; height: 36px; border-radius: 10px; }
+  .attached-file .btn { display: inline-flex; flex: 0 0 auto; min-height: 40px; align-items: center; padding: 0 14px; border-radius: 12px; font-size: 13px; font-weight: 700; line-height: 1; }
+
+  // The viewer ---------------------------------------------------------------------------
+  .ms-file-viewer {
+    position: fixed; inset: 0; z-index: 2100; display: flex; flex-direction: column;
+    background: #06120e; color: #fff;
+    opacity: 0; transition: opacity .18s ease;
+    padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0);
+    -webkit-user-select: none; user-select: none;
+  }
+  .ms-file-viewer.is-in { opacity: 1; }
+  html.ms-fv-open, html.ms-fv-open body { overflow: hidden; }
+  html.ms-fv-open .ms-mobile-footer, html.ms-fv-open .ms-form-bar { visibility: hidden; }
+
+  .ms-fv-bar { position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; padding: 10px 12px; }
+  .ms-fv-title { flex: 1 1 auto; min-width: 0; }
+  .ms-fv-name { overflow: hidden; font-size: 15px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+  .ms-fv-meta { margin-top: 2px; font-size: 12px; font-weight: 600; color: rgba(255, 255, 255, .6); }
+  .ms-fv-btn {
+    display: inline-flex; flex: 0 0 auto; width: 44px; height: 44px; align-items: center; justify-content: center;
+    border: 0; border-radius: 50%; background: rgba(255, 255, 255, .1); color: #fff !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ms-fv-btn:active { background: rgba(255, 255, 255, .22); }
+  .ms-fv-btn .icon, .ms-fv-action .icon, .ms-fv-card-open .icon { --icon-stroke: currentColor; stroke: currentColor; }
+  // The arrows point outward on both sides; in Arabic the left one is the next file.
+  .ms-fv-name, .ms-fv-meta, .ms-fv-card-name, .ms-file-name { unicode-bidi: plaintext; }
+
+  .ms-fv-stage {
+    position: relative; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center;
+    overflow: hidden; touch-action: none;
+  }
+  .ms-fv-zoom { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; transition: transform .2s ease; }
+  .ms-fv-img { max-width: 100%; max-height: 100%; object-fit: contain; transform-origin: center; will-change: transform; }
+  .ms-fv-stage.is-animating .ms-fv-img { transition: transform .2s ease; }
+  .ms-fv-stage.is-loading::after {
+    content: ""; position: absolute; width: 36px; height: 36px; border: 3px solid rgba(255, 255, 255, .2);
+    border-top-color: var(--ms-mint); border-radius: 50%; animation: ms-fv-spin .8s linear infinite;
+  }
+  @keyframes ms-fv-spin { to { transform: rotate(360deg); } }
+  .ms-fv-video { max-width: 100%; max-height: 100%; }
+
+  // Previous / next at the screen's sides, over the image; hidden while zoomed in.
+  .ms-fv-prev, .ms-fv-next { position: absolute; top: 50%; z-index: 2; margin-top: -22px; background: rgba(0, 0, 0, .35); }
+  .ms-fv-prev { left: 10px; }
+  .ms-fv-next { right: 10px; }
+  .ms-file-viewer.is-zoomed .ms-fv-prev, .ms-file-viewer.is-zoomed .ms-fv-next { display: none; }
+  .ms-fv-prev[hidden], .ms-fv-next[hidden] { display: none; }
+
+  // A file that is not an image: a card with its type, name and Open.
+  .ms-fv-card {
+    display: flex; width: min(320px, calc(100% - 48px)); flex-direction: column; align-items: center; gap: 12px;
+    padding: 28px 20px 22px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 24px;
+    background: rgba(255, 255, 255, .06); text-align: center;
+  }
+  .ms-fv-card-badge { display: inline-flex; width: 76px; height: 92px; align-items: flex-end; justify-content: center; padding-bottom: 14px; border-radius: 14px 30px 14px 14px; font-size: 17px; box-shadow: 0 18px 30px -16px rgba(0, 0, 0, .7); }
+  .ms-fv-card-name { max-width: 100%; font-size: 15px; font-weight: 800; overflow-wrap: anywhere; }
+  .ms-fv-card-hint { font-size: 12.5px; color: rgba(255, 255, 255, .6); }
+  .ms-fv-card-open {
+    display: inline-flex; min-height: 48px; margin-top: 6px; padding: 0 22px; align-items: center; gap: 8px;
+    border-radius: 16px; background: var(--ms-mint); color: var(--ms-roots) !important; font-size: 15px; font-weight: 800; text-decoration: none !important;
+  }
+
+  .ms-fv-actions { position: relative; z-index: 2; display: flex; justify-content: center; gap: 10px; padding: 12px 16px 16px; }
+  .ms-fv-action {
+    display: inline-flex; min-height: 46px; flex: 0 1 160px; align-items: center; justify-content: center; gap: 8px;
+    border: 1px solid rgba(255, 255, 255, .16); border-radius: 16px; background: rgba(255, 255, 255, .08);
+    color: #fff !important; font-size: 14px; font-weight: 800; text-decoration: none !important;
+  }
+  .ms-fv-action:active { background: rgba(255, 255, 255, .18); }
+  .ms-file-viewer.is-zoomed .ms-fv-actions { opacity: .25; }
+}

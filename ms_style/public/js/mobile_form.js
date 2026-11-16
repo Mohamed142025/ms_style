@@ -6,6 +6,7 @@
 // primary action, and the row sheet is Frappe's own row editor restyled.
 import { getDocGlyph } from "./brand_icons";
 import { isPhone, setClass, PhoneObserver } from "./phone";
+import { decorateFiles, decorateFilesSoon } from "./mobile_files";
 
 function t(message, args) {
   return typeof window.__ === "function" ? window.__(message, args, "ms_style") : message;
@@ -286,6 +287,7 @@ function renderRow(grid, row) {
         if (col.dataset.label !== label) col.dataset.label = label;
       });
     }
+    decorateFiles(strip);
   }
 }
 
@@ -371,6 +373,8 @@ function patchGrid(grid) {
     Grid.refresh = function (...args) {
       const out = refresh.apply(this, args);
       if (this.frm && isPhone()) { gridQueue.add(this); queueDraw(); }
+      // Tables in dialogs keep Frappe's look; their files show as chips.
+      else if (isPhone()) decorateFilesSoon(this.wrapper?.[0]);
       return out;
     };
   }
@@ -381,6 +385,7 @@ function patchGrid(grid) {
       GridRow[method] = function (...args) {
         const out = original.apply(this, args);
         if (this.doc && this.grid?.frm && isPhone()) { rowQueue.add(this); queueDraw(); }
+        else if (this.doc && isPhone()) decorateFilesSoon(this.wrapper?.[0]);
         return out;
       };
     });
