@@ -29,8 +29,8 @@
   --ms-sb-seg-edge: rgba(var(--ms-roots-rgb), .08);
   --ms-sb-seg-thumb: #FFFFFF;
   --ms-sb-seg-thumb-shadow: 0 1px 2px rgba(var(--ms-roots-rgb), .12), 0 3px 10px rgba(var(--ms-roots-rgb), .08);
-  --ms-sb-seg-text: #7A8A83;
-  --ms-sb-seg-on: var(--ms-roots);
+  --ms-sb-seg-text: #8A9993;
+  --ms-sb-seg-on: var(--ms-emerald);
   --ms-sb-scroll: rgba(var(--ms-roots-rgb), .18);
 }
 
@@ -58,10 +58,10 @@
   --ms-sb-avatar-ring: rgba(var(--ms-mint-rgb), .45);
   --ms-sb-seg: rgba(0, 0, 0, .22);
   --ms-sb-seg-edge: rgba(var(--ms-sand-rgb), .08);
-  --ms-sb-seg-thumb: var(--ms-mint);
-  --ms-sb-seg-thumb-shadow: 0 2px 10px rgba(var(--ms-mint-rgb), .3);
-  --ms-sb-seg-text: rgba(var(--ms-sand-rgb), .6);
-  --ms-sb-seg-on: var(--ms-roots);
+  --ms-sb-seg-thumb: linear-gradient(180deg, rgba(var(--ms-sand-rgb), .16), rgba(var(--ms-sand-rgb), .1));
+  --ms-sb-seg-thumb-shadow: inset 0 1px 0 rgba(var(--ms-sand-rgb), .12), 0 2px 8px rgba(0, 0, 0, .3);
+  --ms-sb-seg-text: rgba(var(--ms-sand-rgb), .55);
+  --ms-sb-seg-on: var(--ms-mint);
   --ms-sb-scroll: rgba(var(--ms-sand-rgb), .2);
 }
 
@@ -257,20 +257,67 @@
 // The bottom: the theme and language switches, then the user ------------------------------
 .body-sidebar .body-sidebar-bottom { padding-top: 10px; border-top: 1px solid var(--ms-sb-divider); }
 
+// Two small segmented controls side by side: the theme (sun / moon) and the language
+// (ع / EN), icons only with their names as tooltips. The chosen one sits on a raised
+// thumb: white on the light bar, a lit glass on the dark one.
 .body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) {
-  border-color: var(--ms-sb-seg-edge);
+  --ms-toggle-size: 30px;
+  padding: 3px;
+  border: 1px solid var(--ms-sb-seg-edge);
+  border-radius: 11px;
   background: var(--ms-sb-seg);
+  box-shadow: inset 0 1px 2px rgba(var(--ms-shadow-rgb), .06);
 }
 
 .body-sidebar :is(.ms-theme-toggle, .ms-language-toggle)::before {
+  top: 3px;
+  bottom: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  border-radius: 8px;
   background: var(--ms-sb-seg-thumb);
   box-shadow: var(--ms-sb-seg-thumb-shadow);
 }
 
-.body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) button { color: var(--ms-sb-seg-text); }
+.body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) button {
+  padding: 0;
+  border-radius: 8px;
+  color: var(--ms-sb-seg-text);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+// The icons follow their button's colour: the bar's hover accent (icons.scss) painted
+// them Mint, the colour of the old thumb, so the chosen one vanished on hover.
+.body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) button .icon {
+  width: 15px;
+  height: 15px;
+  color: currentColor !important;
+  stroke: currentColor;
+  stroke-width: 2px;
+}
+
 .body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) button:hover { color: var(--ms-sb-strong); }
-.body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) button[aria-pressed="true"] { color: var(--ms-sb-seg-on); }
+.body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) button[aria-pressed="true"],
+.body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) button[aria-pressed="true"]:hover { color: var(--ms-sb-seg-on); }
 .body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) button:focus-visible { outline-color: var(--ms-sb-accent); }
+
+// Open: the two controls share one row, icons and short names only.
+.body-sidebar-container.expanded .body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) {
+  display: inline-grid;
+  width: calc(50% - 4px);
+  margin: 0 0 10px;
+  vertical-align: top;
+}
+
+.body-sidebar-container.expanded .body-sidebar .ms-theme-toggle { margin-inline-end: 8px; }
+.body-sidebar-container.expanded .body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) button span { display: none; }
+.body-sidebar-container.expanded .body-sidebar .ms-language-toggle button b { display: inline; }
+
+// Closed: stacked, each a column of two.
+.body-sidebar-container:not(.expanded) .body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) { width: 34px; border-radius: 11px; }
+.body-sidebar-container:not(.expanded) .body-sidebar :is(.ms-theme-toggle, .ms-language-toggle)::before { top: 3px; right: 3px; left: 3px; width: auto; height: calc(50% - 3px); }
+.body-sidebar-container:not(.expanded) .body-sidebar :is(.ms-theme-toggle, .ms-language-toggle) button { height: 28px; }
 
 // The user: a card with the avatar on a ring, the name and the email.
 .body-sidebar .sidebar-user-button,
