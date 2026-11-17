@@ -26,6 +26,12 @@
 // number and its actions; the Assign/Attachments/Tags/Share rows; and a small timeline
 // of who edited and created the document. Frappe's markup and behaviour are unchanged.
 
+@media (min-width: 768px) and (max-width: 991px) {
+  // Frappe keeps the side column at 38vw minus the sidebar (about 72px), empty here: the
+  // document panel is a fixed overlay at these widths. The form takes the width instead.
+  body[data-route^="Form"] .layout-side-section { min-width: 0; border-inline: 0; }
+}
+
 @media (min-width: 992px) {
   body[data-route^="Form"] .layout-side-section {
     padding: 12px;

@@ -26,6 +26,16 @@
 // .result is the header row). The sticky right block repeats the row's colour.
 .frappe-list .result > .list-row-container:nth-child(even) { background-color: var(--ms-row-alt); }
 
+// The row paints its own surface over the container, so the stripe goes on the row too
+// (before, only the sticky block showed it), and hover still wins.
+.frappe-list .result > .list-row-container:nth-child(even) .list-row {
+  background: linear-gradient(var(--ms-row-alt), var(--ms-row-alt)), var(--ms-surface-raised);
+}
+
+.frappe-list .result > .list-row-container:nth-child(even) .list-row:hover {
+  background: linear-gradient(var(--ms-primary-soft), var(--ms-primary-soft)), var(--ms-surface-raised);
+}
+
 // Frappe's phone layout paints that block again with its own rule; the doubled class
 // outranks it without !important.
 .frappe-list .result > .list-row-container:nth-child(even) .list-row .level-right.level-right {
