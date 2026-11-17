@@ -151,9 +151,9 @@ button, a, [role="button"], .btn, .form-control, .standard-sidebar-item,
   outline-offset: -2px;
 }
 
-// The sidebar, navbar and mobile footer are Roots green in every theme.
+// The navbar and mobile footer are Roots green in every theme; the sidebar has its accent.
 :is(.body-sidebar, .desktop-navbar, .ms-mobile-footer) :is(a, button, .btn, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
-  outline-color: var(--ms-mint);
+  outline-color: var(--ms-sb-accent, var(--ms-mint));
 }
 
 ::selection {

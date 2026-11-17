@@ -6,11 +6,12 @@
   color: var(--ms-accent);
 }
 
-// The desk navbar and sidebar are Roots green in every theme, so Mint is the highlight there.
+// The desk navbar is Roots green in every theme, so Mint is the highlight there; the
+// sidebar takes its own accent (sidebar.scss: Emerald on the light bar, Mint on the dark).
 .desktop-navbar :is(a, button, .btn):hover .icon,
 .body-sidebar :is(a, button, .btn):hover .icon,
 .sidebar-item-icon:hover .icon {
-  color: var(--ms-mint);
+  color: var(--ms-sb-accent, var(--ms-mint));
 }
 
 .btn .icon, button .icon { vertical-align: middle; }

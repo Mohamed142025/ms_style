@@ -281,23 +281,6 @@
   --icon-stroke: var(--ms-mint);
 }
 
-.body-sidebar {
-  background: var(--ms-roots);
-  border-right: 1px solid rgba(var(--ms-sand-rgb), .08);
-  box-shadow: 8px 0 28px rgba(var(--ms-shadow-rgb), .12);
-}
-
-// A thin Sand scrollbar, so a long sidebar shows there is more below.
-.body-sidebar .body-sidebar-top {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(var(--ms-sand-rgb), .28) transparent;
-}
-
-.body-sidebar .body-sidebar-top::-webkit-scrollbar { width: 6px; }
-.body-sidebar .body-sidebar-top::-webkit-scrollbar-thumb { background: rgba(var(--ms-sand-rgb), .28); }
-
-.body-sidebar .keyboard-shortcut { color: var(--ms-on-dark-muted); }
-.body-sidebar .promotional-banner-title { color: var(--ms-mint); }
 
 // The unread count. The expanded sidebar shows it once, as a pill at the end of the row
 // (Frappe's own count, which it keeps live). The collapsed sidebar and the desk navbar show
@@ -344,7 +327,7 @@
   min-width: 16px;
   height: 16px;
   padding: 0 4px;
-  border: 2px solid var(--ms-roots);
+  border: 2px solid var(--ms-sb-solid, var(--ms-roots));
   border-radius: 999px;
   background: var(--ms-danger);
   color: #fff;
@@ -398,180 +381,6 @@
   }
 }
 
-.body-sidebar .sidebar-header {
-  min-height: 58px;
-  margin-bottom: 12px;
-  border-bottom: 1px solid rgba(var(--ms-sand-rgb), .12);
-}
-
-.body-sidebar .sidebar-header .header-logo {
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--ms-radius-sm);
-  background: rgba(var(--ms-mint-rgb), .18);
-}
-
-.body-sidebar .sidebar-header .header-logo img {
-  object-fit: cover;
-  border-radius: inherit;
-}
-
-.body-sidebar .sidebar-header .header-title {
-  color: var(--ms-on-dark) !important;
-  font-weight: 700;
-}
-
-.body-sidebar .sidebar-header .header-subtitle {
-  color: var(--ms-on-dark-muted) !important;
-}
-
-.body-sidebar > .sidebar-header.hover,
-.body-sidebar > .sidebar-header:hover,
-.body-sidebar > a.sidebar-header.hover {
-  background-color: rgba(var(--ms-mint-rgb), .18);
-  border-radius: var(--ms-radius-md);
-  color: var(--ms-on-dark);
-  text-decoration: none;
-}
-
-.body-sidebar > a.sidebar-header.active-sidebar {
-  background-color: var(--ms-roots);
-  border-radius: var(--ms-radius-md);
-  color: var(--ms-on-dark);
-  text-decoration: none;
-  box-shadow: inset 3px 0 0 var(--ms-mint), var(--ms-shadow-sm);
-}
-
-.body-sidebar > a.sidebar-header.active-sidebar .header-title {
-  color: var(--ms-on-dark) !important;
-}
-
-.body-sidebar > a.sidebar-header.active-sidebar .header-subtitle {
-  color: var(--ms-on-dark-muted) !important;
-}
-
-.body-sidebar > a.sidebar-header.active-sidebar .icon,
-.body-sidebar > a.sidebar-header.active-sidebar .drop-icon {
-  color: var(--ms-on-dark-text) !important;
-  --icon-stroke: var(--ms-on-dark-text);
-}
-
-.body-sidebar .sidebar-header.hover .header-title,
-.body-sidebar .sidebar-header:hover .header-title {
-  color: var(--ms-on-dark) !important;
-}
-
-.body-sidebar .sidebar-header.hover .header-subtitle,
-.body-sidebar .sidebar-header:hover .header-subtitle {
-  color: var(--ms-on-dark-muted) !important;
-}
-
-.body-sidebar .sidebar-header.hover .icon,
-.body-sidebar .sidebar-header:hover .icon,
-.body-sidebar .sidebar-header.hover .drop-icon,
-.body-sidebar .sidebar-header:hover .drop-icon {
-  color: var(--ms-on-dark-text) !important;
-  --icon-stroke: var(--ms-on-dark-text);
-}
-
-// Sidebar items: one state system on Roots green. Frappe paints item backgrounds from its
-// own variables (a light grey hover and a white active fill meant for a white sidebar,
-// which put Mint text on #F3F3F3 at 1.7:1), so those variables take the brand values
-// here instead of each state being overridden rule by rule.
-.body-sidebar {
-  --sidebar-hover-color: rgba(var(--ms-sand-rgb), .08);
-  --sidebar-active-color: rgba(var(--ms-mint-rgb), .16);
-  --sidebar-border-color: rgba(var(--ms-sand-rgb), .12);
-}
-
-// Items no longer slide on hover, so nothing can push the list sideways and show a
-// horizontal scrollbar.
-.body-sidebar .body-sidebar-top { overflow-x: hidden; }
-
-.body-sidebar .standard-sidebar-item {
-  position: relative;
-  border-radius: var(--ms-radius-md);
-  box-shadow: none;
-  transition: background-color var(--ms-duration-normal) var(--ms-ease);
-}
-
-.body-sidebar .sidebar-item-container > .standard-sidebar-item,
-.body-sidebar .sidebar-child-item .standard-sidebar-item {
-  margin: 2px 0;
-}
-
-// Frappe's hover rule also sets an 8px radius; the same selector keeps the ms radius.
-.body-sidebar .standard-sidebar-item:not(.active-sidebar):has(a:not(.section-break)):hover {
-  border-radius: var(--ms-radius-md);
-}
-
-.body-sidebar .standard-sidebar-item .item-anchor {
-  min-height: 30px;
-  border-radius: inherit;
-  color: var(--ms-on-dark-text);
-  transition: color var(--ms-duration-normal) var(--ms-ease);
-}
-
-.body-sidebar .standard-sidebar-item .sidebar-item-icon,
-.body-sidebar .standard-sidebar-item .sidebar-item-icon .icon,
-.body-sidebar .standard-sidebar-item .sidebar-item-control .icon {
-  color: var(--ms-on-dark-muted);
-  --icon-stroke: currentColor;
-  transition: color var(--ms-duration-normal) var(--ms-ease);
-}
-
-// Section titles ("Reports"): Frappe fixes their grey with !important.
-.body-sidebar .section-break { color: var(--ms-on-dark-muted) !important; }
-
-// Hover: a soft Sand veil (the background above), brighter text, a Mint icon and the
-// start of the Mint marker.
-.body-sidebar .standard-sidebar-item:hover .item-anchor { color: var(--ms-on-dark); }
-.body-sidebar .standard-sidebar-item:hover .sidebar-item-icon,
-.body-sidebar .standard-sidebar-item:hover .sidebar-item-icon .icon,
-.body-sidebar .standard-sidebar-item:hover .sidebar-item-control .icon { color: var(--ms-mint); }
-
-// Active: the Mint tint, full-height marker and bolder text.
-.body-sidebar .standard-sidebar-item.active-sidebar { box-shadow: none; }
-.body-sidebar .standard-sidebar-item.active-sidebar .item-anchor { color: var(--ms-on-dark); font-weight: 600; }
-.body-sidebar .standard-sidebar-item.active-sidebar .sidebar-item-icon,
-.body-sidebar .standard-sidebar-item.active-sidebar .sidebar-item-icon .icon { color: var(--ms-mint); }
-
-.body-sidebar .standard-sidebar-item::before {
-  content: "";
-  position: absolute;
-  inset: 6px auto 6px 0;
-  width: 3px;
-  border-radius: 0 var(--ms-radius-sm) var(--ms-radius-sm) 0;
-  background: var(--ms-mint);
-  opacity: 0;
-  transform: scaleY(.4);
-  transition: opacity var(--ms-duration-normal) var(--ms-ease), transform var(--ms-duration-normal) var(--ms-ease);
-  pointer-events: none;
-}
-
-.body-sidebar .standard-sidebar-item:hover::before { opacity: .72; transform: scaleY(.6); }
-.body-sidebar .standard-sidebar-item.active-sidebar::before { opacity: 1; transform: none; }
-
-// Keyboard focus stays inside the item (the list clips anything outside it).
-.body-sidebar .standard-sidebar-item .item-anchor:focus-visible { outline-offset: -2px; }
-
-// Frappe's collapse button sits on the sidebar edge: Roots with a Sand icon instead of
-// a white disc, level with the user block (the theme switch sits where Frappe had it).
-.body-sidebar .sidebar-toggle-btn {
-  bottom: 30px;
-  border-color: rgba(var(--ms-mint-rgb), .28);
-  background: var(--ms-roots);
-  color: var(--ms-on-dark-text);
-  --icon-stroke: currentColor;
-}
-
-.body-sidebar .sidebar-toggle-btn:hover { background: var(--ms-emerald); color: var(--ms-on-dark); }
-
-@media (prefers-reduced-motion: reduce) {
-  .body-sidebar .standard-sidebar-item::before { transition: none; }
-}
 
 .breadcrumbs a, .breadcrumb a, .page-head .title-area a { color: var(--ms-link); }
 .breadcrumbs a:hover, .breadcrumb a:hover, .page-head .title-area a:hover { color: var(--ms-text-strong); }
@@ -619,21 +428,3 @@
   transition: color var(--ms-duration-normal) var(--ms-ease);
 }
 
-// User block at the bottom of the sidebar. Frappe styles it for a light sidebar: the
-// name is an <a>, so it took the link color (2.4:1 on Roots green), and the hover
-// background was a light grey box.
-.body-sidebar .sidebar-user-button,
-.body-sidebar .sidebar-user-button:hover,
-.body-sidebar .sidebar-user-button:focus {
-  color: var(--ms-on-dark);
-  text-decoration: none;
-}
-
-.body-sidebar .sidebar-user-button .text-secondary {
-  color: var(--ms-on-dark-muted) !important;
-}
-
-.body-sidebar-container.expanded .body-sidebar .dropdown-navbar-user:hover,
-.body-sidebar .dropdown-navbar-user:focus-within {
-  background-color: rgba(var(--ms-mint-rgb), .12);
-}

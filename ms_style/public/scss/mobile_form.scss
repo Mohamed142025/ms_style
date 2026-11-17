@@ -310,10 +310,10 @@
   // Drawer -------------------------------------------------------------------------------------
   .body-sidebar-container.expanded .body-sidebar { border-radius: 0 26px 26px 0; }
   html[dir="rtl"] .body-sidebar-container.expanded .body-sidebar { border-radius: 26px 0 0 26px; }
-  .body-sidebar .sidebar-header { margin: 8px 8px 12px; padding: 10px; border-radius: 16px; background: rgba(var(--ms-sand-rgb), .06); }
+  .body-sidebar .sidebar-header { margin: 8px 8px 12px; padding: 10px; border-radius: 16px; background: var(--ms-sb-hover); }
   .body-sidebar .sidebar-header .header-logo { width: 42px; height: 42px; border-radius: 13px; }
   .body-sidebar .standard-sidebar-item .item-anchor { min-height: 46px; padding-inline: 10px; font-size: 14.5px; }
-  .body-sidebar .standard-sidebar-item.active-sidebar { background: rgba(var(--ms-mint-rgb), .14); border-radius: 12px; }
+  .body-sidebar .standard-sidebar-item.active-sidebar { background: var(--ms-sb-active); border-radius: 12px; }
   .body-sidebar .section-break { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
 
   // Drawer menus (mobile_menu.js): full width, scrolling, submenu inline under its item.
