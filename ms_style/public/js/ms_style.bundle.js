@@ -177,6 +177,31 @@ import { applySidebarLanguageToggle } from "./language_toggle";
   let myWorkCenterFailed = false;
   let myWorkCenterLoadTimer = null;
 
+  // The last data the desk saw, kept in this browser per user and language: the panel
+  // shows it at once on the next visit while the current data loads (about a second
+  // before), then redraws with the fresh data.
+  function workCenterCacheKey() {
+    const session = window.frappe?.session;
+    return `ms_style:work-center:${encodeURIComponent(session?.user || "guest")}:${window.frappe?.boot?.lang || "en"}`;
+  }
+
+  function readCachedWorkCenter() {
+    try {
+      const cached = JSON.parse(window.localStorage.getItem(workCenterCacheKey()) || "null");
+      return cached && typeof cached === "object" ? cached : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function saveCachedWorkCenter(data) {
+    try {
+      window.localStorage.setItem(workCenterCacheKey(), JSON.stringify(data));
+    } catch (error) {
+      // Private mode or a full storage: the panel just waits for the data next time.
+    }
+  }
+
   function escapeWorkCenterHtml(value) {
     return String(value || "").replace(/[&<>'"]/g, (character) => ({
       "&": "&amp;",
@@ -280,6 +305,7 @@ import { applySidebarLanguageToggle } from "./language_toggle";
         myWorkCenterLoading = false;
         myWorkCenterFailed = false;
         window.msMyWorkCenterData = response?.message || {};
+        saveCachedWorkCenter(window.msMyWorkCenterData);
         renderMyWorkCenter(window.msMyWorkCenterData);
       },
       error: () => {
@@ -321,13 +347,21 @@ import { applySidebarLanguageToggle } from "./language_toggle";
       if (created) renderMyWorkCenter(window.msMyWorkCenterData || {});
       return;
     }
-    if (created) panel.innerHTML = `<div class="ms-work-loading">${t("Loading your work center...")}</div>`;
+    if (created) {
+      const cached = readCachedWorkCenter();
+      if (cached) {
+        window.msMyWorkCenterData = cached;
+        renderMyWorkCenter(cached);
+      } else {
+        panel.innerHTML = `<div class="ms-work-loading">${t("Loading your work center...")}</div>`;
+      }
+    }
     // Many DOM changes can land before the delayed load starts; queue it only once.
     if (!myWorkCenterLoading && !myWorkCenterLoadTimer) {
       myWorkCenterLoadTimer = window.setTimeout(() => {
         myWorkCenterLoadTimer = null;
         loadMyWorkCenter();
-      }, 250);
+      }, 50);
     }
   }
 
@@ -346,6 +380,10 @@ import { applySidebarLanguageToggle } from "./language_toggle";
     if (myWorkCenterLoaded) {
       renderMyWorkCenter(window.msMyWorkCenterData || {});
       loadMyWorkCenter(true);
+    } else if (readCachedWorkCenter()) {
+      window.msMyWorkCenterData = readCachedWorkCenter();
+      renderMyWorkCenter(window.msMyWorkCenterData);
+      loadMyWorkCenter();
     } else {
       // The sheet's shape while the data loads: the head, then ghost cards.
       panel.innerHTML = `<div class="ms-work-heading"><div><span class="ms-work-eyebrow">${t("Personal workspace")}</span><h2>${t("My Work Center")}</h2><p>${t("Loading your work center...")}</p></div></div><div class="ms-work-ghost" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b><b></b></div>`;

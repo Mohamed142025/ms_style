@@ -103,14 +103,54 @@ def _get_unsaved_routes(user, pending_routes=None):
     return routes
 
 
+def _user_doctypes():
+    """The doctypes the session user can read and create, from Frappe's own per-user
+    lists (frappe.get_user(): a few queries over DocPerm and DocType). A has_permission
+    or get_all per doctype loads that doctype's whole meta first, which across the
+    100-250 doctypes below was most of this endpoint's time on a fresh request."""
+    user = frappe.get_user()
+    user.get_can_read()
+    return set(user.all_read), set(user.can_create)
+
+
+def _get_own_drafts(user, doctypes):
+    """The user's latest drafts (three per doctype) in one query over the doctypes'
+    tables. They are the user's own documents (owner = user) in doctypes they can read."""
+    tables = set(frappe.db.get_tables())
+    parts = [
+        f"(select {frappe.db.escape(doctype)} as doctype, name, modified from `tab{doctype}` "
+        f"where owner = %(user)s and docstatus = 0 order by modified desc limit 3)"
+        for doctype in doctypes
+        if f"tab{doctype}" in tables and "`" not in doctype
+    ]
+    if not parts:
+        return []
+    try:
+        return frappe.db.sql(" union all ".join(parts), {"user": user}, as_dict=True)
+    except Exception:
+        # A table out of step with its doctype: fall back to one query per doctype.
+        drafts = []
+        for doctype in doctypes:
+            try:
+                drafts += [
+                    frappe._dict(doctype=doctype, **row)
+                    for row in frappe.get_all(
+                        doctype,
+                        filters={"owner": user, "docstatus": 0},
+                        fields=["name", "modified"],
+                        order_by="modified desc",
+                        limit_page_length=3,
+                    )
+                ]
+            except Exception:
+                continue
+        return drafts
+
+
 def _get_my_work_center(user):
-    # The drafts section below scans every submittable doctype the user can read
-    # (a has_permission check plus a query per doctype), which is the dominant
-    # cost of this endpoint - easily 30-80+ round trips on a typical ERPNext
-    # install. That scan can't be collapsed into one query (docstatus/owner live
-    # in separate per-doctype tables), so instead the whole result is cached per
-    # user for a short window: repeat loads (reloads, re-opening the desk) come
-    # back instantly, while the data is never more than a minute stale.
+    # Cached per user for a short window: repeat loads (reloads, re-opening the desk)
+    # come back at once, while the data is never more than a minute stale. The desk
+    # also shows the last result it saw while this runs (ms_style.bundle.js).
     # Per language as well: the subtitles below are translated.
     cache_key = f"ms_style_my_work_center:{frappe.local.lang}"
     cached = frappe.cache().get_value(cache_key, user=user)
@@ -174,41 +214,30 @@ def _get_my_work_center(user):
             }
         )
 
-    draft_keys = set()
+    readable, creatable = _user_doctypes()
     draft_doctypes = frappe.get_all(
         "DocType",
         filters={"istable": 0, "issingle": 0, "is_virtual": 0, "is_submittable": 1},
-        fields=["name"],
         order_by="name asc",
+        pluck="name",
         limit_page_length=0,
     )
-    for doctype in draft_doctypes:
-        if not frappe.has_permission(doctype.name, ptype="read", user=user):
+    draft_keys = set()
+    for draft in _get_own_drafts(user, [doctype for doctype in draft_doctypes if doctype in readable]):
+        draft_key = (draft.doctype, draft.name)
+        if draft_key in draft_keys:
             continue
-        try:
-            for draft in frappe.get_all(
-                    doctype.name,
-                    filters={"owner": user, "docstatus": 0},
-                    fields=["name", "modified"],
-                    order_by="modified desc",
-                    limit_page_length=3,
-                ):
-                draft_key = (doctype.name, draft.name)
-                if draft_key in draft_keys:
-                    continue
-                draft_keys.add(draft_key)
-                actions.append(
-                    {
-                        "kind": "draft",
-                        "title": draft.name,
-                        "subtitle": " · ".join([_("Draft", context="ms_style"), _(doctype.name)]),
-                        "doctype": doctype.name,
-                        "name": draft.name,
-                        "modified": draft.modified,
-                    }
-                )
-        except Exception:
-            continue
+        draft_keys.add(draft_key)
+        actions.append(
+            {
+                "kind": "draft",
+                "title": draft.name,
+                "subtitle": " · ".join([_("Draft", context="ms_style"), _(draft.doctype)]),
+                "doctype": draft.doctype,
+                "name": draft.name,
+                "modified": draft.modified,
+            }
+        )
 
     recent = frappe.get_all(
         "Activity Log",
@@ -221,7 +250,7 @@ def _get_my_work_center(user):
     actions.sort(key=lambda item: item.get("modified") or "", reverse=True)
     routes = _get_route_history(user)
     result = {
-        "quick_create": _get_quick_create(user, routes, actions),
+        "quick_create": _get_quick_create(user, routes, actions, creatable),
         "actions": actions[:12],
         "recent": [
             {
@@ -299,7 +328,7 @@ def _get_meta(doctype):
     return frappe.get_meta(doctype)
 
 
-def _get_quick_create(user, routes, actions):
+def _get_quick_create(user, routes, actions, creatable=None):
     """Doctypes the user creates in and works in most, that they are allowed to create.
 
     Only doctypes the user has opened themselves count, which leaves out records the
@@ -317,10 +346,22 @@ def _get_quick_create(user, routes, actions):
             last_visit[doctype] = max(last_visit.get(doctype, row.last_visit), row.last_visit)
 
     module_apps = dict(frappe.get_all("Module Def", fields=["name", "app_name"], as_list=True))
+    if creatable is None:
+        creatable = _user_doctypes()[1]
+    # The doctypes' own settings in one query, instead of each doctype's meta.
+    candidates_meta = list(visits) + [action["doctype"] for action in actions if action["kind"] == "draft"]
+    info = {
+        row.name: row
+        for row in frappe.get_all(
+            "DocType",
+            filters={"name": ["in", candidates_meta or [""]]},
+            fields=["name", "module", "istable", "issingle", "is_virtual", "in_create"],
+        )
+    }
     since = add_days(nowdate(), -ROUTE_HISTORY_DAYS)
     scored = []
     for doctype, visit_count in visits.items():
-        if not _can_quick_create(doctype, user, module_apps):
+        if not _can_quick_create(doctype, info, creatable, module_apps):
             continue
         created_days = _count_creation_days(doctype, user, since)
         if created_days or visit_count:
@@ -331,19 +372,21 @@ def _get_quick_create(user, routes, actions):
 
     for action in actions:
         if action["kind"] == "draft" and action["doctype"] not in candidates:
-            if _can_quick_create(action["doctype"], user, module_apps):
+            if _can_quick_create(action["doctype"], info, creatable, module_apps):
                 candidates.append(action["doctype"])
 
     return [{"doctype": doctype, "label": _(doctype)} for doctype in candidates[:QUICK_CREATE_LIMIT]]
 
 
-def _can_quick_create(doctype, user, module_apps):
-    meta = _get_meta(doctype)
-    if not meta or meta.istable or meta.issingle or meta.is_virtual or meta.in_create:
+def _can_quick_create(doctype, info, creatable, module_apps):
+    """`info`: the doctype's DocType row; `creatable`: the doctypes the user may create
+    (Frappe's list leaves out child, single and in_create doctypes already)."""
+    row = info.get(doctype)
+    if not row or row.istable or row.issingle or row.is_virtual or row.in_create:
         return False
-    if module_apps.get(meta.module) == "frappe" and doctype not in FRAPPE_WORK_DOCTYPES:
+    if module_apps.get(row.module) == "frappe" and doctype not in FRAPPE_WORK_DOCTYPES:
         return False
-    return frappe.has_permission(doctype, "create", user=user)
+    return doctype in creatable
 
 
 def _count_creation_days(doctype, user, since):
