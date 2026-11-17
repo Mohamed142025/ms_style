@@ -14,7 +14,7 @@
   --ms-sb-text: #3B4D46;
   --ms-sb-strong: var(--ms-roots);
   --ms-sb-muted: #7A8A83;
-  --ms-sb-icon: #6A7C75;
+  --ms-sb-icon: #4F635B;
   --ms-sb-accent: var(--ms-emerald);
   --ms-sb-hover: rgba(var(--ms-roots-rgb), .05);
   --ms-sb-active: linear-gradient(90deg, rgba(var(--ms-emerald-rgb), .14), rgba(var(--ms-mint-rgb), .08));
@@ -45,7 +45,7 @@
   --ms-sb-text: rgba(var(--ms-sand-rgb), .8);
   --ms-sb-strong: #FFFFFF;
   --ms-sb-muted: rgba(var(--ms-sand-rgb), .5);
-  --ms-sb-icon: rgba(var(--ms-sand-rgb), .62);
+  --ms-sb-icon: rgba(var(--ms-sand-rgb), .74);
   --ms-sb-accent: var(--ms-mint);
   --ms-sb-hover: rgba(var(--ms-sand-rgb), .06);
   --ms-sb-active: linear-gradient(90deg, rgba(var(--ms-mint-rgb), .2), rgba(var(--ms-mint-rgb), .07));
@@ -171,6 +171,9 @@
   --icon-stroke: currentColor;
   transition: color var(--ms-duration-normal) var(--ms-ease), transform var(--ms-duration-normal) var(--ms-ease);
 }
+
+// Lucide draws at 1.5px, faint at this size: a little heavier everywhere in the bar.
+.body-sidebar .standard-sidebar-item .sidebar-item-icon .icon { stroke-width: 1.75px; }
 
 .body-sidebar .standard-sidebar-item:hover .item-anchor { color: var(--ms-sb-strong); }
 .body-sidebar .standard-sidebar-item:hover :is(.sidebar-item-icon, .sidebar-item-icon .icon) { color: var(--ms-sb-accent) !important; }
@@ -307,6 +310,26 @@
 .body-sidebar-container:not(.expanded) .body-sidebar .sidebar-header .header-logo { width: 32px; height: 32px; border-radius: 10px; }
 .body-sidebar-container:not(.expanded) .body-sidebar > .sidebar-header > :is(.title-container, .drop-icon) { display: none; }
 .body-sidebar-container:not(.expanded) .body-sidebar .standard-sidebar-item .item-anchor { justify-content: center; }
+
+// Closed, the icons are the whole bar: larger, heavier and darker, each on a 34px tile.
+.body-sidebar-container:not(.expanded) .body-sidebar .standard-sidebar-item .item-anchor { height: 36px; min-height: 36px; }
+.body-sidebar-container:not(.expanded) .body-sidebar .standard-sidebar-item .sidebar-item-icon { padding: 0; }
+.body-sidebar-container:not(.expanded) .body-sidebar .standard-sidebar-item .sidebar-item-label { display: none; }
+.body-sidebar-container:not(.expanded) .body-sidebar .standard-sidebar-item .sidebar-item-icon .icon {
+  width: 19px;
+  height: 19px;
+  stroke-width: 1.9px;
+}
+.body-sidebar-container:not(.expanded) .body-sidebar .standard-sidebar-item { margin: 2px 0; }
+
+// The list scrolls without a bar (its arrows crowded the icons); its ends fade instead.
+.body-sidebar-container:not(.expanded) .body-sidebar .body-sidebar-top {
+  scrollbar-width: none;
+  padding-block: 6px;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 10px, #000 calc(100% - 14px), transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 10px, #000 calc(100% - 14px), transparent 100%);
+}
+.body-sidebar-container:not(.expanded) .body-sidebar .body-sidebar-top::-webkit-scrollbar { display: none; width: 0; height: 0; }
 
 // Tooltips (the closed bar's labels and the rest of the desk) in the brand.
 .tooltip .tooltip-inner {
