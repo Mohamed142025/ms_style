@@ -596,18 +596,18 @@ html[dir="rtl"] .codex-editor .ce-header :is(.h3, .h4)::after { background: line
 .widget.links-widget-box .link-item:hover,
 .widget.links-widget-box .link-item:focus-visible {
   background: var(--ms-accent);
-  color: var(--ms-on-dark);
+  color: var(--ms-on-accent);
   font-weight: 600;
   text-decoration: none;
   outline: none;
 }
 
 .widget.links-widget-box .link-item:hover .link-text,
-.widget.links-widget-box .link-item:focus-visible .link-text { color: var(--ms-on-dark); }
+.widget.links-widget-box .link-item:focus-visible .link-text { color: var(--ms-on-accent); }
 
 // The hovered card itself answers too.
 .widget.links-widget-box:hover { border-color: rgba(var(--ms-accent-rgb), .45); }
-.widget.links-widget-box:hover .ms-card-icon { background: var(--ms-accent); color: var(--ms-on-dark); box-shadow: none; }
+.widget.links-widget-box:hover .ms-card-icon { background: var(--ms-accent); color: var(--ms-on-accent); box-shadow: none; }
 
 .widget.links-widget-box .link-item .link-content {
   display: flex;
@@ -632,7 +632,7 @@ html[dir="rtl"] .codex-editor .ce-header :is(.h3, .h4)::after { background: line
 
 .widget.links-widget-box .link-item:hover .icon,
 .widget.links-widget-box .link-item:focus-visible .icon {
-  color: var(--ms-on-dark);
+  color: var(--ms-on-accent);
   opacity: 1;
   transform: translate(2px, -2px);
 }
@@ -702,7 +702,7 @@ html[dir="rtl"] .codex-editor .ce-header :is(.h3, .h4)::after { background: line
 .widget.shortcut-widget-box .ms-card-icon .icon { width: 14px; height: 14px; }
 .widget.shortcut-widget-box:hover { border-color: rgba(var(--ms-accent-rgb), .45); background: var(--ms-primary-soft); }
 .widget.shortcut-widget-box .indicator-pill { font-weight: 700; font-variant-numeric: tabular-nums; }
-.widget.shortcut-widget-box:hover .ms-card-icon { background: var(--ms-accent); color: var(--ms-on-dark); }
+.widget.shortcut-widget-box:hover .ms-card-icon { background: var(--ms-accent); color: var(--ms-on-accent); }
 
 // SVG arrows don't follow the text direction: rtlcss flips their translate() offsets
 // but not the glyph itself, so mirror the glyph in RTL.

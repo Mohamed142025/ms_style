@@ -97,6 +97,8 @@
   --ms-heading: var(--ms-emerald);
   --ms-link: var(--ms-emerald);
   --ms-accent: var(--ms-emerald);
+  // Text and icons on an accent fill: white on Emerald.
+  --ms-on-accent: #FFFFFF;
   --ms-surface-rgb: var(--ms-sand-rgb);
   --ms-tint-rgb: var(--ms-roots-rgb);
   --ms-accent-rgb: var(--ms-emerald-rgb);
@@ -129,6 +131,8 @@
   --ms-heading: var(--ms-sand);
   --ms-link: var(--ms-mint);
   --ms-accent: var(--ms-mint);
+  // Roots on Mint: white on Mint read at 1.9:1.
+  --ms-on-accent: var(--ms-roots);
   --ms-surface-rgb: var(--ms-ink-rgb);
   --ms-tint-rgb: var(--ms-sand-rgb);
   --ms-accent-rgb: var(--ms-mint-rgb);
