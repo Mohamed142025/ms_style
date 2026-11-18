@@ -29,6 +29,14 @@
     box-shadow: 0 18px 36px -22px rgba(var(--ms-roots-rgb), .9);
   }
 
+  // The notifications sheet opened from the desk home lives inside the hero. WebKit (Safari
+  // on the iPhone) clips a fixed element to a sticky ancestor's overflow: it laid the sheet
+  // out and took its taps but drew nothing past the hero. While the sheet is open the hero
+  // does not clip, and its tools (which hold the sheet and its overlay) go above the
+  // greeting so the overlay dims all of the hero.
+  body.ms-notif-open .desktop-navbar.ms-desk-hero { overflow: visible; }
+  body.ms-notif-open .desktop-navbar.ms-desk-hero .ms-user-tools { z-index: 2; }
+
   // The brand's rising bars, drawn faintly at the end of the hero.
   .desktop-navbar.ms-desk-hero::after {
     inset: auto;
