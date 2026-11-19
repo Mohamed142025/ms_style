@@ -415,3 +415,6 @@ msgstr "مشاركة"
 msgctxt "ms_style"
 msgid "User Guide"
 msgstr "دليل المستخدم"
+
+msgid "The user guide is available to system users only."
+msgstr "دليل المستخدم متاح لمستخدمي النظام فقط."

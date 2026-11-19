@@ -23,7 +23,7 @@
           const theme = items.findIndex((item) => item.label === "Toggle Theme");
           items.splice(theme + 1, 0, { icon: "id-card", label: t("HR App"), url: "/hrms" });
         }
-        // The user guide (public/guide, at /guide) for everyone, opened in a new tab.
+        // The user guide (/guide, for system users) in a new tab.
         if (!items.some((item) => item.url === "/guide")) {
           const at = items.findIndex((item) => item.url === "/hrms");
           const theme = items.findIndex((item) => item.label === "Toggle Theme");

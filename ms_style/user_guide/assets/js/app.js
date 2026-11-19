@@ -2,6 +2,8 @@
 (function () {
   'use strict';
   const G = window.GUIDE;
+  // Where the guide's files live: '' when opened from disk or a static host, '/guide/' inside ms_style.
+  const BASE = window.GUIDE_BASE || '';
   const $ = (s, el) => (el || document).querySelector(s);
   const $$ = (s, el) => [...(el || document).querySelectorAll(s)];
   const html = document.documentElement;
@@ -139,7 +141,7 @@
       if (gg !== g) { g = gg; out += `<div class="nav-group">${i18(g)}</div>`; }
       const active = r.mod === m.id;
       out += `<a class="nav-item${active ? ' active' : ''}${inPath(m.id) ? '' : ' off-path'}" href="#/m/${m.id}" ${active ? 'aria-current="page"' : ''}>
-        ${m.icon ? `<img src="assets/img/icons/${m.icon}" alt="" loading="lazy">` : ''}
+        ${m.icon ? `<img src="${BASE}assets/img/icons/${m.icon}" alt="" loading="lazy">` : ''}
         <span class="t">${esc(t(m.title))}</span>
         ${done.has(m.id) ? `<span class="done">${svg('check')}</span>` : `<span class="num">${String(m.order).padStart(2, '0')}</span>`}</a>`;
       if (active) out += `<div class="nav-sub" id="navSub">${sectionList(m).map((s) => `<a href="#/m/${m.id}/${s.id}" data-sec="${s.id}">${esc(s.label)}</a>`).join('')}</div>`;
@@ -198,8 +200,8 @@
   }
 
   /* ---------- shots ---------- */
-  function shotSrc(id) { return `assets/img/shots/${lang}/${id}.webp`; }
-  function shotAlt(id) { return `assets/img/shots/${lang === 'ar' ? 'en' : 'ar'}/${id}.webp`; }
+  function shotSrc(id) { return `${BASE}assets/img/shots/${lang}/${id}.webp`; }
+  function shotAlt(id) { return `${BASE}assets/img/shots/${lang === 'ar' ? 'en' : 'ar'}/${id}.webp`; }
   // Screenshot id for a DocType (hover previews), or '' when none was captured.
   function peekId(dt) { const id = dt && G.dtShots && G.dtShots[dt]; return id && G.shots[id] ? id : ''; }
   function shotFigure(m, id) {
@@ -240,7 +242,7 @@
       <div class="sec-head"><div><h2>${i18('modsTitle')}</h2><p>${i18('modsSub')}</p></div></div>
       <div class="mod-grid">${MODS.map((m) => `<a class="mod-card" href="#/m/${m.id}">
         ${done.has(m.id) ? `<span class="badge-done">✓</span>` : ''}
-        <div class="art">${m.icon ? `<img src="assets/img/icons/${m.icon}" alt="" loading="lazy">` : ''}</div>
+        <div class="art">${m.icon ? `<img src="${BASE}assets/img/icons/${m.icon}" alt="" loading="lazy">` : ''}</div>
         <div class="body"><span class="n">${String(m.order).padStart(2, '0')}</span><h3>${esc(t(m.title))}</h3><p>${esc(t(m.tagline))}</p>
         <div class="meta"><span>${(m.example && m.example.steps ? m.example.steps.length : 0)} ${i18('sSteps')}</span><span>${(m.faq || []).length} ${i18('faq')}</span></div></div></a>`).join('')}</div>
 
@@ -352,7 +354,7 @@
           ${curPath() && curPath().modules.includes(m.id) ? `<div class="chips" style="margin-top:8px"><span class="chip">${svg('flow')}${i18('inPath')}: <b>&nbsp;${esc(t(curPath().title))}</b></span></div>` : ''}
           <button class="learn-btn${done.has(m.id) ? ' on' : ''}" data-done="${m.id}">${svg('check')} ${done.has(m.id) ? i18('done') : i18('markDone')}</button>
         </div>
-        ${m.icon ? `<div class="art"><img src="assets/img/icons/${m.icon}" alt=""></div>` : ''}
+        ${m.icon ? `<div class="art"><img src="${BASE}assets/img/icons/${m.icon}" alt=""></div>` : ''}
       </header>
       <div class="mod-body">
         <div class="content">${body}
@@ -486,7 +488,7 @@
     let out = '';
     for (const [mid, idxs] of groups) {
       const m = byId[mid];
-      out += `<div class="sr-group">${m.icon ? `<img src="assets/img/icons/${m.icon}" alt="">` : ''}${esc(t(m.title))}</div>`;
+      out += `<div class="sr-group">${m.icon ? `<img src="${BASE}assets/img/icons/${m.icon}" alt="">` : ''}${esc(t(m.title))}</div>`;
       for (const i of idxs) {
         const e = current[i].entry;
         const title = t(e.title), text = t(e.text);
@@ -584,7 +586,7 @@
     $$('[data-i18n]').forEach((el) => { el.textContent = i18(el.dataset.i18n); });
     $('#ver').textContent = G.meta.version;
     // Served from an ms_style site (/guide): offer the way back to the desk.
-    if (/\/assets\/ms_style\/guide\//.test(location.pathname)) $('#backDesk').hidden = false;
+    if (/^\/guide(\/|$)/.test(location.pathname)) $('#backDesk').hidden = false;
   }
 
   /* ---------- hover previews: screenshot of the screen being explained ---------- */
