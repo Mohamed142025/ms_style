@@ -1,6 +1,6 @@
 // The avatar menu on the desk's home (frappe/desk/page/desktop/desktop.js): without
 // Frappe's About and Frappe Support, and with the employee app (ms_hrms, at /hrms) under
-// the theme switch. Frappe builds the menu's items in the page and hands them to
+// the theme switch, and the user guide (/guide) after it. Frappe builds the menu's items in the page and hands them to
 // frappe.ui.create_menu, so they are changed on their way there.
 (() => {
   const HIDDEN = ["About", "Frappe Support"];
@@ -22,6 +22,15 @@
         if (hasHrApp() && !items.some((item) => item.url === "/hrms")) {
           const theme = items.findIndex((item) => item.label === "Toggle Theme");
           items.splice(theme + 1, 0, { icon: "id-card", label: t("HR App"), url: "/hrms" });
+        }
+        // The user guide (public/guide, at /guide) for everyone, opened in a new tab.
+        if (!items.some((item) => item.url === "/guide")) {
+          const at = items.findIndex((item) => item.url === "/hrms");
+          const theme = items.findIndex((item) => item.label === "Toggle Theme");
+          items.splice((at >= 0 ? at : theme) + 1, 0, {
+            icon: "book-open", label: t("User Guide"),
+            onClick: () => window.open("/guide", "_blank", "noopener"),
+          });
         }
         opts = { ...opts, menu_items: items };
       }

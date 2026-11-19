@@ -411,3 +411,7 @@ msgstr "{0} من {1}"
 msgctxt "ms_style"
 msgid "Share"
 msgstr "مشاركة"
+
+msgctxt "ms_style"
+msgid "User Guide"
+msgstr "دليل المستخدم"

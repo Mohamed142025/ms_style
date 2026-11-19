@@ -29,6 +29,12 @@ app_include_css = "ms_style.bundle.css"
 app_include_js = "ms_style.bundle.js"
 web_include_css = "ms_style.bundle.css"
 web_include_js = "ms_style_web.bundle.js"
+
+# The Digital Roots ERPNext user guide (built in erpnext-guide/, copied to public/guide by
+# its tools/export_ms_style.mjs) on every site that has the theme.
+website_redirects = [
+    {"source": "/guide", "target": "/assets/ms_style/guide/index.html"},
+]
 after_migrate = [
     "ms_style.ms_style.setup.after_migrate",
     "ms_style.ms_style.document_views.setup",
