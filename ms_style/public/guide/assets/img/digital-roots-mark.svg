@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Digital Roots Solutions">
+  <rect width="512" height="512" rx="86" fill="#0E3B2E"/>
+  <g fill="#34D399">
+    <rect x="120" y="168" width="54" height="84" rx="27"/>
+    <rect x="229" y="112" width="54" height="140" rx="27"/>
+    <rect x="338" y="66" width="54" height="186" rx="27"/>
+    <rect x="83" y="273" width="346" height="34" rx="17"/>
+  </g>
+  <g fill="#F4F1EA">
+    <rect x="132" y="320" width="28" height="70" rx="14"/>
+    <circle cx="146" cy="392" r="29"/>
+    <rect x="241" y="320" width="28" height="100" rx="14"/>
+    <circle cx="255" cy="424" r="29"/>
+    <rect x="350" y="320" width="28" height="132" rx="14"/>
+    <circle cx="364" cy="456" r="29"/>
+  </g>
+</svg>
