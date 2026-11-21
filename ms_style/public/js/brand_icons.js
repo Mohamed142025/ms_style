@@ -5,12 +5,14 @@
 // document, report or page by its name (sidebar items, workspace cards).
 
 const artBasePath = "/assets/ms_style/Icone/";
-const artVersion = "v8";
+const artVersion = "v10";
 
 // Desk module -> illustration. Keys are the Desktop Icon labels (untranslated). The
 // pictures in tools/illustrations (build.mjs) are drawn in the style of the first ones.
 const deskArt = {
   Framework: "framework.webp",
+  // A fresh site calls the framework app's icon "Frappe Framework".
+  "Frappe Framework": "frappe-framework.webp",
   Organization: "organization.webp",
   "Custom HR": "custom-hr.webp",
   "My Workspaces": "my-workspaces.webp",

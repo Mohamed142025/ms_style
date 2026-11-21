@@ -305,6 +305,23 @@ const scenes = {
 <path d="M118 142 V150 M186 136 V150" stroke="${C.outline}" stroke-width="3.5"/>
 <rect x="76" y="212" width="152" height="24" rx="5" fill="${C.greenDark}" ${O}/>`,
   },
+  // The Frappe Framework app (its own tile on a fresh site), apart from the Framework workspace:
+  // a developer's screen with code, a gear turning under it and a puzzle piece fitting in.
+  "frappe-framework": {
+    file: "frappe-framework",
+    badges: ["code", "layers"],
+    scene: `${ground()}
+<rect x="84" y="82" width="140" height="98" rx="10" fill="${C.greenDark}" ${O}/>
+<rect x="94" y="92" width="120" height="72" rx="6" fill="${C.cream}" ${O}/>
+<path d="M112 112 l-10 10 10 10 M140 112 l10 10 -10 10" fill="none" stroke="${C.green}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M131 108 L121 136" stroke="${C.mint}" stroke-width="4.5" stroke-linecap="round"/>
+<path d="M160 112 H200 M160 124 H192 M160 136 H198" stroke="${C.green}" stroke-width="4" stroke-linecap="round" opacity=".85"/>
+<path d="M140 180 V200 M116 204 H164" stroke="${C.outline}" stroke-width="3.5" stroke-linecap="round"/>
+<rect x="110" y="200" width="60" height="10" rx="4" fill="url(#body)" ${O}/>
+${gear(220, 196, 26, 8, C.green)}
+<circle cx="220" cy="196" r="9" fill="${C.cream}" ${O}/>
+<path d="M58 190 h14 a7 7 0 1 1 11 0 h12 v14 a7 7 0 1 0 0 11 v15 h-37 z" fill="${C.mint}" ${O}/>`,
+  },
   organization: {
     file: "organization",
     badges: ["users", "network"],
