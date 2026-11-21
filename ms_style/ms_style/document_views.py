@@ -110,6 +110,10 @@ def get_viewers(doctype, name):
 
 def boot_session(bootinfo):
     bootinfo.ms_document_viewers = can_see_viewers()
+    # Where the user guide's videos are served from (site_config "guide_video_base");
+    # empty means the guide's own default (the media server it was built with).
+    bootinfo.guide_video_base = frappe.conf.get("guide_video_base") or ""
+
 
 
 def setup():

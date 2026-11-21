@@ -555,3 +555,47 @@ html, body { overflow-x: clip; }
 .video-head span { color: rgba(244, 241, 234, .85); }
 .video-card video { display: block; width: 100%; height: auto; aspect-ratio: 16/10; background: #0B1F19; }
 .video-card figcaption { padding: 8px 14px; font-size: 13px; color: var(--muted); }
+
+/* ---------- Module videos (media server) ---------- */
+.media-intro { margin: 0 0 14px; color: var(--muted); }
+.media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.media-card { display: flex; flex-direction: column; text-align: start; padding: 0; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); overflow: hidden; color: var(--text); transition: border-color .15s, transform .15s, box-shadow .15s; }
+.media-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.media-flow { grid-column: span 2; }
+.mc-art { position: relative; aspect-ratio: 16/10; background: var(--roots); }
+.mc-art img { width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: .92; }
+.mc-play { position: absolute; inset: 0; display: grid; place-items: center; }
+.mc-play svg { width: 46px; height: 46px; color: #fff; background: rgba(14, 59, 46, .82); border-radius: 50%; padding: 8px; stroke-width: 1.6; }
+.mc-dur { position: absolute; bottom: 8px; inset-inline-end: 8px; background: rgba(11, 31, 25, .85); color: #fff; font: 600 12px 'Sora', sans-serif; padding: 2px 7px; border-radius: 6px; }
+.mc-body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 2px; }
+.mc-body small { color: var(--accent); font-weight: 700; font-size: 12px; }
+.mc-body b { font-size: 14.5px; line-height: 1.45; }
+.concept-video { margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--accent-soft-2); background: var(--accent-soft); color: var(--accent); }
+.concept-video svg { width: 15px; height: 15px; }
+.player { position: fixed; inset: 0; z-index: 92; background: rgba(8, 23, 19, .86); display: grid; place-items: center; padding: 20px; }
+.player[hidden] { display: none; }
+.player-box { width: min(1100px, 100%); background: var(--surface); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-lg); }
+.player-box header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--roots); color: var(--sand); }
+.player-box header b { flex: 1; }
+.player-box video { display: block; width: 100%; aspect-ratio: 16/10; background: #0B1F19; }
+@media (max-width: 640px) { .media-flow { grid-column: auto; } }
+
+/* ---------- Video library & playlist ---------- */
+.nav-videos .nv-ic { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; background: rgba(52, 211, 153, .16); color: var(--mint); }
+.nav-videos .nv-ic svg { width: 18px; height: 18px; }
+.lib-hero { grid-template-columns: 1fr; }
+.lib-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 6px; }
+.lib-filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.lib-filters button { font-size: 13.5px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line-strong); background: var(--surface); color: var(--muted); }
+.lib-filters button small { font-family: 'Sora', sans-serif; opacity: .75; margin-inline-start: 3px; }
+.lib-filters button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+#libSearch { flex: 1; min-width: 200px; height: 38px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--surface-2); color: var(--text); font: inherit; }
+.lib-mod h2 .hn img { width: 28px; height: 28px; border-radius: 8px; }
+.lib-n { font: 600 13px 'Sora', sans-serif; color: var(--faint); margin-inline-start: 6px; }
+.lib-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; font-weight: 600; }
+.lib-link svg { width: 17px; height: 17px; }
+.player-nav { display: inline-flex; align-items: center; gap: 6px; font: 600 13px 'Sora', sans-serif; color: rgba(244, 241, 234, .8); }
+.player-nav[hidden] { display: none; }
+.pnav { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 9px; border: 0; background: rgba(244, 241, 234, .1); color: var(--sand); }
+.pnav:disabled { opacity: .35; cursor: default; }
+html[dir="rtl"] .pnav svg { transform: scaleX(-1); }

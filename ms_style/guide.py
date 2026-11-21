@@ -8,6 +8,7 @@ to the guide afterwards; website users (customers, suppliers) are refused.
 The files are copied from the guide project by its tools/export_ms_style.mjs.
 """
 
+import json
 import mimetypes
 import os
 import re
@@ -85,7 +86,12 @@ def page_with_base(html: bytes) -> bytes:
 	for attr in ('href="', 'src="'):
 		for folder in ("assets/", "downloads/"):
 			text = text.replace(attr + folder, attr + base + folder)
-	text = text.replace("<head>", f'<head>\n  <script>window.GUIDE_BASE = "{base}";</script>', 1)
+	video_base = frappe.conf.get("guide_video_base") or ""
+	text = text.replace(
+		"<head>",
+		f'<head>\n  <script>window.GUIDE_BASE = "{base}"; window.GUIDE_VIDEO_BASE = {json.dumps(video_base)};</script>',
+		1,
+	)
 	return text.encode("utf-8")
 
 

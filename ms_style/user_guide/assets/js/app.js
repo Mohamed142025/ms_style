@@ -63,6 +63,15 @@
     peekHint: { ar: 'اضغط للتكبير', en: 'Click to enlarge' },
     quiz: { ar: 'اختبر نفسك', en: 'Test yourself' },
     watch: { ar: 'شاهد الفيديو', en: 'Watch the video' },
+    watchScreen: { ar: 'فيديو الشاشة', en: 'Screen video' },
+    mediaTitle: { ar: 'فيديوهات الموديول', en: 'Module videos' },
+    mediaIntro: { ar: 'فيديو قصير لكل شاشة وتقرير: إزاي توصل لها من الديسك، وأهم خاناتها، وإيه اللي بعدها. والدورة المترابطة من أولها لآخرها.', en: 'A short video for every screen and report: how to reach it from the desk, its key fields and what comes next — plus the connected cycle end to end.' },
+    library: { ar: 'مكتبة الفيديوهات', en: 'Video library' },
+    libraryIntro: { ar: 'كل فيديوهات النظام في مكان واحد: الدورات المترابطة من أولها لآخرها، وجولة في كل شاشة وكل تقرير. اضغط على أي فيديو، وكمّل على اللي بعده.', en: 'Every video of the system in one place: the connected cycles end to end, and a tour of every screen and report. Play any video and carry on to the next.' },
+    libSearch: { ar: 'ابحث في الفيديوهات…', en: 'Search the videos…' },
+    openLibrary: { ar: 'كل الفيديوهات في المكتبة', en: 'All videos in the library' },
+    k_video: { ar: 'فيديو', en: 'Video' },
+    vFlow: { ar: 'دورة مترابطة', en: 'Connected cycle' }, vScreen: { ar: 'شاشة', en: 'Screen' }, vReport: { ar: 'تقرير', en: 'Report' },
     videoNote: { ar: 'فيديو قصير من النظام الحقيقي، بدون صوت؛ الشرح مكتوب على الشاشة.', en: 'A short silent video of the real system; the explanation is written on screen.' },
     sVideos: { ar: 'فيديو تعليمي', en: 'videos' },
     quizIntro: { ar: 'جاوب على الأسئلة دي عشان تتأكد إنك فهمت الفصل. لو جبت 80% أو أكتر الفصل هيتعلّم إنه مكتمل.', en: 'Answer these questions to check your understanding. Score 80% or more and the chapter is marked as learned.' },
@@ -139,7 +148,8 @@
   /* ---------- nav ---------- */
   function renderNav() {
     const r = parseRoute();
-    let out = '', g = '';
+    const nVideos = Object.keys(MEDIA.items).length;
+    let out = nVideos ? `<a class="nav-item nav-videos${r.mod === '#videos' ? ' active' : ''}" href="#/videos"><span class="nv-ic">${svg('play')}</span><span class="t">${i18('library')}</span><span class="num">${nVideos}</span></a>` : '', g = '';
     for (const m of MODS) {
       const gg = groupOf(m);
       if (gg !== g) { g = gg; out += `<div class="nav-group">${i18(g)}</div>`; }
@@ -165,6 +175,7 @@
     if (m.tips && m.tips.length) s.push({ id: 'tips', label: i18('tips') });
     if (m.faq && m.faq.length) s.push({ id: 'faq', label: i18('faq') });
     if (m.quiz && m.quiz.length) s.push({ id: 'quiz', label: i18('quiz') });
+    if (Object.values(MEDIA.items).some((v) => v.module === m.id)) s.push({ id: 'media', label: i18('mediaTitle') });
     if ((m.screenshots || []).some((x) => G.shots[x.id] && !((m.example && m.example.steps) || []).some((st) => st.shot === x.id))) s.push({ id: 'gallery', label: i18('gallery') });
     return s;
   }
@@ -176,6 +187,7 @@
     if (p[0] === 'm' && p[1]) return { mod: p[1], anchor: p[2] || '' };
     if (p[0] === 'paths') return { mod: '', anchor: 'paths' };
     if (p[0] === 'search') return { mod: '', anchor: '', search: p.slice(1).join('/') };
+    if (p[0] === 'videos') return { mod: '#videos', anchor: '', play: p[1] || '' };
     return { mod: '', anchor: '' };
   }
   let lastMod = null;
@@ -185,11 +197,11 @@
     $('#menuBtn').setAttribute('aria-expanded', 'false');
     if (r.mod !== lastMod) {
       lastMod = r.mod;
-      if (!r.mod) renderHome(); else if (byId[r.mod]) renderModule(byId[r.mod]); else renderNotFound();
+      if (!r.mod) renderHome(); else if (r.mod === '#videos') renderVideos(r.play); else if (byId[r.mod]) renderModule(byId[r.mod]); else renderNotFound();
       renderNav();
       if (!r.anchor) window.scrollTo(0, 0);
       $('#main').focus({ preventScroll: true });
-    } else renderNav();
+    } else { renderNav(); if (r.mod === '#videos' && r.play) openPlayer(r.play, JSON.parse($('#main').dataset.playlist || '[]')); }
     if (r.anchor) requestAnimationFrame(() => goAnchor(r.anchor));
     // #/search/<text>: opened from the desk's search ("search the guide for …").
     if (r.search !== undefined) { history.replaceState(null, '', '#/'); requestAnimationFrame(() => openSearch(r.search)); }
@@ -315,7 +327,7 @@
     const secs = sectionList(m);
     let body = '';
     if (m.overview) body += `<section class="block prose lead" id="overview">${h2('overview', 'overview', i18('overview'))}${(m.overview[lang] || []).map((p) => `<p>${esc(p)}</p>`).join('')}</section>`;
-    if (m.concepts && m.concepts.length) body += `<section class="block" id="concepts">${h2('concepts', 'concepts', i18('concepts'))}<div class="concepts">${m.concepts.map((c, i) => `<div class="concept${peekId(c.doctype) ? ' has-peek' : ''}" id="c-${i}" ${c.doctype ? `data-dt="${esc(c.doctype)}" data-peek-title="${esc(t(c.term))}"` : ''}><b>${esc(t(c.term))}</b>${c.doctype ? `<code>${esc(c.doctype)}${peekId(c.doctype) ? svg('camera') : ''}</code>` : ''}<p>${esc(t(c.desc))}</p></div>`).join('')}</div></section>`;
+    if (m.concepts && m.concepts.length) body += `<section class="block" id="concepts">${h2('concepts', 'concepts', i18('concepts'))}<div class="concepts">${m.concepts.map((c, i) => `<div class="concept${peekId(c.doctype) ? ' has-peek' : ''}" id="c-${i}" ${c.doctype ? `data-dt="${esc(c.doctype)}" data-peek-title="${esc(t(c.term))}"` : ''}><b>${esc(t(c.term))}</b>${c.doctype ? `<code>${esc(c.doctype)}${peekId(c.doctype) ? svg('camera') : ''}</code>` : ''}<p>${esc(t(c.desc))}</p>${c.doctype && MEDIA.doctypes[c.doctype] ? `<button class="concept-video" data-play="${MEDIA.doctypes[c.doctype]}">${svg('play')} ${i18('watchScreen')}</button>` : ''}</div>`).join('')}</div></section>`;
     if (m.setup && m.setup.length) body += `<section class="block" id="setup">${h2('setup', 'setup', i18('setup'))}<ol class="steps-v">${m.setup.map((s) => `<li><b>${esc(t(s.title))}</b><p>${esc(t(s.desc))}</p>${pathChip(s.path)}</li>`).join('')}</ol></section>`;
     if (m.workflow && m.workflow.nodes) {
       body += `<section class="block" id="workflow">${h2('workflow', 'workflow', t(m.workflow.title) || i18('workflow'))}<div class="wf-card">
@@ -347,6 +359,7 @@
     if (m.tips && m.tips.length) body += `<section class="block" id="tips">${h2('tips', 'tips', i18('tips'))}<ul class="tips">${m.tips.map((x, i) => `<li id="t-${i}">${svg('tip')}<span>${esc(t(x))}</span></li>`).join('')}</ul></section>`;
     if (m.faq && m.faq.length) body += `<section class="block faq" id="faq">${h2('faq', 'faq', i18('faq'))}${m.faq.map((f, i) => `<details id="q-${i}"><summary>${esc(t(f.q))}</summary><div>${esc(t(f.a))}</div></details>`).join('')}</section>`;
     if (m.quiz && m.quiz.length) body += quizBlock(m);
+    body += mediaSection(m);
     const usedShots = new Set(((m.example && m.example.steps) || []).map((x) => x.shot).filter(Boolean));
     (m.sections || []).forEach((x) => (x.blocks || []).forEach((b) => { if (b.type === 'shot') usedShots.add(b.id); }));
     const gal = (m.screenshots || []).filter((s) => G.shots[s.id] && !usedShots.has(s.id));
@@ -371,6 +384,79 @@
         <aside class="toc"><h5>${i18('onPage')}</h5>${secs.map((s) => `<a href="#/m/${m.id}/${s.id}" data-sec="${s.id}">${esc(s.label)}</a>`).join('')}</aside>
       </div></div>`;
   }
+  /* ---------- media server videos (screen/report tours, connected flows) ---------- */
+  const MEDIA = G.media || { base: '', items: {}, doctypes: {}, reports: {}, flows: {} };
+  const mediaBase = () => window.GUIDE_VIDEO_BASE || MEDIA.base || '';
+  function mediaUrl(id, ext) {
+    const v = MEDIA.items[id]; if (!v) return '';
+    const l = v.langs.includes(lang) ? lang : v.langs[0];
+    return `${mediaBase()}${l}/${id}${ext}`;
+  }
+  const fmtDur = (v) => { const s = (v.seconds && (v.seconds[lang] || v.seconds.en || v.seconds.ar)) || 0; return s ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` : ''; };
+  let playlist = [], pIndex = 0;
+  // Play a video; the playlist (ids in order) lets the viewer go on to the next one.
+  function openPlayer(id, list) {
+    const v = MEDIA.items[id]; if (!v) return;
+    playlist = list && list.length ? list : modulePlaylist(v.module);
+    pIndex = Math.max(0, playlist.indexOf(id));
+    if (playlist.indexOf(id) < 0) { playlist = [id]; pIndex = 0; }
+    const box = $('#player'), vid = $('#playerVideo');
+    $('#playerTitle').textContent = t(v.title);
+    $('#playerPos').textContent = playlist.length > 1 ? `${pIndex + 1} / ${playlist.length}` : '';
+    $('#playerPrev').disabled = pIndex <= 0;
+    $('#playerNext').disabled = pIndex >= playlist.length - 1;
+    $('.player-nav').hidden = playlist.length < 2;
+    vid.poster = mediaUrl(id, '.webp');
+    vid.src = mediaUrl(id, '.webm');
+    box.hidden = false; document.body.style.overflow = 'hidden';
+    vid.play().catch(() => {});
+  }
+  const modulePlaylist = (mod) => Object.keys(MEDIA.items).filter((k) => MEDIA.items[k].module === mod);
+  const playStep = (dir) => { const n = pIndex + dir; if (n >= 0 && n < playlist.length) openPlayer(playlist[n], playlist); };
+  $('#playerVideo').addEventListener('ended', () => playStep(1));
+  $('#playerPrev').addEventListener('click', (e) => { e.stopPropagation(); playStep(-1); });
+  $('#playerNext').addEventListener('click', (e) => { e.stopPropagation(); playStep(1); });
+  function closePlayer() { const vid = $('#playerVideo'); vid.pause(); vid.removeAttribute('src'); vid.load(); $('#player').hidden = true; document.body.style.overflow = ''; }
+  // #/videos: every video of the system, by module, with type filters and a search box.
+  let libFilter = '', libQuery = '';
+  function renderVideos(playId) {
+    const all = Object.entries(MEDIA.items);
+    const label = { flow: i18('vFlow'), screen: i18('vScreen'), report: i18('vReport') };
+    const q = window.DRSearch.norm(libQuery);
+    const shown = all.filter(([, v]) => (!libFilter || v.type === libFilter) && (!q || window.DRSearch.norm(t(v.title) + ' ' + (v.title.en || '') + ' ' + (v.doctype || '') + ' ' + (v.report || '')).includes(q)));
+    const byMod = MODS.map((m) => [m, shown.filter(([, v]) => v.module === m.id)]).filter(([, l]) => l.length);
+    const count = (k) => all.filter(([, v]) => !k || v.type === k).length;
+    $('#main').innerHTML = `<div class="page">
+      <header class="mod-hero lib-hero"><div><div class="crumbs"><a href="#/">${i18('home')}</a><span>/</span><span>${i18('library')}</span></div>
+        <h1>${i18('library')}</h1><p class="tagline">${i18('libraryIntro')}</p>
+        <div class="lib-tools"><div class="lib-filters">${['', 'flow', 'screen', 'report'].map((k) => `<button data-lib="${k}" class="${k === libFilter ? 'on' : ''}">${k ? label[k] : i18('all')} <small>${count(k)}</small></button>`).join('')}</div>
+        <input id="libSearch" type="search" placeholder="${esc(i18('libSearch'))}" value="${esc(libQuery)}"></div></div></header>
+      ${byMod.length ? byMod.map(([m, list]) => `<section class="block lib-mod"><h2><span class="hn">${m.icon ? `<img src="${BASE}assets/img/icons/${m.icon}" alt="">` : svg('play')}</span><span>${esc(t(m.title))}</span><small class="lib-n">${list.length}</small></h2>
+        <div class="media-grid">${list.map(([id, v]) => mediaCard(id, v, label, 'lib')).join('')}</div></section>`).join('') : `<p class="search-empty">${i18('noRes')}</p>`}
+    </div>`;
+    const ids = shown.map(([id]) => id);
+    $('#main').dataset.playlist = JSON.stringify(ids);
+    const inp = $('#libSearch');
+    inp.addEventListener('input', () => { libQuery = inp.value; const pos = inp.selectionStart; renderVideos(); const n = $('#libSearch'); n.focus(); n.setSelectionRange(pos, pos); });
+    if (playId && MEDIA.items[playId]) openPlayer(playId, ids.includes(playId) ? ids : null);
+  }
+  function mediaCard(id, v, label, list) {
+    return `<button class="media-card media-${v.type}" data-play="${id}" data-list="${list}">
+        <span class="mc-art"><img src="${mediaUrl(id, '.webp')}" alt="" loading="lazy"><span class="mc-play">${svg('play')}</span>${fmtDur(v) ? `<span class="mc-dur">${fmtDur(v)}</span>` : ''}</span>
+        <span class="mc-body"><small>${label[v.type]}</small><b>${esc(t(v.title))}</b></span></button>`;
+  }
+
+  function mediaSection(m) {
+    const items = Object.entries(MEDIA.items).filter(([, v]) => v.module === m.id);
+    if (!items.length) return '';
+    const order = { flow: 0, screen: 1, report: 2 };
+    items.sort((a, b) => order[a[1].type] - order[b[1].type]);
+    const label = { flow: i18('vFlow'), screen: i18('vScreen'), report: i18('vReport') };
+    return `<section class="block" id="media">${h2('media', 'play', i18('mediaTitle'))}<p class="media-intro">${i18('mediaIntro')}</p>
+      <div class="media-grid">${items.map(([id, v]) => mediaCard(id, v, label, 'module')).join('')}</div>
+      <a class="lib-link" href="#/videos">${svg('play')} ${i18('openLibrary')}</a></section>`;
+  }
+
   /* ---------- videos ---------- */
   function videoBlock(m) {
     const vids = (G.videos || []).filter((v) => v.module === m.id);
@@ -467,6 +553,7 @@
       (m.tips || []).forEach((x, i) => entries.push({ mod: m.id, anchor: 't-' + i, kind: 'tip', title: x, text: T0 }));
       (m.faq || []).forEach((f, i) => entries.push({ mod: m.id, anchor: 'q-' + i, kind: 'faq', title: f.q, text: f.a }));
     }
+    for (const [id, v] of Object.entries(MEDIA.items)) entries.push({ mod: v.module, anchor: '', kind: 'video', vid: id, title: v.title, text: { ar: `${v.doctype || v.report || ''}`, en: `${v.doctype || v.report || ''}` }, doctype: v.doctype || v.report || '' });
     function t2(o, l) { return o ? (typeof o === 'string' ? o : o[l] || '') : ''; }
     function flattenBlocks(bs) {
       const out = [];
@@ -490,7 +577,7 @@
   }
   function closeSearch() { modal.hidden = true; document.body.style.overflow = ''; }
   function renderFilters() {
-    const kinds = ['', 'module', 'concept', 'step', 'section', 'workflow', 'report', 'faq', 'tip'];
+    const kinds = ['', 'module', 'concept', 'step', 'section', 'workflow', 'report', 'faq', 'tip'].concat(Object.keys(MEDIA.items).length ? ['video'] : []);
     $('#searchFilters').innerHTML = kinds.map((k) => `<button data-kind="${k}" class="${k === kindFilter ? 'on' : ''}">${k ? i18('k_' + k) : i18('all')}</button>`).join('');
   }
   function runSearch() {
@@ -513,7 +600,7 @@
       for (const i of idxs) {
         const e = current[i].entry;
         const title = t(e.title), text = t(e.text);
-        out += `<a class="sr" role="option" id="sr-${i}" data-i="${i}" href="#/m/${e.mod}${e.anchor ? '/' + e.anchor : ''}" aria-selected="false">
+        out += `<a class="sr" role="option" id="sr-${i}" data-i="${i}" href="${e.kind === 'video' ? '#/videos/' + e.vid : `#/m/${e.mod}${e.anchor ? '/' + e.anchor : ''}`}" aria-selected="false">
           <span class="k">${i18('k_' + e.kind)}</span>
           <span class="tx"><b>${window.DRSearch.highlight(title, q)}</b>${text ? `<p>${window.DRSearch.highlight(text, q, 160)}</p>` : ''}</span>
           <span class="go">${svg('arrow')}</span></a>`;
@@ -557,7 +644,7 @@
     const typing = /INPUT|TEXTAREA/.test(document.activeElement && document.activeElement.tagName);
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); modal.hidden ? openSearch() : closeSearch(); }
     else if (e.key === '/' && !typing && modal.hidden) { e.preventDefault(); openSearch(); }
-    else if (e.key === 'Escape') { if (!modal.hidden) closeSearch(); else if (!$('#lightbox').hidden) $('#lightbox').hidden = true; closeDl(); }
+    else if (e.key === 'Escape') { if (!$('#player').hidden) closePlayer(); else if (!modal.hidden) closeSearch(); else if (!$('#lightbox').hidden) $('#lightbox').hidden = true; closeDl(); }
   });
   document.addEventListener('click', (e) => {
     const os = e.target.closest('[data-open-search]'); if (os) { openSearch(); return; }
@@ -572,6 +659,10 @@
     const z = e.target.closest('[data-zoom]');
     if (z) { const img = $('img', z); const lb = $('#lightbox'); $('img', lb).src = img.currentSrc || img.src; $('figcaption', lb).textContent = img.alt; lb.hidden = false; return; }
     if (e.target.closest('#lightbox')) { $('#lightbox').hidden = true; return; }
+    const pv = e.target.closest('[data-play]');
+    if (pv) { e.stopPropagation(); hidePeek(); const list = pv.dataset.list === 'lib' ? JSON.parse($('#main').dataset.playlist || '[]') : null; openPlayer(pv.dataset.play, list); return; }
+    const lf = e.target.closest('[data-lib]'); if (lf) { libFilter = lf.dataset.lib; renderVideos(); return; }
+    if (e.target.closest('#playerClose') || e.target.id === 'player') { closePlayer(); return; }
     const pk = e.target.closest('.concept.has-peek, .ex-step > header.has-peek');
     if (pk) { hidePeek(); openLightbox(peekId(pk.dataset.dt), pk.dataset.peekTitle); return; }
     const node = e.target.closest('.wf-node[data-doctype]'); if (node) { jumpDoctype(node.dataset.doctype); return; }

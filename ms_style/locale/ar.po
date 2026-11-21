@@ -434,3 +434,23 @@ msgstr "الدليل: {0}"
 msgctxt "ms_style"
 msgid "Search the user guide for {0}"
 msgstr "ابحث في دليل المستخدم عن {0}"
+
+msgctxt "ms_style"
+msgid "Screen video"
+msgstr "فيديو الشاشة"
+
+msgctxt "ms_style"
+msgid "Report video"
+msgstr "فيديو التقرير"
+
+msgctxt "ms_style"
+msgid "The connected cycle"
+msgstr "الدورة المترابطة"
+
+msgctxt "ms_style"
+msgid "Video"
+msgstr "فيديو"
+
+msgctxt "ms_style"
+msgid "Watch"
+msgstr "شاهد"
