@@ -62,6 +62,9 @@
     sugs: { ar: ['فاتورة مبيعات', 'رفع الأصناف', 'صلاحيات المخزن', 'جزاءات التأخير', 'إهلاك', 'قائمة المواد BOM', 'إقفال نقطة البيع'], en: ['sales invoice', 'import items', 'warehouse permission', 'late penalty', 'depreciation', 'BOM', 'POS closing'] },
     peekHint: { ar: 'اضغط للتكبير', en: 'Click to enlarge' },
     quiz: { ar: 'اختبر نفسك', en: 'Test yourself' },
+    watch: { ar: 'شاهد الفيديو', en: 'Watch the video' },
+    videoNote: { ar: 'فيديو قصير من النظام الحقيقي، بدون صوت؛ الشرح مكتوب على الشاشة.', en: 'A short silent video of the real system; the explanation is written on screen.' },
+    sVideos: { ar: 'فيديو تعليمي', en: 'videos' },
     quizIntro: { ar: 'جاوب على الأسئلة دي عشان تتأكد إنك فهمت الفصل. لو جبت 80% أو أكتر الفصل هيتعلّم إنه مكتمل.', en: 'Answer these questions to check your understanding. Score 80% or more and the chapter is marked as learned.' },
     quizProgress: { ar: 'جاوبت {a} من {n}', en: 'Answered {a} of {n}' },
     quizScore: { ar: 'نتيجتك: {r} من {n}', en: 'Your score: {r} of {n}' },
@@ -105,6 +108,7 @@
     prog: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
     arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
     camera: '<rect x="2" y="6" width="20" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2.5h5L16 6"/>',
+    play: '<circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4z"/>',
     report: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 17v-3M12 17v-6M16 17v-4"/>'
   };
   const svg = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k] || ''}</svg>`;
@@ -325,6 +329,7 @@
       body += `<section class="block" id="example">${h2('example', 'example', i18('example'))}
         <h3 style="margin-top:0">${esc(t(ex.title))}</h3>
         <div class="scenario"><div class="ic">${svg('story')}</div><div><b>${i18('scenario')}</b><p>${esc(t(ex.scenario))}</p></div></div>
+        ${videoBlock(m)}
         <div class="ex-steps">${(ex.steps || []).map((s, i) => `<article class="ex-step" id="step-${i + 1}">
           <header${s.doctype && peekId(s.doctype) ? ` class="has-peek" data-dt="${esc(s.doctype)}" data-peek-title="${esc(t(s.title))}"` : ''}><div><h4>${esc(t(s.title))}</h4>${s.doctype ? `<span class="dtag">${esc(s.doctype)}${peekId(s.doctype) ? svg('camera') : ''}</span>` : ''}</div></header>
           <div class="inner">${pathChip(s.path)}${s.desc ? `<p>${esc(t(s.desc))}</p>` : ''}
@@ -366,6 +371,19 @@
         <aside class="toc"><h5>${i18('onPage')}</h5>${secs.map((s) => `<a href="#/m/${m.id}/${s.id}" data-sec="${s.id}">${esc(s.label)}</a>`).join('')}</aside>
       </div></div>`;
   }
+  /* ---------- videos ---------- */
+  function videoBlock(m) {
+    const vids = (G.videos || []).filter((v) => v.module === m.id);
+    if (!vids.length) return '';
+    return `<div class="videos">${vids.map((v) => {
+      const l = v.langs.includes(lang) ? lang : v.langs[0];
+      return `<figure class="video-card" id="video-${v.id}">
+        <div class="video-head">${svg('play')}<b>${i18('watch')}</b><span>${esc(t(v.title))}</span></div>
+        <video controls preload="none" playsinline poster="${BASE}assets/video/${l}/${v.id}.webp" src="${BASE}assets/video/${l}/${v.id}.webm"></video>
+        <figcaption>${i18('videoNote')}</figcaption></figure>`;
+    }).join('')}</div>`;
+  }
+
   /* ---------- quiz ---------- */
   const LETTERS = { ar: ['أ', 'ب', 'ج', 'د'], en: ['A', 'B', 'C', 'D'] };
   function quizBlock(m) {

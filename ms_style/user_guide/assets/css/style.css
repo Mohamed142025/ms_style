@@ -545,3 +545,13 @@ html, body { overflow-x: clip; }
 .back-desk[hidden] { display: none; }
 .back-desk svg { width: 17px; height: 17px; }
 @media (max-width: 640px) { .back-desk span { display: none; } }
+
+/* ---------- Videos ---------- */
+.videos { display: grid; gap: 16px; margin: 0 0 18px; }
+.video-card { margin: 0; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); }
+.video-head { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: var(--roots); color: var(--sand); }
+.video-head svg { color: var(--mint); width: 22px; height: 22px; }
+.video-head b { color: var(--mint); }
+.video-head span { color: rgba(244, 241, 234, .85); }
+.video-card video { display: block; width: 100%; height: auto; aspect-ratio: 16/10; background: #0B1F19; }
+.video-card figcaption { padding: 8px 14px; font-size: 13px; color: var(--muted); }

@@ -10,6 +10,7 @@ The files are copied from the guide project by its tools/export_ms_style.mjs.
 
 import mimetypes
 import os
+import re
 from urllib.parse import quote
 
 import frappe
@@ -24,6 +25,7 @@ PRIVATE_CACHE = "private, max-age=86400"
 
 mimetypes.add_type("font/woff2", ".woff2")
 mimetypes.add_type("image/webp", ".webp")
+mimetypes.add_type("video/webm", ".webm")
 mimetypes.add_type("application/vnd.openxmlformats-officedocument.wordprocessingml.document", ".docx")
 
 
@@ -62,6 +64,8 @@ class GuidePage(BaseRenderer):
 			return Response("Not found", status=404, mimetype="text/plain")
 
 		mimetype = mimetypes.guess_type(file_path)[0] or "application/octet-stream"
+		if mimetype.startswith("video/"):
+			return video_response(file_path, mimetype)
 		with open(file_path, "rb") as f:
 			data = f.read()
 		if relative == "index.html":
@@ -83,6 +87,35 @@ def page_with_base(html: bytes) -> bytes:
 			text = text.replace(attr + folder, attr + base + folder)
 	text = text.replace("<head>", f'<head>\n  <script>window.GUIDE_BASE = "{base}";</script>', 1)
 	return text.encode("utf-8")
+
+
+def video_response(file_path, mimetype):
+	"""Videos with HTTP Range support, so the player can seek and start without the whole file."""
+	size = os.path.getsize(file_path)
+	start, end = 0, size - 1
+	partial = False
+	match = re.match(r"bytes=(\d*)-(\d*)", frappe.local.request.headers.get("Range", ""))
+	if match and (match.group(1) or match.group(2)):
+		partial = True
+		if match.group(1):
+			start = int(match.group(1))
+			end = int(match.group(2)) if match.group(2) else end
+		else:  # suffix range: the last N bytes
+			start = max(0, size - int(match.group(2)))
+		end = min(end, size - 1)
+		if start > end:
+			response = Response(status=416)
+			response.headers["Content-Range"] = f"bytes */{size}"
+			return response
+	with open(file_path, "rb") as f:
+		f.seek(start)
+		data = f.read(end - start + 1)
+	response = Response(data, status=206 if partial else 200, mimetype=mimetype)
+	response.headers["Accept-Ranges"] = "bytes"
+	response.headers["Cache-Control"] = PRIVATE_CACHE
+	if partial:
+		response.headers["Content-Range"] = f"bytes {start}-{end}/{size}"
+	return response
 
 
 def redirect(location):
