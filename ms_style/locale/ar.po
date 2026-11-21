@@ -418,3 +418,19 @@ msgstr "دليل المستخدم"
 
 msgid "The user guide is available to system users only."
 msgstr "دليل المستخدم متاح لمستخدمي النظام فقط."
+
+msgctxt "ms_style"
+msgid "Explain this screen"
+msgstr "شرح الشاشة"
+
+msgctxt "ms_style"
+msgid "Explained in the user guide"
+msgstr "مشروح في دليل المستخدم"
+
+msgctxt "ms_style"
+msgid "Guide: {0}"
+msgstr "الدليل: {0}"
+
+msgctxt "ms_style"
+msgid "Search the user guide for {0}"
+msgstr "ابحث في دليل المستخدم عن {0}"

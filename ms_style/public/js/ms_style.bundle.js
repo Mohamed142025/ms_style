@@ -13,6 +13,7 @@ import "./sidebar_icons";
 import "./workspace_cards";
 import "./grid_suggestions";
 import "./avatar_menu";
+import "./guide_help";
 import { getDeskIcon } from "./brand_icons";
 import { applyNavbarThemeToggle, applySidebarThemeToggle } from "./theme_toggle";
 import { applySidebarLanguageToggle } from "./language_toggle";

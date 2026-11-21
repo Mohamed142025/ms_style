@@ -171,6 +171,7 @@
     const p = h.split('/').filter(Boolean);
     if (p[0] === 'm' && p[1]) return { mod: p[1], anchor: p[2] || '' };
     if (p[0] === 'paths') return { mod: '', anchor: 'paths' };
+    if (p[0] === 'search') return { mod: '', anchor: '', search: p.slice(1).join('/') };
     return { mod: '', anchor: '' };
   }
   let lastMod = null;
@@ -186,6 +187,8 @@
       $('#main').focus({ preventScroll: true });
     } else renderNav();
     if (r.anchor) requestAnimationFrame(() => goAnchor(r.anchor));
+    // #/search/<text>: opened from the desk's search ("search the guide for …").
+    if (r.search !== undefined) { history.replaceState(null, '', '#/'); requestAnimationFrame(() => openSearch(r.search)); }
     if (r.mod && byId[r.mod] && byId[r.mod].quiz) quizScore(r.mod);
     document.title = (r.mod && byId[r.mod] ? t(byId[r.mod].title) + ' · ' : '') + (lang === 'ar' ? 'دليل ERPNext · Digital Roots' : 'ERPNext Guide · Digital Roots');
     setupScrollSpy();

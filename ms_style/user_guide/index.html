@@ -12,6 +12,8 @@
     // Apply saved language/theme before first paint (no flash).
     (function () {
       try {
+        var q = new URLSearchParams(location.search).get('lang');
+        if (q === 'ar' || q === 'en') localStorage.setItem('drg.lang', q);
         var l = localStorage.getItem('drg.lang'); var t = localStorage.getItem('drg.theme');
         var h = document.documentElement;
         if (l === 'en') { h.lang = 'en'; h.dir = 'ltr'; }
