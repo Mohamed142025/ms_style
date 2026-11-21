@@ -111,7 +111,7 @@
 
   const MODS = G.modules.slice().sort((a, b) => a.order - b.order);
   const byId = Object.fromEntries(MODS.map((m) => [m.id, m]));
-  const groupOf = (m) => (m.order <= 1 ? 'gStart' : m.order >= 13 ? 'gAdmin' : 'gMods');
+  const groupOf = (m) => (m.order <= 1 ? 'gStart' : m.order >= 14 ? 'gAdmin' : 'gMods');
 
   /* ---------- learning paths (by job role) ---------- */
   const PATHS = G.paths || [];
