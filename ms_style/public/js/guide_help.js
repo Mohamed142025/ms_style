@@ -57,7 +57,8 @@
     if (!v) return "";
     const base = window.frappe?.boot?.guide_video_base || index.videos.base || "/assets/guide-media/";
     const l = v.langs.includes(lang()) ? lang() : v.langs[0];
-    return `${base.replace(/\/?$/, "/")}${l}/${id}${ext}`;
+    const ver = v.v && v.v[l] ? `?v=${v.v[l]}` : "";
+    return `${base.replace(/\/?$/, "/")}${l}/${id}${ext}${ver}`;
   }
   // Video entries for a DocType or a report: its own tour, then the connected flows it is part of.
   function videoEntries({ doctype, report }) {

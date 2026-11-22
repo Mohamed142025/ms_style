@@ -71,6 +71,9 @@
     libSearch: { ar: 'ابحث في الفيديوهات…', en: 'Search the videos…' },
     openLibrary: { ar: 'كل الفيديوهات في المكتبة', en: 'All videos in the library' },
     k_video: { ar: 'فيديو', en: 'Video' },
+    vCount: { flow: { ar: 'دورة مترابطة', en: 'connected cycles' }, screen: { ar: 'شاشة', en: 'screens' }, report: { ar: 'تقرير', en: 'reports' } },
+    vFlows: { ar: 'الدورات المترابطة', en: 'Connected cycles' }, vScreens: { ar: 'الشاشات', en: 'Screens' }, vReports: { ar: 'التقارير', en: 'Reports' },
+    libAllMods: { ar: 'نتائج البحث في كل الموديولات', en: 'Search results across all modules' }, openChapter: { ar: 'افتح الفصل', en: 'Open the chapter' }, watchCycle: { ar: 'شاهد الدورة', en: 'Watch the cycle' },
     vFlow: { ar: 'دورة مترابطة', en: 'Connected cycle' }, vScreen: { ar: 'شاشة', en: 'Screen' }, vReport: { ar: 'تقرير', en: 'Report' },
     videoNote: { ar: 'فيديو قصير من النظام الحقيقي، بدون صوت؛ الشرح مكتوب على الشاشة.', en: 'A short silent video of the real system; the explanation is written on screen.' },
     sVideos: { ar: 'فيديو تعليمي', en: 'videos' },
@@ -390,7 +393,7 @@
   function mediaUrl(id, ext) {
     const v = MEDIA.items[id]; if (!v) return '';
     const l = v.langs.includes(lang) ? lang : v.langs[0];
-    return `${mediaBase()}${l}/${id}${ext}`;
+    return `${mediaBase()}${l}/${id}${ext}${v.v && v.v[l] ? '?v=' + v.v[l] : ''}`;
   }
   const fmtDur = (v) => { const s = (v.seconds && (v.seconds[lang] || v.seconds.en || v.seconds.ar)) || 0; return s ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}` : ''; };
   let playlist = [], pIndex = 0;
@@ -417,22 +420,41 @@
   $('#playerPrev').addEventListener('click', (e) => { e.stopPropagation(); playStep(-1); });
   $('#playerNext').addEventListener('click', (e) => { e.stopPropagation(); playStep(1); });
   function closePlayer() { const vid = $('#playerVideo'); vid.pause(); vid.removeAttribute('src'); vid.load(); $('#player').hidden = true; document.body.style.overflow = ''; }
-  // #/videos: every video of the system, by module, with type filters and a search box.
-  let libFilter = '', libQuery = '';
+  // #/videos: every video of the system. One module at a time (tabs), and inside it the
+  // connected cycles first, then the screens in workflow order, then the reports.
+  let libFilter = '', libQuery = '', libMod = null;
+  const vLabel = () => ({ flow: i18('vFlow'), screen: i18('vScreen'), report: i18('vReport') });
+  const vGroup = () => ({ flow: i18('vFlows'), screen: i18('vScreens'), report: i18('vReports') });
+  // DocType → its name in the interface language (from the screen tours' titles).
+  const dtName = (dt) => { for (const v of Object.values(MEDIA.items)) if (v.type === 'screen' && v.doctype === dt) return t(v.title); return dt; };
   function renderVideos(playId) {
     const all = Object.entries(MEDIA.items);
-    const label = { flow: i18('vFlow'), screen: i18('vScreen'), report: i18('vReport') };
     const q = window.DRSearch.norm(libQuery);
-    const shown = all.filter(([, v]) => (!libFilter || v.type === libFilter) && (!q || window.DRSearch.norm(t(v.title) + ' ' + (v.title.en || '') + ' ' + (v.doctype || '') + ' ' + (v.report || '')).includes(q)));
-    const byMod = MODS.map((m) => [m, shown.filter(([, v]) => v.module === m.id)]).filter(([, l]) => l.length);
+    const match = ([, v]) => (!libFilter || v.type === libFilter) && (!q || window.DRSearch.norm(t(v.title) + ' ' + (v.title.en || '') + ' ' + (v.doctype || '') + ' ' + (v.report || '')).includes(q));
+    const mods = MODS.filter((m) => all.some(([, v]) => v.module === m.id));
+    if (playId && MEDIA.items[playId]) libMod = MEDIA.items[playId].module;
+    if (libMod === null || (libMod && !mods.some((m) => m.id === libMod))) libMod = (mods[0] || {}).id || '';
+    const scope = q ? '' : libMod; // a search looks in every module
+    const shown = all.filter(match).filter(([, v]) => !scope || v.module === scope);
     const count = (k) => all.filter(([, v]) => !k || v.type === k).length;
-    $('#main').innerHTML = `<div class="page">
-      <header class="mod-hero lib-hero"><div><div class="crumbs"><a href="#/">${i18('home')}</a><span>/</span><span>${i18('library')}</span></div>
-        <h1>${i18('library')}</h1><p class="tagline">${i18('libraryIntro')}</p>
-        <div class="lib-tools"><div class="lib-filters">${['', 'flow', 'screen', 'report'].map((k) => `<button data-lib="${k}" class="${k === libFilter ? 'on' : ''}">${k ? label[k] : i18('all')} <small>${count(k)}</small></button>`).join('')}</div>
-        <input id="libSearch" type="search" placeholder="${esc(i18('libSearch'))}" value="${esc(libQuery)}"></div></div></header>
-      ${byMod.length ? byMod.map(([m, list]) => `<section class="block lib-mod"><h2><span class="hn">${m.icon ? `<img src="${BASE}assets/img/icons/${m.icon}" alt="">` : svg('play')}</span><span>${esc(t(m.title))}</span><small class="lib-n">${list.length}</small></h2>
-        <div class="media-grid">${list.map(([id, v]) => mediaCard(id, v, label, 'lib')).join('')}</div></section>`).join('') : `<p class="search-empty">${i18('noRes')}</p>`}
+    const modCount = (id) => all.filter(([, v]) => v.module === id).length;
+    const sections = MODS.map((m) => [m, shown.filter(([, v]) => v.module === m.id)]).filter(([, l]) => l.length);
+    const types = ['flow', 'screen', 'report'];
+    $('#main').innerHTML = `<div class="page lib">
+      <header class="lib-head"><div class="crumbs"><a href="#/">${i18('home')}</a><span>/</span><span>${i18('library')}</span></div>
+        <div class="lib-title"><div><h1>${i18('library')}</h1><p class="tagline">${i18('libraryIntro')}</p></div>
+          <dl class="lib-stats">${types.map((k) => `<div><dt>${vGroup()[k]}</dt><dd>${count(k)}</dd></div>`).join('')}</dl></div>
+        <div class="lib-tools"><label class="lib-search">${svg('search')}<input id="libSearch" type="search" placeholder="${esc(i18('libSearch'))}" value="${esc(libQuery)}"></label>
+          <div class="lib-filters" role="group">${['', ...types].map((k) => `<button data-lib="${k}" class="${k === libFilter ? 'on' : ''}">${k ? vGroup()[k] : i18('all')}</button>`).join('')}</div></div>
+      </header>
+      ${q ? `<p class="lib-searching">${i18('libAllMods')}</p>` : `<nav class="lib-mods" aria-label="${esc(i18('library'))}">${mods.map((m) => `<button data-libmod="${m.id}" class="${m.id === libMod ? 'on' : ''}">${m.icon ? `<img src="${BASE}assets/img/icons/${m.icon}" alt="">` : ''}<span>${esc(t(m.title))}</span><small>${modCount(m.id)}</small></button>`).join('')}</nav>`}
+      ${sections.length ? sections.map(([m, list]) => `<section class="lib-mod">
+        <header class="lib-mod-head">${m.icon ? `<img src="${BASE}assets/img/icons/${m.icon}" alt="">` : ''}<div><h2>${esc(t(m.title))}</h2><p>${types.map((k) => { const n = list.filter(([, v]) => v.type === k).length; return n ? `${n} ${t(I.vCount[k])}` : ''; }).filter(Boolean).join(' · ')}</p></div>
+          <a class="lib-chapter" href="#/m/${m.id}">${i18('openChapter')} ${svg('arrow')}</a></header>
+        ${types.map((k) => { const items = list.filter(([, v]) => v.type === k); if (!items.length) return '';
+          return `<div class="lib-group lib-${k}"><h3>${vGroup()[k]} <small>${items.length}</small></h3>
+            <div class="${k === 'flow' ? 'flow-grid' : 'media-grid'}">${items.map(([id, v], i) => k === 'flow' ? flowCard(id, v) : mediaCard(id, v, vLabel(), 'lib', i + 1)).join('')}</div></div>`; }).join('')}
+      </section>`).join('') : `<p class="search-empty">${i18('noRes')}</p>`}
     </div>`;
     const ids = shown.map(([id]) => id);
     $('#main').dataset.playlist = JSON.stringify(ids);
@@ -440,10 +462,18 @@
     inp.addEventListener('input', () => { libQuery = inp.value; const pos = inp.selectionStart; renderVideos(); const n = $('#libSearch'); n.focus(); n.setSelectionRange(pos, pos); });
     if (playId && MEDIA.items[playId]) openPlayer(playId, ids.includes(playId) ? ids : null);
   }
-  function mediaCard(id, v, label, list) {
+  // The poster's language decides which side the desk sidebar is on (cropped away in cards).
+  const posterLang = (v) => (v.langs.includes(lang) ? lang : v.langs[0]);
+  function mediaCard(id, v, label, list, n) {
     return `<button class="media-card media-${v.type}" data-play="${id}" data-list="${list}">
-        <span class="mc-art"><img src="${mediaUrl(id, '.webp')}" alt="" loading="lazy"><span class="mc-play">${svg('play')}</span>${fmtDur(v) ? `<span class="mc-dur">${fmtDur(v)}</span>` : ''}</span>
-        <span class="mc-body"><small>${label[v.type]}</small><b>${esc(t(v.title))}</b></span></button>`;
+        <span class="mc-art" data-vl="${posterLang(v)}"><img src="${mediaUrl(id, '.webp')}" alt="" loading="lazy"><span class="mc-play">${svg('play')}</span>${fmtDur(v) ? `<span class="mc-dur">${fmtDur(v)}</span>` : ''}</span>
+        <span class="mc-body">${n ? `<span class="mc-n">${String(n).padStart(2, '0')}</span>` : ''}<span class="mc-text"><b>${esc(t(v.title))}</b><small>${label[v.type]}${v.type !== 'flow' && (v.doctype || v.report) && lang === 'ar' ? ` · <span dir="ltr">${esc(v.doctype || v.report)}</span>` : ''}</small></span></span></button>`;
+  }
+  function flowCard(id, v) {
+    const steps = (v.doctypes || []).map((dt) => `<span>${esc(dtName(dt))}</span>`).join(`<i>${lang === 'ar' ? '←' : '→'}</i>`);
+    return `<button class="flow-card" data-play="${id}" data-list="lib">
+        <span class="mc-art" data-vl="${posterLang(v)}"><img src="${mediaUrl(id, '.webp')}" alt="" loading="lazy"><span class="mc-play">${svg('play')}</span>${fmtDur(v) ? `<span class="mc-dur">${fmtDur(v)}</span>` : ''}</span>
+        <span class="fc-body"><small>${i18('vFlow')}</small><b>${esc(t(v.title))}</b>${steps ? `<span class="fc-steps">${steps}</span>` : ''}<span class="fc-cta">${svg('play')} ${i18('watchCycle')}</span></span></button>`;
   }
 
   function mediaSection(m) {
@@ -662,6 +692,7 @@
     const pv = e.target.closest('[data-play]');
     if (pv) { e.stopPropagation(); hidePeek(); const list = pv.dataset.list === 'lib' ? JSON.parse($('#main').dataset.playlist || '[]') : null; openPlayer(pv.dataset.play, list); return; }
     const lf = e.target.closest('[data-lib]'); if (lf) { libFilter = lf.dataset.lib; renderVideos(); return; }
+    const lm = e.target.closest('[data-libmod]'); if (lm) { libMod = lm.dataset.libmod; renderVideos(); window.scrollTo({ top: 0 }); lm.scrollIntoView && $(`[data-libmod="${libMod}"]`)?.scrollIntoView({ block: 'nearest', inline: 'center' }); return; }
     if (e.target.closest('#playerClose') || e.target.id === 'player') { closePlayer(); return; }
     const pk = e.target.closest('.concept.has-peek, .ex-step > header.has-peek');
     if (pk) { hidePeek(); openLightbox(peekId(pk.dataset.dt), pk.dataset.peekTitle); return; }
