@@ -22,7 +22,7 @@
     edition: { ar: 'إصدار', en: 'Edition' },
     kNav: { ar: 'تنقل', en: 'navigate' }, kOpen: { ar: 'فتح', en: 'open' }, kClose: { ar: 'إغلاق', en: 'close' },
     progress: { ar: 'تقدّمك في التعلم', en: 'Your learning progress' },
-    gStart: { ar: 'ابدأ هنا', en: 'Start here' }, gMods: { ar: 'الموديولات', en: 'Modules' }, gAdmin: { ar: 'البيانات والصلاحيات', en: 'Data & Access' },
+    gStart: { ar: 'ابدأ هنا', en: 'Start here' }, gMods: { ar: 'الموديولات', en: 'Modules' }, gAdmin: { ar: 'البيانات والصلاحيات', en: 'Data & Access' }, gAI: { ar: 'الذكاء الاصطناعي', en: 'AI' },
     overview: { ar: 'نظرة عامة', en: 'Overview' }, concepts: { ar: 'المفاهيم والمستندات الأساسية', en: 'Key concepts & documents' },
     setup: { ar: 'الإعداد لأول مرة', en: 'First-time setup' }, workflow: { ar: 'دورة العمل (Workflow)', en: 'Workflow' },
     example: { ar: 'مثال تطبيقي خطوة بخطوة', en: 'Hands-on example, step by step' }, deep: { ar: 'شرح متعمق', en: 'Deep dive' },
@@ -129,7 +129,7 @@
 
   const MODS = G.modules.slice().sort((a, b) => a.order - b.order);
   const byId = Object.fromEntries(MODS.map((m) => [m.id, m]));
-  const groupOf = (m) => (m.order <= 1 ? 'gStart' : m.order >= 14 ? 'gAdmin' : 'gMods');
+  const groupOf = (m) => (m.id === 'roots-ai' ? 'gAI' : m.order <= 1 ? 'gStart' : m.order >= 14 ? 'gAdmin' : 'gMods');
 
   /* ---------- learning paths (by job role) ---------- */
   const PATHS = G.paths || [];
