@@ -74,6 +74,7 @@
     vCount: { flow: { ar: 'دورة مترابطة', en: 'connected cycles' }, screen: { ar: 'شاشة', en: 'screens' }, report: { ar: 'تقرير', en: 'reports' } },
     vFlows: { ar: 'الدورات المترابطة', en: 'Connected cycles' }, vScreens: { ar: 'الشاشات', en: 'Screens' }, vReports: { ar: 'التقارير', en: 'Reports' },
     libAllMods: { ar: 'نتائج البحث في كل الموديولات', en: 'Search results across all modules' }, openChapter: { ar: 'افتح الفصل', en: 'Open the chapter' }, watchCycle: { ar: 'شاهد الدورة', en: 'Watch the cycle' },
+    vApp: { ar: 'تطبيق الموظف', en: 'Employee app' },
     vFlow: { ar: 'دورة مترابطة', en: 'Connected cycle' }, vScreen: { ar: 'شاشة', en: 'Screen' }, vReport: { ar: 'تقرير', en: 'Report' },
     videoNote: { ar: 'فيديو قصير من النظام الحقيقي، بدون صوت؛ الشرح مكتوب على الشاشة.', en: 'A short silent video of the real system; the explanation is written on screen.' },
     sVideos: { ar: 'فيديو تعليمي', en: 'videos' },
@@ -121,6 +122,7 @@
     arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
     camera: '<rect x="2" y="6" width="20" height="14" rx="3"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2.5h5L16 6"/>',
     play: '<circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4z"/>',
+    phone: '<rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/>',
     report: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 17v-3M12 17v-6M16 17v-4"/>'
   };
   const svg = (k) => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICON[k] || ''}</svg>`;
@@ -405,6 +407,7 @@
     if (playlist.indexOf(id) < 0) { playlist = [id]; pIndex = 0; }
     const box = $('#player'), vid = $('#playerVideo');
     $('#playerTitle').textContent = t(v.title);
+    box.querySelector('.player-box').classList.toggle('is-portrait', portrait(v));
     $('#playerPos').textContent = playlist.length > 1 ? `${pIndex + 1} / ${playlist.length}` : '';
     $('#playerPrev').disabled = pIndex <= 0;
     $('#playerNext').disabled = pIndex >= playlist.length - 1;
@@ -464,15 +467,19 @@
   }
   // The poster's language decides which side the desk sidebar is on (cropped away in cards).
   const posterLang = (v) => (v.langs.includes(lang) ? lang : v.langs[0]);
+  // A phone recording (the employee app) is portrait: shown whole, as a phone on the brand
+  // background, with an "Employee app" tag, instead of cropped like the desk's screens.
+  const portrait = (v) => v.orientation === 'portrait';
+  const mcArt = (id, v) => `<span class="mc-art${portrait(v) ? ' is-portrait' : ''}" data-vl="${posterLang(v)}"><img src="${mediaUrl(id, '.webp')}" alt="" loading="lazy">${portrait(v) ? `<span class="mc-app">${svg('phone')}${i18('vApp')}</span>` : ''}<span class="mc-play">${svg('play')}</span>${fmtDur(v) ? `<span class="mc-dur">${fmtDur(v)}</span>` : ''}</span>`;
   function mediaCard(id, v, label, list, n) {
     return `<button class="media-card media-${v.type}" data-play="${id}" data-list="${list}">
-        <span class="mc-art" data-vl="${posterLang(v)}"><img src="${mediaUrl(id, '.webp')}" alt="" loading="lazy"><span class="mc-play">${svg('play')}</span>${fmtDur(v) ? `<span class="mc-dur">${fmtDur(v)}</span>` : ''}</span>
+        ${mcArt(id, v)}
         <span class="mc-body">${n ? `<span class="mc-n">${String(n).padStart(2, '0')}</span>` : ''}<span class="mc-text"><b>${esc(t(v.title))}</b><small>${label[v.type]}${v.type !== 'flow' && (v.doctype || v.report) && lang === 'ar' ? ` · <span dir="ltr">${esc(v.doctype || v.report)}</span>` : ''}</small></span></span></button>`;
   }
   function flowCard(id, v) {
     const steps = (v.doctypes || []).map((dt) => `<span>${esc(dtName(dt))}</span>`).join(`<i>${lang === 'ar' ? '←' : '→'}</i>`);
     return `<button class="flow-card" data-play="${id}" data-list="lib">
-        <span class="mc-art" data-vl="${posterLang(v)}"><img src="${mediaUrl(id, '.webp')}" alt="" loading="lazy"><span class="mc-play">${svg('play')}</span>${fmtDur(v) ? `<span class="mc-dur">${fmtDur(v)}</span>` : ''}</span>
+        ${mcArt(id, v)}
         <span class="fc-body"><small>${i18('vFlow')}</small><b>${esc(t(v.title))}</b>${steps ? `<span class="fc-steps">${steps}</span>` : ''}<span class="fc-cta">${svg('play')} ${i18('watchCycle')}</span></span></button>`;
   }
 

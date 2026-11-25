@@ -25,7 +25,9 @@
     .ms-guide-player-box header svg { color: #34D399; display: block; }
     .ms-guide-player-box header b { flex: 1; }
     .ms-guide-player-close { color: #F4F1EA !important; background: rgba(244,241,234,.1) !important; }
-    .ms-guide-player-box video { display: block; width: 100%; aspect-ratio: 16/10; background: #0B1F19; }`;
+    .ms-guide-player-box video { display: block; width: 100%; aspect-ratio: 16/10; background: #0B1F19; }
+    .ms-guide-player-box.is-portrait { --pw: min(calc(100vw - 40px), calc(min(100vh - 130px, 900px) * 390 / 844)); width: max(var(--pw), min(380px, calc(100vw - 40px))); background: #0B1F19; }
+    .ms-guide-player-box.is-portrait video { width: var(--pw); height: auto; aspect-ratio: 390 / 844; margin: 0 auto; }`;
   document.head.appendChild(style);
 
   const t = (message, args = []) =>
@@ -75,7 +77,7 @@
     const v = index.videos.items[id];
     $(".ms-guide-player").remove();
     const player = $(`<div class="ms-guide-player" role="dialog" aria-modal="true">
-        <div class="ms-guide-player-box"><header><span>${PLAY}</span><b>${esc(text(v.title))}</b>
+        <div class="ms-guide-player-box${v.orientation === "portrait" ? " is-portrait" : ""}"><header><span>${PLAY}</span><b>${esc(text(v.title))}</b>
         <button type="button" class="btn btn-sm ms-guide-player-close" aria-label="${esc(__("Close"))}">✕</button></header>
         <video controls autoplay playsinline preload="metadata" poster="${videoUrl(id, ".webp")}" src="${videoUrl(id, ".webm")}"></video></div></div>`).appendTo(document.body);
     const close = () => { player.find("video")[0]?.pause(); player.remove(); $(document).off("keydown.msguideplayer"); };

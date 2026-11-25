@@ -584,6 +584,18 @@ html, body { overflow-x: clip; }
 .player-box header { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--roots); color: var(--sand); }
 .player-box header b { flex: 1; }
 .player-box video { display: block; width: 100%; aspect-ratio: 16/10; background: #0B1F19; }
+/* Portrait videos (the employee app, recorded on a phone): the whole screen as a phone on the
+   brand background in the 16:10 cards; in the player, a phone-shaped box as tall as the window allows. */
+.mc-art.is-portrait { background: radial-gradient(120% 90% at 50% 0%, #1B5A45 0%, var(--roots) 55%, #0B1F19 100%); }
+.mc-art.is-portrait img { position: absolute; top: 11%; left: 50%; width: auto; height: 165%; object-fit: contain; transform: translateX(-50%); transform-origin: 50% 0;
+  border: 4px solid #0E1A16; border-bottom: 0; border-radius: 16px 16px 0 0; box-shadow: 0 14px 34px rgba(0, 0, 0, .45), 0 0 0 1px rgba(244, 241, 234, .1); }
+.media-card:hover .mc-art.is-portrait img, .flow-card:hover .mc-art.is-portrait img { transform: translateX(-50%) translateY(-4%); }
+.mc-art.is-portrait::after { background: linear-gradient(180deg, rgba(14, 59, 46, 0) 70%, rgba(11, 31, 25, .6)); }
+.mc-app { position: absolute; top: 8px; inset-inline-start: 8px; z-index: 1; display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px 3px 6px; border-radius: 999px;
+  background: rgba(52, 211, 153, .16); border: 1px solid rgba(52, 211, 153, .35); color: var(--mint, #34D399); font-size: 11.5px; font-weight: 600; backdrop-filter: blur(4px); }
+.mc-app svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.9; }
+.player-box.is-portrait { --pw: min(calc(100vw - 40px), calc(min(100vh - 130px, 900px) * 390 / 844)); width: max(var(--pw), min(380px, calc(100vw - 40px))); background: #0B1F19; }
+.player-box.is-portrait video { width: var(--pw); height: auto; aspect-ratio: 390 / 844; margin: 0 auto; }
 @media (max-width: 640px) { .media-flow { grid-column: auto; } }
 
 /* ---------- Video library & playlist ---------- */
