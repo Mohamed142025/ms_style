@@ -103,7 +103,9 @@ const deskGlyphs = {
 };
 
 function getSymbol(glyph) {
-  const symbol = glyph && document.getElementById(`icon-${glyph}`);
+  // Not `glyph && ...`: an empty icon ("" on a Desktop Icon) would be the result, and
+  // "".tagName.toLowerCase() threw and left the whole desk without its icons.
+  const symbol = glyph ? document.getElementById(`icon-${glyph}`) : null;
   return symbol?.tagName.toLowerCase() === "symbol" && symbol.getAttribute("viewBox") === "0 0 24 24" ? symbol : null;
 }
 
