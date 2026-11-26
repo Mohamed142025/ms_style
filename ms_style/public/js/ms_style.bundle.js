@@ -14,7 +14,7 @@ import "./workspace_cards";
 import "./grid_suggestions";
 import "./avatar_menu";
 import "./guide_help";
-import { getDeskIcon } from "./brand_icons";
+import { getDeskIcon, getLetterIcon } from "./brand_icons";
 import { applyNavbarThemeToggle, applySidebarThemeToggle } from "./theme_toggle";
 import { applySidebarLanguageToggle } from "./language_toggle";
 
@@ -46,8 +46,10 @@ import { applySidebarLanguageToggle } from "./language_toggle";
     const utils = window.frappe?.utils;
     const getDesktopIcon = utils?.get_desktop_icon;
     if (typeof getDesktopIcon !== "function" || getDesktopIcon.msBrandIcons) return;
+    // The brand's picture, else the module's letter on the brand ground (getLetterIcon:
+    // desk icons only), so no module falls back to a grey letter or an off-brand logo.
     const brandDesktopIcon = function (name, variant) {
-      return getDeskIcon(name) || getDesktopIcon.call(this, name, variant);
+      return getDeskIcon(name) || getLetterIcon(name) || getDesktopIcon.call(this, name, variant);
     };
     brandDesktopIcon.msBrandIcons = true;
     utils.get_desktop_icon = brandDesktopIcon;

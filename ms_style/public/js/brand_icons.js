@@ -139,6 +139,52 @@ function drawPicture(symbol) {
 
 const pictures = new Map();
 
+// A module with no picture here (an app installed later, a custom module): its first letter
+// on the pictures' ground, instead of Frappe's grey letter tile or the app's own logo.
+// Only for desk icons that are not folders; null for anything else.
+const letters = new Map();
+
+function firstLetter(text) {
+  const match = String(text || "").match(/\p{L}/u);
+  return match ? match[0].toLocaleUpperCase() : "";
+}
+
+export function getLetterIcon(label) {
+  if (!label) return null;
+  const icon = window.frappe?.boot?.desktop_icons?.find((entry) => entry.label === label);
+  if (!icon || icon.icon_type === "Folder") return null;
+  const shown = typeof window.__ === "function" ? window.__(label) : label;
+  const letter = firstLetter(shown) || firstLetter(label);
+  if (!letter) return null;
+  const key = `${letter}\u241f${label}`;
+  if (letters.has(key)) return letters.get(key);
+  const glyph = letter.replace(/[&<>"]/g, (character) => `&#${character.charCodeAt(0)};`);
+  const rays = Array.from({ length: 12 }, (_, index) => {
+    const angle = (index * 30 * Math.PI) / 180;
+    const [x1, y1, x2, y2] = [60 + Math.cos(angle) * 46, 60 + Math.sin(angle) * 46, 60 + Math.cos(angle) * 52, 60 + Math.sin(angle) * 52];
+    return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`;
+  }).join("");
+  // Arabic letters sit lower in the line box than Latin capitals.
+  const y = /[\u0600-\u06FF]/.test(letter) ? 54 : 61;
+  const text = (attributes) => `<text x="60" y="${y}" text-anchor="middle" dominant-baseline="central" font-family="Rubik, Cairo, 'Segoe UI', Tahoma, Arial, sans-serif" font-size="58" font-weight="800" ${attributes}>${glyph}</text>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+<defs>
+<linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#17493B"/><stop offset="1" stop-color="#0E3B2E"/></linearGradient>
+<radialGradient id="b" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#34D399" stop-opacity=".42"/><stop offset=".55" stop-color="#34D399" stop-opacity=".1"/><stop offset="1" stop-color="#34D399" stop-opacity="0"/></radialGradient>
+<linearGradient id="c" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F1EA"/><stop offset="1" stop-color="#6FE3B8"/></linearGradient>
+</defs>
+<rect width="120" height="120" fill="url(#a)"/>
+<circle cx="60" cy="60" r="58" fill="url(#b)"/>
+<g fill="none" stroke="#34D399" stroke-width="1.5"><circle cx="60" cy="60" r="38" stroke-opacity=".22"/><circle cx="60" cy="60" r="56" stroke-opacity=".1"/></g>
+<g stroke="#34D399" stroke-opacity=".45" stroke-width="2" stroke-linecap="round">${rays}</g>
+${text('fill="#0E3B2E" fill-opacity=".55" transform="translate(0 2.5)"')}
+${text('fill="url(#c)"')}
+</svg>`;
+  const picture = `data:image/svg+xml,${encodeURIComponent(svg.replace(/\n\s*/g, ""))}`;
+  letters.set(key, picture);
+  return picture;
+}
+
 // The picture for a desk module, as an image URL: its illustration, else a picture composed
 // from its glyph (the map above, else the module's own Desktop Icon > Icon). Modules with
 // artwork of their own and nothing here keep it; null leaves the icon to Frappe.
