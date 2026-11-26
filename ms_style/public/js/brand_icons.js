@@ -5,7 +5,7 @@
 // document, report or page by its name (sidebar items, workspace cards).
 
 const artBasePath = "/assets/ms_style/Icone/";
-const artVersion = "v10";
+const artVersion = "v11";
 
 // Desk module -> illustration. Keys are the Desktop Icon labels (untranslated). The
 // pictures in tools/illustrations (build.mjs) are drawn in the style of the first ones.
@@ -16,6 +16,8 @@ const deskArt = {
   Organization: "organization.webp",
   "Custom HR": "custom-hr.webp",
   "My Workspaces": "my-workspaces.webp",
+  // The roots_ai app (its own logo otherwise): a tree with circuit roots and a chip.
+  "Roots AI": "roots-ai.webp",
   Build: "build.webp",
   Data: "data.webp",
   Email: "email.webp",

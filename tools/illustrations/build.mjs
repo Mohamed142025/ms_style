@@ -705,6 +705,28 @@ ${gear(150, 160, 48, 10, "url(#body)")}
 ${gear(226, 196, 22, 8, C.greenDark)}
 <g transform="rotate(45 100 120)"><rect x="92" y="78" width="16" height="78" rx="5" fill="${C.cream}" ${O}/><path d="M86 74 h28 v18 l-8 8 h-12 l-8 -8 Z" fill="${C.cream}" ${O}/></g>`,
   },
+  // Roots AI: a tree whose roots are circuit traces (the Digital Roots name), a chip in its
+  // crown and the assistant's speech bubble beside it.
+  "roots-ai": {
+    file: "roots-ai",
+    badges: ["bot", "sparkles"],
+    sparkles: [[272, 150, 1], [112, 150, 0.7], [204, 56, 0.6]],
+    scene: `<g fill="none" stroke="${C.greenLight}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M160 236 V262"/><path d="M158 242 L132 254 H110"/><path d="M162 242 L188 254 H210"/><path d="M150 248 L140 268"/><path d="M170 248 L180 268"/>
+</g>
+<g fill="${C.cream}" stroke="${C.outline}" stroke-width="3"><circle cx="160" cy="265" r="5"/><circle cx="106" cy="254" r="5"/><circle cx="214" cy="254" r="5"/><circle cx="138" cy="271" r="5"/><circle cx="182" cy="271" r="5"/></g>
+${ground(76, 244)}
+<path d="M150 236 Q154 204 156 182 H164 Q166 204 170 236 Z" fill="${C.tan}" ${O}/>
+<path d="M158 206 Q146 196 134 198 M162 200 Q174 190 184 192" fill="none" stroke="${C.outline}" stroke-width="3.5" stroke-linecap="round"/>
+<circle cx="120" cy="160" r="34" fill="${C.greenDark}" ${O}/>
+<circle cx="198" cy="164" r="32" fill="${C.greenDark}" ${O}/>
+<circle cx="158" cy="136" r="48" fill="url(#body)" ${O}/>
+<g stroke="${C.cream}" stroke-width="3.5" stroke-linecap="round"><path d="M146 108 V116 M158 108 V116 M170 108 V116 M146 156 V164 M158 156 V164 M170 156 V164 M130 124 H138 M130 136 H138 M130 148 H138 M178 124 H186 M178 136 H186 M178 148 H186"/></g>
+<rect x="136" y="114" width="44" height="44" rx="9" fill="${C.cream}" ${O}/>
+<path d="M158 124 l3.5 8.5 8.5 3.5 -8.5 3.5 -3.5 8.5 -3.5 -8.5 -8.5 -3.5 8.5 -3.5 Z" fill="${C.green}" stroke="${C.outline}" stroke-width="2" stroke-linejoin="round"/>
+${bubble(214, 178, 58, 38, C.cream, "left")}
+<g fill="${C.green}"><circle cx="230" cy="197" r="4.5"/><circle cx="243" cy="197" r="4.5"/><circle cx="256" cy="197" r="4.5"/></g>`,
+  },
   "shift-attendance": {
     file: "shift-attendance",
     badges: ["calendar-clock", "check"],
